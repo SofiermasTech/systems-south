@@ -1,0 +1,50 @@
+@import "media";
+@import "mixins";
+
+.page {
+  background-color:  var(--white);
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: 400;
+  color: var(--black);
+  min-width: 360px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: clip;
+  position: relative;
+  line-height: 1.2;
+}
+
+.page-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.main {
+  flex-shrink: 1;
+}
+
+h1, .h1 {
+  @include fluid-text();
+}
+
+.container {
+  max-width: calc(var(--container-width) + (var(--container-padding-y) * 2));
+  width: 100%;
+  padding-inline: var(--container-padding-y);
+  margin-inline: auto;
+  position: relative;
+}
+
+.stop-scroll {
+  overflow-y: hidden;
+}
+
+section {
+  scroll-margin-top: 250px;
+}
+

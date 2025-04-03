@@ -1,0 +1,50 @@
+@import "@/assets/styles/media.scss";
+
+:root {
+  // color
+  --black: #242527;
+	--grey-100: #f3f3f3;
+	--grey-200: #9f9e9e;
+	--grey-300: rgba(0, 0, 0, 0.4);
+	--blue-0: #f2f7fc;
+	--blue-100: #e9eff4;
+	--blue-200: #d2dce6;
+	--blue-300: #adb7c1;
+	--blue: #1c71b7;
+	--white-0: rgba(255, 255, 255, 0.2);
+	--white-100: rgba(255, 255, 255, 0.6);
+	--white: #fff;
+	--orange: #ff6f39;
+	--green: #59c167;
+	--red: #ec4747;
+
+  // text
+  --font-size-body: 16px;
+  --font-family: "Inter", sans-serif;
+
+
+
+
+  // border-radius
+  --br-btn: ;
+
+  // margin, padding, width
+  --container-padding-y: 16px;
+  --section-offset: 120px;
+  --container-width: 1520px;
+
+  @include desktop {}
+
+  @include laptop {
+    --section-offset: 100px;
+    --container-width: 1280px;
+  }
+
+  @include laptop-bottom {}
+
+  @include tablet {}
+
+  @include tablet-bottom {}
+
+  @include mobile {}
+}
