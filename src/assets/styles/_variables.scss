@@ -26,11 +26,12 @@
 
 
   // border-radius
-  --br-btn: ;
+  --br-btn: 10px;
+  --br-block: 16px;
 
   // margin, padding, width
   --container-padding-y: 16px;
-  --section-offset: 120px;
+  --section-offset: 160px;
   --container-width: 1520px;
 
   @include desktop {}

@@ -2,7 +2,7 @@
 @import "mixins";
 
 .page {
-  background-color:  var(--white);
+  background-color: var(--white);
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   font-weight: 400;
@@ -28,8 +28,20 @@
   flex-shrink: 1;
 }
 
-h1, .h1 {
+h1,
+.h1 {
   @include fluid-text();
+}
+
+h2,
+.h2 {
+  @include fluid-text();
+  max-width: 380px;
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 110%;
+  letter-spacing: -0.04em;
+  color: var(--blue);
 }
 
 .container {
@@ -47,4 +59,3 @@ h1, .h1 {
 section {
   scroll-margin-top: 250px;
 }
-

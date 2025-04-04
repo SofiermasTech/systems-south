@@ -46,108 +46,14 @@
               </li>
             </ul>
           </nav>
-          <address class="header__adress"></address>
+          <address class="header__adress">
+            <p>Краснодар, ул. Солнечная, д. 4/Б, пом. 14/1</p>
+          </address>
         </div>
         <div class="header__bottom">
           <!-- Кнопка каталога -->
-          <button type="button" class="header__btn-catalog btn-catalog">
-            <span class="btn-catalog__icon">
-              <svg
-                width="21"
-                height="21"
-                viewBox="0 0 21 21"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M13.2583 17.5H14.7583C15.4213 17.5 16.0572 17.2366 16.5261 16.7678C16.9949 16.2989 17.2583 15.663 17.2583 15V13.5H13.2583V17.5ZM13.2583 12.5V8.5H17.2583V12.5H13.2583ZM12.2583 12.5H8.2583V8.5H12.2583V12.5ZM8.2583 13.5H12.2583V17.5H8.2583V13.5ZM7.2583 12.5V8.5H3.2583V12.5H7.2583ZM3.2583 13.5H7.2583V17.5H5.7583C5.09526 17.5 4.45937 17.2366 3.99053 16.7678C3.52169 16.2989 3.2583 15.663 3.2583 15V13.5ZM13.2583 7.5H17.2583V6C17.2583 5.33696 16.9949 4.70107 16.5261 4.23223C16.0572 3.76339 15.4213 3.5 14.7583 3.5H13.2583V7.5ZM12.2583 3.5V7.5H8.2583V3.5H12.2583ZM7.2583 3.5V7.5H3.2583V6C3.2583 5.33696 3.52169 4.70107 3.99053 4.23223C4.45937 3.76339 5.09526 3.5 5.7583 3.5H7.2583Z"
-                  fill="white"
-                />
-                <rect x="13.2896" y="13.4688" width="3.96875" height="4.03125" fill="white" />
-                <rect x="13.2896" y="3.5" width="3.96875" height="4.03125" fill="white" />
-                <rect x="3.2583" y="3.5" width="3.96875" height="4.03125" fill="white" />
-                <rect x="3.2583" y="13.4688" width="3.96875" height="4.03125" fill="white" />
-              </svg>
-            </span>
-            <p class="btn-catalog__text">Каталог товаров</p>
-          </button>
-        </div>
-        <div class="header__user-actions user-actions">
-          <!-- Кнопка избранного -->
-          <RouterLink
-            to="/personal/favorites"
-            class="user-actions__btn user-actions__btn--favorites"
-          >
-            <span class="user-actions__icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 22 20">
-                <path
-                  stroke="#242527"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M15.696 1C13.652 1 11.887 2.197 11 3.943 10.113 2.197 8.348 1 6.304 1 3.374 1 1 3.457 1 6.481s1.817 5.796 4.165 8.073S11 19 11 19s3.374-2.133 5.835-4.446C19.46 12.088 21 9.514 21 6.481 21 3.448 18.626 1 15.696 1Z"
-                />
-              </svg>
-            </span>
-            <span class="user-actions__counter">1</span>
-            <span class="user-actions__text">Избранное</span>
-          </RouterLink>
-          <!-- Кнопки корзины -->
-          <RouterLink to="/cart" class="user-actions__btn user-actions__btn--cart">
-            <span class="user-actions__icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <path
-                  stroke="#242527"
-                  stroke-width="1.5"
-                  d="M9.611 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832ZM18.553 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832Z"
-                />
-                <path
-                  stroke="#242527"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M1.309 1.712h2.554l4.476 14.05h10.214"
-                />
-                <path
-                  stroke="#242527"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M7.343 12.57 4.886 4.904h15.976a.638.638 0 0 1 .607.84l-2.13 6.388a.639.639 0 0 1-.605.436H7.344Z"
-                />
-              </svg>
-            </span>
-            <span class="user-actions__counter">00</span>
-            <span class="user-actions__text">Корзина</span>
-          </RouterLink>
-          <template>
-            <!-- Если в корзине есть товары, используем button для открытия попапа -->
-            <button class="user-actions__bbtn user-actions__btn--cart">
-              <span class="user-actions__icon"></span>
-              <span class="user-actions__counter">10</span>
-              <span class="user-actions__text">Корзина</span>
-            </button>
-          </template>
-          <!-- Кнопки личного кабинета -->
-          <RouterLink to="/personal" class="user-actions__btn user-actions__btn--personal">
-            <span class="user-actions__icon">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24">
-                <path
-                  stroke="#242527"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  d="M3.738 19.5c1.325-2.21 4.23-3.724 8.762-3.724s7.437 1.513 8.762 3.724M16.1 8.1a3.6 3.6 0 1 1-7.2 0 3.6 3.6 0 0 1 7.2 0Z"
-                />
-              </svg>
-            </span>
-            <span class="user-actions__text">Личный кабинет</span>
-          </RouterLink>
-          <template>
-            <!-- Если не авторизован, используем button для открытия попапа -->
-            <button class="user-actions__bbtn user-actions__btn--cart">
-              <span class="user-actions__text">Вход</span>
-            </button>
-          </template>
+          <CatalogButton />
+          <UserActions />
         </div>
       </div>
     </div>
@@ -155,10 +61,96 @@
 </template>
 
 <script>
+import CatalogButton from '@/components/Header/CatalogButton.vue'
+import UserActions from '@/components/Header/UserActions.vue'
+
 export default {
   name: 'HeaderApp',
+  components: {
+    CatalogButton,
+    UserActions,
+  },
   props: {},
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.header {
+  &__body {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    grid-template-rows: 44px, 76px;
+  }
+
+  &__logo {
+    grid-row: span 2;
+  }
+
+  &__top {
+    padding-block: 12px;
+    padding-left: 24px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    line-height: 0.9;
+  }
+
+  &__nav {
+  }
+
+  &__nav-list {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  &__nav-item {
+  }
+
+  &__nav-item-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  &__nav-item-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--orange);
+  }
+
+  &__adress {
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  &__bottom {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__btn-catalog {
+  }
+
+  &__user-actions {
+  }
+}
+
+.logo {
+  padding: 33px 17px;
+  background-color: var(--black);
+  border-radius: var(--br-btn);
+
+  &__img {
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+</style>
