@@ -1,6 +1,6 @@
 <template>
-  <div class="cart">
-    <h1>cart</h1>
+  <div class="cart container">
+    <IntroPages  title="Корзина" />
   </div>
 </template>
 

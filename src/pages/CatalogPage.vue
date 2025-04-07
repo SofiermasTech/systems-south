@@ -1,6 +1,6 @@
 <template>
-  <div class="catalog">
-    <h1>catalog</h1>
+  <div class="catalog container">
+    <IntroPages  title="Каталог" />
   </div>
 </template>
 

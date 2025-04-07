@@ -1,6 +1,6 @@
 <template>
-  <div class="orders">
-    <h1>orders</h1>
+  <div class="orders container">
+
   </div>
 </template>
 

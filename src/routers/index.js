@@ -12,41 +12,47 @@ const routes = [
     path: '/',
     name: 'HomePage',
     component: HomePage,
+    meta: { breadcrumb: 'Главная' },
   },
   {
     path: '/catalog',
     name: 'CatalogPage',
     component: CatalogPage,
+    meta: { breadcrumb: "Каталог" },
   },
   {
     path: '/cart',
     name: 'CartPage',
     component: CartPage,
+    meta: { breadcrumb: "Корзина" },
   },
   {
     path: '/personal',
     name: 'PersonalPage',
     component: PersonalPage,
-    // meta: { requiresAuth: true }, // Требуется авторизация
+    meta: { breadcrumb: 'Личный кабинет' },
     children: [
       {
         path: 'profile',
         name: 'PersonalProfile',
         component: PersonalProfile,
+        meta: { breadcrumb: 'Настройки профиля' },
       },
       {
         path: 'favorites',
         name: 'PersonalFavorites',
         component: PersonalFavorites,
+        meta: { breadcrumb: 'Избранное' },
       },
       {
         path: 'orders',
         name: 'PersonalOrders',
         component: PersonalOrders,
+        meta: { breadcrumb: 'История заказов' },
       },
       {
         path: '', // /personal (дефолтный маршрут)
-        name: "PersonalDefault",
+        name: 'PersonalDefault',
         redirect: { name: 'PersonalProfile' }, // Перенаправляем на профиль
       },
     ],

@@ -12,7 +12,7 @@
             d="M15.696 1C13.652 1 11.887 2.197 11 3.943 10.113 2.197 8.348 1 6.304 1 3.374 1 1 3.457 1 6.481s1.817 5.796 4.165 8.073S11 19 11 19s3.374-2.133 5.835-4.446C19.46 12.088 21 9.514 21 6.481 21 3.448 18.626 1 15.696 1Z"
           />
         </svg>
-        <span class="user-actions__counter">1</span>
+        <span v-if="favoritesCount > 0" class="user-actions__counter">{{ favoritesCount }}</span>
       </div>
 
       <span class="user-actions__text">Избранное</span>
@@ -98,7 +98,17 @@
     </template>
   </div>
 </template>
-<script></script>
+<script>
+export default {
+  name: "UserActions",
+  props: {
+    favoritesCount: {
+      type: Number,
+      default: 0,
+    },
+  },
+};
+</script>
 <style lang="scss">
 .user-actions {
   display: grid;

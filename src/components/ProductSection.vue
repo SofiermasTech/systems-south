@@ -8,7 +8,7 @@
         </div>
         <div class="product__body-content">
           <div class="product__cards">
-            <ProductCard v-for="product in products" :key="product.id" :product="product" />
+            <ProductCard v-for="product in products" :key="product.id" :product="product" @toggle-favorite="handleToggleFavorite" />
           </div>
         </div>
       </div>
@@ -35,6 +35,11 @@ export default {
       type: Array,
       required: true,
       default: () => [],
+    },
+  },
+  methods: {
+    handleToggleFavorite(product) {
+      this.$emit("toggle-favorite", product);
     },
   },
 }

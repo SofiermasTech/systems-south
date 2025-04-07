@@ -100,6 +100,7 @@
   margin-top: 12px;
   margin-bottom: var(--section-offset);
   height: 80vh;
+  max-height: 870px;
   // height: 100%;
 
   &__body {

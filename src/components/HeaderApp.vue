@@ -53,7 +53,7 @@
         <div class="header__bottom">
           <!-- Кнопка каталога -->
           <CatalogButton />
-          <UserActions />
+          <UserActions :favorites-count="favoritesCount" />
         </div>
       </div>
     </div>
@@ -63,6 +63,8 @@
 <script>
 import CatalogButton from '@/components/Header/CatalogButton.vue'
 import UserActions from '@/components/Header/UserActions.vue'
+// import { mapStores } from 'pinia'
+import { useFavoritesStore } from '@/stores/favorites.js'
 
 export default {
   name: 'HeaderApp',
@@ -70,7 +72,19 @@ export default {
     CatalogButton,
     UserActions,
   },
-  props: {},
+  data() {
+    return {
+      favoritesStore: null,
+    };
+  },
+  created() {
+    this.favoritesStore = useFavoritesStore();
+  },
+  computed: {
+    favoritesCount() {
+      return this.favoritesStore ? this.favoritesStore.favoritesCount : 0;
+    },
+  },
 }
 </script>
 

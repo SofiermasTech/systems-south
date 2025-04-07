@@ -28,12 +28,10 @@
   flex-shrink: 1;
 }
 
-h1,
 .h1 {
   @include fluid-text();
 }
 
-h2,
 .h2 {
   @include fluid-text();
   max-width: 380px;
