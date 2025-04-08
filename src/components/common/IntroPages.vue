@@ -9,10 +9,10 @@
 export default {
   name: 'IntroPages',
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
+    // title: {
+    //   type: String,
+    //   required: true,
+    // },
   },
   computed: {
     currentRouteTitle() {

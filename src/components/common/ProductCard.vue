@@ -54,7 +54,7 @@
       <p>{{ product.description }}</p>
     </div>
     <div class="product-card__bottom">
-      <p class="product-card__price">{{ product.price }} ₽</p>
+      <p class="product-card__price">{{ formattedPrice }} ₽</p>
       <base-button class="product-card__btn-card">
         <span>Добавить в корзину</span>
       </base-button>
@@ -63,15 +63,14 @@
 </template>
 
 <script>
-import BaseButton from '@/components/common/BaseButton.vue'
 // import { mapStores } from 'pinia'
 import { useFavoritesStore } from '@/stores/favorites'
 
 export default {
   name: 'ProductCard',
-  components: {
-    BaseButton,
-  },
+  // components: {
+  //   BaseButton,
+  // },
   props: {
     product: {
       type: Object,
@@ -89,6 +88,9 @@ export default {
   computed: {
     isInFavorites() {
       return this.favoritesStore ? this.favoritesStore.isFavorite(this.product.id) : false
+    },
+    formattedPrice() {
+      return this.product.price.toLocaleString('ru-RU');
     },
   },
   methods: {

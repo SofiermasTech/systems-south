@@ -3,7 +3,11 @@
     <slot></slot>
   </button>
 </template>
-<script></script>
+<script>
+export default {
+  name: 'BaseButton',
+}
+</script>
 <style lang="scss">
 .base-button {
   width: fit-content;
