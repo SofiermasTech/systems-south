@@ -10,7 +10,7 @@
       <ProductCard
         v-for="product in favorites"
         :key="product.id"
-        :product="product"
+        :product-id="product.id"
         @toggle-favorite="handleToggleFavorite"
       />
     </div>
@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import ProductCard from '@/components/common/ProductCard.vue'
-import { useFavoritesStore } from '@/stores/favorites.js'
+import ProductCard from '@/entities/product/ProductCard.vue'
+import { useFavoritesStore } from '@/shared/stores/favorites.js'
 
 export default {
   name: 'FavoritesPage',
@@ -36,12 +36,15 @@ export default {
   },
   computed: {
     favorites() {
-      return this.favoritesStore ? this.favoritesStore.favorites : []
+      return this.favoritesStore.favorites;
     },
   },
   methods: {
     handleToggleFavorite(product) {
-      console.log(`Товар ${product.name} удалён из избранного`)
+      const message = this.favoritesStore.isFavorite(product.id)
+        ? 'добавлен в избранное'
+        : 'удалён из избранного';
+      console.log(`Товар ${product.name} ${message}`);
     },
   },
 }

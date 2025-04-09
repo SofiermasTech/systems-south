@@ -63,40 +63,46 @@
 </template>
 
 <script>
-// import { mapStores } from 'pinia'
-import { useFavoritesStore } from '@/stores/favorites'
+import { useFavoritesStore } from '@/shared/stores/favorites'
+import { useCatalogStore } from '@/shared/stores/catalog'
 
 export default {
   name: 'ProductCard',
-  // components: {
-  //   BaseButton,
-  // },
   props: {
-    product: {
-      type: Object,
+    productId: {
+      type: Number,
       required: true,
     },
   },
   data() {
     return {
+      catalogStore: null,
       favoritesStore: null,
     }
   },
   created() {
+    this.catalogStore = useCatalogStore()
     this.favoritesStore = useFavoritesStore()
   },
   computed: {
+    product() {
+      return this.catalogStore.getProductById(this.productId)
+    },
     isInFavorites() {
-      return this.favoritesStore ? this.favoritesStore.isFavorite(this.product.id) : false
+      return this.favoritesStore.isFavorite(this.productId);
     },
     formattedPrice() {
-      return this.product.price.toLocaleString('ru-RU');
+      return this.product.price.toLocaleString('ru-RU')
     },
   },
+  // mounted() {
+  //   const catalogStore = useCatalogStore()
+  //   catalogStore.loadProducts()
+  // },
   methods: {
     toggleFavorite() {
       if (this.isInFavorites) {
-        this.favoritesStore.removeFromFavorites(this.product.id)
+        this.favoritesStore.removeFromFavorites(this.productId)
       } else {
         this.favoritesStore.addToFavorites(this.product)
       }

@@ -8,7 +8,12 @@
         </div>
         <div class="product__body-content">
           <div class="product__cards">
-            <ProductCard v-for="product in products" :key="product.id" :product="product" @toggle-favorite="handleToggleFavorite" />
+            <ProductCard
+              v-for="product in filteredProducts"
+              :key="product.id"
+              :product-id="product.id"
+              @toggle-favorite="handleToggleFavorite"
+            />
           </div>
         </div>
       </div>
@@ -17,8 +22,9 @@
 </template>
 
 <script>
-import SliderArrow from '@/components/common/SliderArrow.vue'
-import ProductCard from '@/components/common/ProductCard.vue'
+import SliderArrow from '@widgets/slider-arrow/SliderArrow.vue'
+import ProductCard from '@/entities/product/ProductCard.vue'
+import { useCatalogStore } from '@/shared/stores/catalog'
 
 export default {
   name: 'ProductSection',
@@ -31,15 +37,32 @@ export default {
       type: String,
       required: true,
     },
-    products: {
-      type: Array,
+    filterType: {
+      type: String,
       required: true,
-      default: () => [],
+      validator: (value) => ['new', 'best', 'recommended'].includes(value),
+    },
+  },
+  data() {
+    return {
+      catalogStore: null,
+    }
+  },
+  created() {
+    this.catalogStore = useCatalogStore()
+    this.catalogStore.loadProducts()
+  },
+  computed: {
+    products() {
+      return this.catalogStore.getProducts
+    },
+    filteredProducts() {
+      return this.products.filter((product) => product[this.filterType])
     },
   },
   methods: {
     handleToggleFavorite(product) {
-      this.$emit("toggle-favorite", product);
+      this.$emit('toggle-favorite', product)
     },
   },
 }

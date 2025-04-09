@@ -33,7 +33,7 @@
       <ProductCard
         v-for="product in products"
         :key="product.id"
-        :product="product"
+        :product-id="product.id"
         @toggle-favorite="handleToggleFavorite"
       />
     </div>
@@ -41,21 +41,35 @@
 </template>
 
 <script>
-import CatalogFilters from '@/components/CatalogPage/CatalogFilters.vue'
-import CatalogSortPanel from '@/components/CatalogPage/CatalogSortPanel.vue'
-import CatalogSortView from '@/components/CatalogPage/CatalogSortView.vue'
+import { useCatalogStore } from '@/shared/stores/catalog'
+import CatalogFilters from '@/features/catalog-filters/CatalogFilters.vue'
+import CatalogSortPanel from '@/features/catalog-filters/CatalogSortPanel.vue'
+import CatalogSortView from '@/features/catalog-filters/CatalogSortView.vue'
+import ProductCard from '@/entities/product/ProductCard.vue'
+import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 
 export default {
   components: {
+    IntroPages,
     CatalogFilters,
     CatalogSortPanel,
     CatalogSortView,
+    ProductCard,
   },
-  props: {
-    products: {
-      type: Array,
-      required: true,
+  data() {
+    return {
+      catalogStore: null,
+    }
+  },
+  computed: {
+    products() {
+      const catalogStore = useCatalogStore()
+      return catalogStore.getProducts
     },
+  },
+  mounted() {
+    const catalogStore = useCatalogStore()
+    catalogStore.loadProducts()
   },
   methods: {
     handleToggleFavorite(product) {

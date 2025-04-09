@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: 'BreadcrumbsApp',
+  name: 'BreadcrumbsList',
   computed: {
     breadcrumbs() {
       const homeBreadcrumb = {
@@ -39,7 +39,7 @@ export default {
       // Получаем все маршруты
       const matchedRoutes = this.$route.matched
 
-      // Формируем массив 
+      // Формируем массив
       const routeBreadcrumbs = matchedRoutes
         .filter((route) => route.path !== '/')
         .map((route, index, array) => {

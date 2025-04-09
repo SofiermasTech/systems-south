@@ -2,23 +2,21 @@
   <HomeHero />
   <ProductSection
     :title="newProductsTitle"
-    :products="newProducts"
+    filter-type="new"
     @toggle-favorite="handleToggleFavorite"
     style="margin-bottom: 16px"
   />
   <ProductSection
     :title="bestOffersTitle"
-    :products="bestOffers"
+    filter-type="best"
     @toggle-favorite="handleToggleFavorite"
   />
 </template>
 
 <script>
-import HomeHero from '@/components/HomePage/HomeHero.vue'
-import ProductSection from '@/components/ProductSection.vue'
-import products from '@/assets/data/catalog.json'
-// import { mapStores } from 'pinia'
-import { useFavoritesStore } from '@/stores/favorites'
+import HomeHero from '@/pages/home/ui/HomeHero.vue'
+import ProductSection from '@widgets/product-section/ProductSection.vue'
+import { useFavoritesStore } from '@/shared/stores/favorites'
 
 export default {
   name: 'HomePage',
@@ -30,22 +28,12 @@ export default {
     return {
       newProductsTitle: 'Новые товары',
       bestOffersTitle: 'Лучшие предложения',
-      allProducts: products,
+      catalogStore: null,
       favoritesStore: null,
     }
   },
   created() {
     this.favoritesStore = useFavoritesStore()
-  },
-  computed: {
-    newProducts() {
-      // Фильтруем товары, где new: true
-      return this.allProducts.filter((product) => product.new)
-    },
-    bestOffers() {
-      // Фильтруем товары, где best: true
-      return this.allProducts.filter((product) => product.best)
-    },
   },
   methods: {
     handleToggleFavorite(product) {

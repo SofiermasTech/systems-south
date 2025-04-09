@@ -61,10 +61,9 @@
 </template>
 
 <script>
-import CatalogButton from '@/components/Header/CatalogButton.vue'
-import UserActions from '@/components/Header/UserActions.vue'
-// import { mapStores } from 'pinia'
-import { useFavoritesStore } from '@/stores/favorites.js'
+import CatalogButton from '@widgets/header/CatalogButton.vue'
+import UserActions from '@widgets/header/UserActions.vue'
+import { useFavoritesStore } from '@/shared/stores/favorites.js'
 
 export default {
   name: 'HeaderApp',
@@ -75,14 +74,14 @@ export default {
   data() {
     return {
       favoritesStore: null,
-    };
+    }
   },
   created() {
-    this.favoritesStore = useFavoritesStore();
+    this.favoritesStore = useFavoritesStore()
   },
   computed: {
     favoritesCount() {
-      return this.favoritesStore ? this.favoritesStore.favoritesCount : 0;
+      return this.favoritesStore ? this.favoritesStore.favoritesCount : 0
     },
   },
 }

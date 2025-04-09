@@ -1,24 +1,23 @@
 <template>
   <div class="intro-pages">
-    <BreadcrumbsApp />
+    <BreadcrumbsList />
     <h2 class="intro-pages__title">{{ currentRouteTitle }}</h2>
   </div>
 </template>
 
 <script>
+import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
 export default {
   name: 'IntroPages',
-  props: {
-    // title: {
-    //   type: String,
-    //   required: true,
-    // },
+  components: {
+    BreadcrumbsList,
   },
+  props: {},
   computed: {
     currentRouteTitle() {
       // Берем последний маршрут из $route.matched
-      const lastRoute = this.$route.matched[this.$route.matched.length - 1];
-      return lastRoute ? lastRoute.meta.breadcrumb : "";
+      const lastRoute = this.$route.matched[this.$route.matched.length - 1]
+      return lastRoute ? lastRoute.meta.breadcrumb : ''
     },
   },
 }

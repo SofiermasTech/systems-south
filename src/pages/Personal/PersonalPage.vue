@@ -33,8 +33,12 @@
 </template>
 
 <script>
+import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 export default {
   name: 'PersonalPage',
+  components: {
+    IntroPages,
+  },
 }
 </script>
 <style lang="scss">
