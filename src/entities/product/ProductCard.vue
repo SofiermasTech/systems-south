@@ -2,7 +2,15 @@
   <article class="product-card">
     <div class="product-card__top">
       <div class="product-card__top-info">
-        <p class="product-card__top-info-stock">В наличии</p>
+        <p
+          class="product-card__top-info-stock"
+          :class="{
+            'stock-available': product.stock,
+            'stock-unavailable': !product.stock,
+          }"
+        >
+          {{ stockStatus }}
+        </p>
         <p class="product-card__top-info-article">Арт: {{ product.article }}</p>
       </div>
       <button type="button" class="product-card__top-like" @click="toggleFavorite">
@@ -89,10 +97,17 @@ export default {
       return this.catalogStore.getProductById(this.productId)
     },
     isInFavorites() {
-      return this.favoritesStore.isFavorite(this.productId);
+      return this.favoritesStore.isFavorite(this.productId)
     },
     formattedPrice() {
       return this.product.price.toLocaleString('ru-RU')
+    },
+    stockStatus() {
+      return this.product
+        ? this.product.stock
+          ? 'В наличии'
+          : 'Нет в наличии'
+        : 'Уточните наличие'
     },
   },
   // mounted() {
@@ -139,7 +154,14 @@ export default {
   &__top-info-stock {
     font-weight: 600;
     font-size: 12px;
-    color: var(--green);
+
+    &.stock-available {
+      color: var(--green);
+    }
+
+    &.stock-unavailable {
+      color: var(--grey-200);
+    }
   }
 
   &__top-info-article {

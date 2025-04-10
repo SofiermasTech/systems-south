@@ -2,9 +2,12 @@
   <div class="aside-filters">
     <div class="aside-filters__wrapper">
       <div class="aside-filters__item">
-        <div class="aside-filters__item-heading">
+        <div class="aside-filters__item-heading" @click="toggleFilter('brand')">
           <h3 class="aside-filters__item-title">Бренд</h3>
-          <span class="aside-filters__item-arrow select-arrow">
+          <span
+            class="aside-filters__item-arrow select-arrow"
+            :class="{ 'arrow-open': filterStates.brand }"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 8">
               <path
                 fill="#242527"
@@ -13,11 +16,11 @@
             </svg>
           </span>
         </div>
-        <div class="aside-filters__item-content">
+        <div class="aside-filters__item-content" v-show="filterStates.brand">
           <ul class="aside-filters__list">
-            <li class="aside-filters__list-item">
+            <li class="aside-filters__list-item" v-for="brand in brands" :key="brand">
               <label class="aside-filters__list-item-label">
-                <input type="checkbox" />
+                <input type="checkbox" :value="brand" v-model="selectedBrands" />
                 <span class="aside-filters__list-item-check">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 9">
                     <path
@@ -26,10 +29,10 @@
                     />
                   </svg>
                 </span>
-                <p>Бренд 1</p>
+                <p>{{ brand }}</p>
               </label>
             </li>
-            <li class="aside-filters__list-item">
+            <!-- <li class="aside-filters__list-item">
               <label class="aside-filters__list-item-label">
                 <input type="checkbox" />
                 <span class="aside-filters__list-item-check">
@@ -42,14 +45,17 @@
                 </span>
                 <p>Бренд 2</p>
               </label>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
       <div class="aside-filters__item">
-        <div class="aside-filters__item-heading">
+        <div class="aside-filters__item-heading" @click="toggleFilter('price')">
           <h3 class="aside-filters__item-title">Цена</h3>
-          <span class="aside-filters__item-arrow select-arrow">
+          <span
+            class="aside-filters__item-arrow select-arrow"
+            :class="{ 'arrow-open': filterStates.price }"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 8">
               <path
                 fill="#242527"
@@ -58,7 +64,7 @@
             </svg>
           </span>
         </div>
-        <div class="aside-filters__options">
+        <div class="aside-filters__item-content" v-show="filterStates.price">
           <div class="aside-filters__options-btn">
             <label class="aside-filters__label-price">
               <div class="aside-filters__price">
@@ -94,39 +100,125 @@
         </div>
       </div>
       <div class="aside-filters__btn-wrapper">
-        <button class="aside-filters__btn-submit" type="button">Применить</button>
-        <button class="aside-filters__btn-reset" type="reset">Сбросить</button>
+        <button class="aside-filters__btn-submit" type="button" @click="applyFilters">
+          Применить
+        </button>
+        <button class="aside-filters__btn-reset" type="reset" @click="resetFilters">
+          Сбросить
+        </button>
       </div>
     </div>
   </div>
 </template>
 
-<script></script>
+<script>
+import { useCatalogStore } from '@/shared/stores/catalog'
+
+export default {
+  data() {
+    return {
+      catalogStore: null,
+      filterStates: {
+        brand: true,
+        price: false,
+      },
+      selectedBrands: [],
+      appliedBrands: [],
+    }
+  },
+  emits: ['apply-filters'],
+  async created() {
+    this.catalogStore = useCatalogStore()
+    await this.catalogStore.loadProducts()
+
+    // Восстанавливаем состояния из localStorage
+    const savedFilterStates = localStorage.getItem('filterStates')
+    if (savedFilterStates) {
+      this.filterStates = JSON.parse(savedFilterStates)
+    }
+
+    const savedSelectedBrands = localStorage.getItem('selectedBrands')
+    if (savedSelectedBrands) {
+      this.selectedBrands = JSON.parse(savedSelectedBrands)
+    }
+
+    const savedAppliedBrands = localStorage.getItem('appliedBrands')
+    if (savedAppliedBrands) {
+      this.appliedBrands = JSON.parse(savedAppliedBrands)
+      // Эмитим событие, чтобы применить сохранённые фильтры
+      this.$emit('apply-filters', { brands: this.appliedBrands })
+    }
+  },
+  watch: {
+    filterStates: {
+      handler(newValue) {
+        localStorage.setItem('filterStates', JSON.stringify(newValue))
+      },
+      deep: true, // Отслеживаем изменения внутри объекта
+    },
+    selectedBrands(newValue) {
+      localStorage.setItem('selectedBrands', JSON.stringify(newValue))
+    },
+    appliedBrands(newValue) {
+      localStorage.setItem('appliedBrands', JSON.stringify(newValue))
+    },
+  },
+  computed: {
+    products() {
+      return this.catalogStore.getProducts
+    },
+    brands() {
+      if (!this.products || !Array.isArray(this.products)) {
+        return []
+      }
+      // Извлекаем все бренды и убираем дубликаты
+      const brands = [...new Set(this.products.map((product) => product.brand))]
+      // Фильтруем, чтобы убрать undefined или пустые строки
+      return brands.filter((brand) => brand && brand.trim() !== '')
+    },
+  },
+  methods: {
+    toggleFilter(filterId) {
+      this.filterStates[filterId] = !this.filterStates[filterId]
+    },
+    applyFilters() {
+      this.appliedBrands = [...this.selectedBrands]
+      this.$emit('apply-filters', { brands: this.appliedBrands })
+    },
+    resetFilters() {
+      this.selectedBrands = []
+      this.appliedBrands = []
+      this.$emit('apply-filters', { brands: this.appliedBrands })
+      localStorage.removeItem('filterStates')
+      localStorage.removeItem('selectedBrands')
+      localStorage.removeItem('appliedBrands')
+    },
+  },
+}
+</script>
+
 <style lang="scss">
 .aside-filters {
   &__wrapper {
     height: min-content;
     padding: 12px 16px 12px;
-    // background-color: var(--blue-500);
-    // border-radius: 12px;
     display: flex;
     flex-direction: column;
+    gap: 8px;
     position: relative;
-    transition: all 0.7s easy;
   }
 
   &__item {
+    padding: 24px;
+    border: 1px solid var(--blue-100);
+    border-radius: var(--br-block);
   }
 
   &__item-heading {
     width: 100%;
-    // min-height: 40px;
-    padding: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid var(--blue-100);
-    border-radius: var(--br-block);
     cursor: pointer;
   }
 
@@ -139,19 +231,28 @@
   &__item-arrow {
     width: 20px;
     height: 20px;
+    transform: 0.3s ease;
+    transform-origin: 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     svg {
       width: 10px;
       height: 8px;
     }
+
+    &.arrow-open {
+      transform: rotate(180deg);
+      transform: 0.3s ease;
+    }
   }
 
   &__item-content {
-    padding-left: 24px;
+    margin-top: 20px;
   }
 
   &__list {
-    margin-block: 12px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -228,12 +329,33 @@
   }
 
   &__btn-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   &__btn-submit {
+    flex-grow: 1;
+    padding: 14px;
+    background-color: var(--black);
+    border: 1px solid var(--black);
+    border-radius: 500px;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--white);
   }
 
   &__btn-reset {
+    flex-grow: 1;
+    padding: 14px;
+    background-color: transparent;
+    border: 1px solid var(--blue-100);
+    border-radius: 500px;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--black);
   }
 }
 .select-arrow {

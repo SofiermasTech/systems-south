@@ -22,16 +22,16 @@
       </ul>
     </div>
 
-    <CatalogFilters class="catalog__filters" />
+    <CatalogFilters class="catalog__filters" @apply-filters="handleApplyFilters" />
 
     <div class="catalog__sort">
-      <CatalogSortPanel />
+      <CatalogSortPanel @sort-change="handleSortChange" />
       <CatalogSortView />
     </div>
 
     <div class="catalog__cards">
       <ProductCard
-        v-for="product in products"
+        v-for="product in filteredProducts"
         :key="product.id"
         :product-id="product.id"
         @toggle-favorite="handleToggleFavorite"
@@ -59,6 +59,10 @@ export default {
   data() {
     return {
       catalogStore: null,
+      sortType: 'cheap-first',
+      appliedFilters: {
+        brands: [], // Храним применённые фильтры
+      },
     }
   },
   computed: {
@@ -66,20 +70,59 @@ export default {
       const catalogStore = useCatalogStore()
       return catalogStore.getProducts
     },
+    sortedProducts() {
+      // Копируем массив, чтобы не мутировать оригинальный
+      const products = [...this.products]
+
+      if (!this.sortType) {
+        return products // Без сортировки
+      }
+
+      if (this.sortType === 'cheap-first') {
+        return products.sort((a, b) => a.price - b.price)
+      }
+
+      if (this.sortType === 'expensive-first') {
+        return products.sort((a, b) => b.price - a.price)
+      }
+
+      if (this.sortType === 'in-stock') {
+        return products.sort((a, b) => (a.stock === b.stock ? 0 : a.stock ? -1 : 1))
+      }
+
+      return products
+    },
+    filteredProducts() {
+      let products = [...this.sortedProducts]
+      // Фильтрация по брендам
+      if (this.appliedFilters.brands.length > 0) {
+        products = products.filter((product) => this.appliedFilters.brands.includes(product.brand))
+      }
+      return products
+    },
   },
   mounted() {
     const catalogStore = useCatalogStore()
     catalogStore.loadProducts()
   },
   methods: {
+    handleSortChange(sortType) {
+      this.sortType = sortType
+    },
+    handleApplyFilters(filters) {
+      this.appliedFilters.brands = filters.brands
+    },
     handleToggleFavorite(product) {
       this.$emit('toggle-favorite', product)
     },
   },
 }
+
+
 </script>
 <style lang="scss">
 .catalog {
+  margin-bottom: var(--section-offset);
   display: grid;
   grid-template-columns: 380px 1fr;
   row-gap: 20px;
