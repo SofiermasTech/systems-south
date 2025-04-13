@@ -26,14 +26,15 @@
 
     <div class="catalog__sort">
       <CatalogSortPanel @sort-change="handleSortChange" />
-      <CatalogSortView />
+      <CatalogSortView :view-mode="viewMode" @view-change="handleViewChange" />
     </div>
 
-    <div class="catalog__cards">
+    <div class="catalog__cards" :class="{ horizontal: viewMode === 'horizontal' }">
       <ProductCard
         v-for="product in filteredProducts"
         :key="product.id"
         :product-id="product.id"
+        :is-horizontal="viewMode === 'horizontal'"
         @toggle-favorite="handleToggleFavorite"
       />
     </div>
@@ -63,6 +64,7 @@ export default {
       appliedFilters: {
         brands: [], // Храним применённые фильтры
       },
+      viewMode: localStorage.getItem('viewMode') || 'vertical',
     }
   },
   computed: {
@@ -75,7 +77,7 @@ export default {
       const products = [...this.products]
 
       if (!this.sortType) {
-        return products // Без сортировки
+        return products
       }
 
       if (this.sortType === 'cheap-first') {
@@ -115,16 +117,22 @@ export default {
     handleToggleFavorite(product) {
       this.$emit('toggle-favorite', product)
     },
+    handleViewChange(mode) {
+      this.viewMode = mode
+    },
+  },
+  watch: {
+    viewMode(newValue) {
+      localStorage.setItem('viewMode', newValue)
+    },
   },
 }
-
-
 </script>
 <style lang="scss">
 .catalog {
   margin-bottom: var(--section-offset);
   display: grid;
-  grid-template-columns: 380px 1fr;
+  grid-template-columns: 350px 1fr;
   row-gap: 20px;
   column-gap: 32px;
   grid-template-areas:
@@ -189,6 +197,10 @@ export default {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+
+    &.horizontal {
+      grid-template-columns: 1fr;
+    }
   }
 }
 </style>

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/pages/home/HomePage.vue'
 import CatalogPage from '@/pages/catalog/CatalogPage.vue'
+import ProductPage from '@/pages/product/ProductPage.vue'
 import CartPage from '@/pages/cart/CartPage.vue'
 import PersonalPage from '@/pages/personal/PersonalPage.vue'
 import PersonalProfile from '@/pages/personal/PersonalProfile.vue'
@@ -19,6 +20,12 @@ const routes = [
     name: 'CatalogPage',
     component: CatalogPage,
     meta: { breadcrumb: "Каталог" },
+  },
+  {
+    path: '/product/:id',
+    name: 'ProductPage',
+    component: ProductPage,
+    meta: { breadcrumb: "Товар" },
   },
   {
     path: '/cart',

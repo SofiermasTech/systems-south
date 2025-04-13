@@ -1,6 +1,11 @@
 <template>
   <div class="sort-view">
-    <button class="sort-view__btn sort-view__btn--grid active" type="button">
+    <button
+      class="sort-view__btn sort-view__btn--vertical"
+      type="button"
+      :class="{ active: viewMode === 'vertical' }"
+      @click="changeView('vertical')"
+    >
       <span>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
           <rect width="7.182" height="7.182" x=".5" y="12.318" stroke="#1C71B7" rx="1.5" />
@@ -10,7 +15,12 @@
         </svg>
       </span>
     </button>
-    <button class="sort-view__btn sort-view__btn--list" type="button">
+    <button
+      class="sort-view__btn sort-view__btn--horizontal"
+      type="button"
+      :class="{ active: viewMode === 'horizontal' }"
+      @click="changeView('horizontal')"
+    >
       <span>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 22 20">
           <path
@@ -24,7 +34,22 @@
   </div>
 </template>
 
-<script></script>
+<script>
+export default {
+  props: {
+    viewMode: {
+      type: String,
+      default: 'vertical',
+    },
+  },
+  emits: ['view-change'],
+  methods: {
+    changeView(mode) {
+      this.$emit('view-change', mode)
+    },
+  },
+}
+</script>
 <style lang="scss">
 .sort-view {
   display: flex;
@@ -60,10 +85,10 @@
     }
   }
 
-  &__btn--grid {
+  &__btn--vertical {
   }
 
-  &__btn--list {
+  &__btn--horizontal {
   }
 }
 </style>
