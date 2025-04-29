@@ -26,9 +26,10 @@
     </div>
     <div class="product-card__bottom">
       <p class="product-card__price">{{ formattedPrice }} ₽</p>
-      <base-button class="product-card__btn-card">
+      <base-button v-if="!isInCart" class="product-card__btn-card" @click.stop="addToCart">
         <span>Добавить в корзину</span>
       </base-button>
+      <ProductQuantity v-else :product-id="productId" :initial-quantity="cartItemQuantity" />
     </div>
   </article>
 
@@ -59,9 +60,10 @@
     <div class="product-card__right">
       <p class="product-card__price">{{ formattedPrice }} ₽</p>
       <div class="product-card__right-bottom">
-        <base-button class="product-card__btn-card">
+        <base-button v-if="!isInCart" class="product-card__btn-card" @click.stop="addToCart">
           <span>Добавить в корзину</span>
         </base-button>
+        <ProductQuantity v-else :product-id="productId" :initial-quantity="cartItemQuantity" />
         <FavoriteButton :product="product" @click.stop />
       </div>
     </div>
@@ -69,14 +71,17 @@
 </template>
 
 <script>
-import { useFavoritesStore } from '@/shared/stores/favorites'
-import { useCatalogStore } from '@/shared/stores/catalog'
+// import { useFavoritesStore } from '@/shared/stores/favorites'
+import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { useCartStore } from '@/shared/stores/cart.js'
 import FavoriteButton from '@/entities/product/FavoriteButton.vue'
+import ProductQuantity from '@widgets/product-quantity/ProductQuantity.vue'
 
 export default {
   name: 'ProductCard',
   components: {
     FavoriteButton,
+    ProductQuantity,
   },
   props: {
     productId: {
@@ -88,25 +93,33 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      catalogStore: null,
-      favoritesStore: null,
-    }
-  },
-  created() {
-    this.catalogStore = useCatalogStore()
-    this.favoritesStore = useFavoritesStore()
-  },
   computed: {
     product() {
-      return this.catalogStore.getProductById(this.productId)
+      const catalogStore = useCatalogStore()
+      return catalogStore.getProductById(this.productId)
     },
     formattedPrice() {
       return this.product.price.toLocaleString('ru-RU')
     },
+    isInCart() {
+      const cartStore = useCartStore()
+      return cartStore.cartItems.some((item) => item.id === this.productId)
+    },
+    cartItemQuantity() {
+      const cartStore = useCartStore()
+      const cartItem = cartStore.cartItems.find((item) => item.id === this.productId)
+      return cartItem ? cartItem.quantity : 0
+    },
   },
   methods: {
+    addToCart() {
+      if (!this.product) {
+        console.error('Товар не найден')
+        return
+      }
+      const cartStore = useCartStore()
+      cartStore.addToCart(this.product, 1)
+    },
     goToProduct() {
       this.$router.push({ name: 'ProductPage', params: { id: this.productId } })
     },
@@ -202,6 +215,11 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .product-quantity {
+      max-width: 165px;
+      width: 100%;
+    }
   }
 
   &__price {
@@ -243,10 +261,13 @@ export default {
     }
 
     .product-card__right {
+      margin-left: auto;
       padding-block: 16px;
+      padding-right: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      align-items: flex-end;
     }
 
     .product-card__right-bottom {

@@ -18,37 +18,8 @@
       <span class="user-actions__text">Избранное</span>
     </RouterLink>
     <!-- Кнопки корзины -->
-    <RouterLink to="/cart" class="user-actions__btn user-actions__btn--cart">
-      <span class="user-actions__icon">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <path
-            stroke="#242527"
-            stroke-width="1.5"
-            d="M9.611 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832ZM18.553 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832Z"
-          />
-          <path
-            stroke="#242527"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-            d="M1.309 1.712h2.554l4.476 14.05h10.214"
-          />
-          <path
-            stroke="#242527"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-            d="M7.343 12.57 4.886 4.904h15.976a.638.638 0 0 1 .607.84l-2.13 6.388a.639.639 0 0 1-.605.436H7.344Z"
-          />
-        </svg>
-        <span class="user-actions__counter">00</span>
-      </span>
-
-      <span class="user-actions__text">Корзина</span>
-    </RouterLink>
-    <template>
-      <!-- Если в корзине есть товары, используем button для открытия попапа -->
-      <button class="user-actions__bbtn user-actions__btn--cart">
+    <template v-if="cartItemsCount === 0 || isCartPage">
+      <RouterLink to="/cart" class="user-actions__btn user-actions__btn--cart">
         <span class="user-actions__icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <path
@@ -71,7 +42,41 @@
               d="M7.343 12.57 4.886 4.904h15.976a.638.638 0 0 1 .607.84l-2.13 6.388a.639.639 0 0 1-.605.436H7.344Z"
             />
           </svg>
-          <span class="user-actions__counter">10</span>
+          <span v-if="isCartPage && cartItemsCount !== 0" class="user-actions__counter">{{ cartItemsCount }}</span>
+        </span>
+        <span class="user-actions__text">Корзина</span>
+      </RouterLink>
+    </template>
+    <template v-else>
+      <!-- Если в корзине есть товары, используем button для открытия попапа -->
+      <button
+        class="user-actions__btn user-actions__btn--cart"
+        @click="toggleCartPopup"
+        :class="{ 'popup-open': isOpen }"
+      >
+        <span class="user-actions__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path
+              stroke="#242527"
+              stroke-width="1.5"
+              d="M9.611 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832ZM18.553 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832Z"
+            />
+            <path
+              stroke="#242527"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M1.309 1.712h2.554l4.476 14.05h10.214"
+            />
+            <path
+              stroke="#242527"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M7.343 12.57 4.886 4.904h15.976a.638.638 0 0 1 .607.84l-2.13 6.388a.639.639 0 0 1-.605.436H7.344Z"
+            />
+          </svg>
+          <span class="user-actions__counter">{{ cartItemsCount }}</span>
         </span>
         <span class="user-actions__text">Корзина</span>
       </button>
@@ -99,15 +104,35 @@
   </div>
 </template>
 <script>
+import { useCartStore } from '@/shared/stores/cart'
+
 export default {
-  name: "UserActions",
+  name: 'UserActions',
   props: {
     favoritesCount: {
       type: Number,
       default: 0,
     },
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
   },
-};
+  computed: {
+    cartItemsCount() {
+      const cartStore = useCartStore()
+      return cartStore.cartItemsCount
+    },
+    isCartPage() {
+      return this.$route.path.startsWith('/cart')
+    },
+  },
+  methods: {
+    toggleCartPopup() {
+      this.$emit('toggle-cart-popup')
+    },
+  },
+}
 </script>
 <style lang="scss">
 .user-actions {
@@ -116,6 +141,7 @@ export default {
 
   &__btn {
     text-decoration: none;
+    background-color: var(--white);
     border: 1px solid var(--grey-100);
     border-radius: var(--br-btn);
     padding: 16px 17px;
@@ -161,9 +187,9 @@ export default {
   }
 
   &__btn--cart {
-  }
-
-  &__bbtn {
+    &.popup-open {
+      background-color: var(--blue-0);
+    }
   }
 
   &__btn--personal {

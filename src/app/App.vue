@@ -21,4 +21,9 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.main {
+  margin-top: 140px;
+  flex-shrink: 1;
+}
+</style>
