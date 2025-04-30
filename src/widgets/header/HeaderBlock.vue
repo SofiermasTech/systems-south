@@ -18,7 +18,7 @@
             <nav class="header__nav">
               <ul class="header__nav-list">
                 <li class="header__nav-item">
-                  <a href="" class="header__nav-item-link"><p>О компании</p></a>
+                  <RouterLink to="/about-us" class="header__nav-item-link"><p>О компании</p></RouterLink>
                 </li>
                 <li class="header__nav-item">
                   <a href="" class="header__nav-item-link">

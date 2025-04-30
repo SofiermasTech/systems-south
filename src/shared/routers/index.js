@@ -7,6 +7,7 @@ import PersonalPage from '@/pages/personal/PersonalPage.vue'
 import PersonalProfile from '@/pages/personal/PersonalProfile.vue'
 import PersonalFavorites from '@/pages/personal/PersonalFavorite.vue'
 import PersonalOrders from '@/pages/personal/PersonalOrders.vue'
+import AboutUsPage from '@/pages/about-us/AboutUsPage.vue'
 
 const routes = [
   {
@@ -63,6 +64,12 @@ const routes = [
         redirect: { name: 'PersonalProfile' }, // Перенаправляем на профиль
       },
     ],
+  },
+  {
+    path: '/about-us',
+    name: 'AboutUsPage',
+    component: AboutUsPage,
+    meta: { breadcrumb: "О нас" },
   },
 ]
 

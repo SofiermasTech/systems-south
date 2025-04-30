@@ -64,7 +64,7 @@
         </h3>
         <a href="#" class="hero__sale-link base-button">Подробнее</a>
       </div>
-      <div class="hero__block hero__block--about">
+      <RouterLink to="/about-us" class="hero__block hero__block--about">
         <div class="hero__block-content">
           <h2 class="hero__block-title">О нас</h2>
           <div class="hero__block-bottom">
@@ -85,7 +85,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </RouterLink>
       <div class="hero__block hero__block--delivery">
         <div class="hero__block-content">
           <h2 class="hero__block-title">Доставка и оплата</h2>
@@ -157,7 +157,6 @@
 </template>
 <script></script>
 <style lang="scss">
-
 .hero {
   margin-top: 12px;
   margin-bottom: var(--section-offset);
@@ -180,6 +179,8 @@
     padding: 24px;
     background-color: var(--blue-0);
     border-radius: var(--br-block);
+    text-decoration: none;
+    color: inherit;
   }
 
   &__block--main {
