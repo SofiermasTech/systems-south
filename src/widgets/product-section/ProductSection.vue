@@ -4,17 +4,23 @@
       <div class="product__body">
         <div class="product__body-top">
           <h2 class="product__title h2">{{ title }}</h2>
-          <SliderArrow />
+          <SliderArrow
+            :swiper="productSwiper"
+            :is-beginning="productIsBeginning"
+            :is-end="productIsEnd"
+          />
         </div>
         <div class="product__body-content">
-          <div class="product__cards">
-            <ProductCard
-              v-for="product in filteredProducts"
-              :key="product.id"
-              :product-id="product.id"
-              @toggle-favorite="handleToggleFavorite"
-            />
-          </div>
+          <BaseSlider
+            :slides="filteredProducts"
+            :options="productOptions"
+            @swiper-ready="onProductsSwiperReady"
+            @navigation-update="onProductsNavigationUpdate"
+          >
+            <template #default="{ item }">
+              <ProductCard :product-id="item.id" @toggle-favorite="handleToggleFavorite" />
+            </template>
+          </BaseSlider>
         </div>
       </div>
     </div>
@@ -22,6 +28,7 @@
 </template>
 
 <script>
+import BaseSlider from '@/shared/ui/BaseSlider.vue'
 import SliderArrow from '@widgets/slider-arrow/SliderArrow.vue'
 import ProductCard from '@/entities/product/ProductCard.vue'
 import { useCatalogStore } from '@/shared/stores/catalog'
@@ -29,6 +36,7 @@ import { useCatalogStore } from '@/shared/stores/catalog'
 export default {
   name: 'ProductSection',
   components: {
+    BaseSlider,
     SliderArrow,
     ProductCard,
   },
@@ -46,6 +54,16 @@ export default {
   data() {
     return {
       catalogStore: null,
+      productSwiper: null,
+      productIsBeginning: true,
+      productIsEnd: false,
+      productOptions: {
+        loop: false,
+        slidesPerView: 4,
+        spaceBetween: 8,
+        autoplay: false,
+        pagination: false,
+      },
     }
   },
   created() {
@@ -63,6 +81,15 @@ export default {
   methods: {
     handleToggleFavorite(product) {
       this.$emit('toggle-favorite', product)
+    },
+    onProductsSwiperReady(swiper) {
+      this.productSwiper = swiper
+      this.productIsBeginning = swiper.isBeginning
+      this.productIsEnd = swiper.isEnd
+    },
+    onProductsNavigationUpdate({ isBeginning, isEnd }) {
+      this.productIsBeginning = isBeginning
+      this.productIsEnd = isEnd
     },
   },
 }

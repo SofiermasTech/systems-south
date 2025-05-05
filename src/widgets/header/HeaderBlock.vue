@@ -43,7 +43,7 @@
                   <a href="" class="header__nav-item-link"><p>Контакты</p></a>
                 </li>
                 <li class="header__nav-item">
-                  <a href="" class="header__nav-item-link"><p>FAQ</p></a>
+                  <RouterLink to="/faq" class="header__nav-item-link"><p>FAQ</p></RouterLink>
                 </li>
               </ul>
             </nav>

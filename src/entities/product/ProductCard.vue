@@ -7,22 +7,41 @@
       </div>
       <FavoriteButton :product="product" @click.stop />
     </div>
-    <div class="product-card__images">
-      <div class="product-card__images-wrapper">
-        <div class="product-card__image-item">
+    <div class="product-card__images" :class="{ 'is-mobile': isMobile }">
+      <!-- <div class="product-card__images-wrapper"> -->
+      <!-- <div class="product-card__image-item"> -->
+      <swiper
+        ref="imageSwiper"
+        v-bind="swiperOptions"
+        @swiper="onSwiper"
+        @slide-change="updatePagination"
+      >
+        <swiper-slide
+          v-for="(image, index) in product.images"
+          :key="index"
+          class="product-card__image-item"
+          @mouseenter="handleHover(index)"
+        >
           <div class="product-card__img">
-            <img :src="product.image" :alt="product.name" width="376" height="234" loading="lazy" />
+            <img :src="image" :alt="product.name" width="376" height="234" loading="lazy" />
           </div>
-        </div>
-      </div>
-      <ul class="product-card__pagination-list">
-        <li class="product-card__pagination-item active-item"></li>
-        <li class="product-card__pagination-item"></li>
+        </swiper-slide>
+      </swiper>
+      <!-- </div> -->
+      <!-- </div> -->
+      <ul class="product-card__pagination-list" v-if="product.images?.length > 1">
+        <li
+          class="product-card__pagination-item"
+          v-for="(image, index) in product.images"
+          :key="index"
+          :class="{ 'active-item': activeSlide === index }"
+          @mouseenter="handleHover(index)"
+        ></li>
       </ul>
     </div>
     <div class="product-card__text">
-      <h3>{{ product.name }}</h3>
-      <p>{{ product.description }}</p>
+      <h3>{{ product.brand }}</h3>
+      <p>{{ product.name }}</p>
     </div>
     <div class="product-card__bottom">
       <p class="product-card__price">{{ formattedPrice }} ₽</p>
@@ -53,8 +72,8 @@
         <p class="product-card__top-info-article article-number">Арт: {{ product.article }}</p>
       </div>
       <div class="product-card__text">
-        <h3>{{ product.name }}</h3>
-        <p>{{ product.description }}</p>
+        <h3>{{ product.brand }}</h3>
+        <p>{{ product.name }}</p>
       </div>
     </div>
     <div class="product-card__right">
@@ -71,7 +90,9 @@
 </template>
 
 <script>
-// import { useFavoritesStore } from '@/shared/stores/favorites'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Pagination } from 'swiper/modules'
+import 'swiper/css'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
 import { useCartStore } from '@/shared/stores/cart.js'
 import FavoriteButton from '@/entities/product/FavoriteButton.vue'
@@ -80,6 +101,8 @@ import ProductQuantity from '@widgets/product-quantity/ProductQuantity.vue'
 export default {
   name: 'ProductCard',
   components: {
+    Swiper,
+    SwiperSlide,
     FavoriteButton,
     ProductQuantity,
   },
@@ -92,6 +115,21 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  data() {
+    return {
+      swiper: null,
+      activeSlide: 0,
+      isMobile: window.innerWidth <= 768,
+      swiperOptions: {
+        modules: [Pagination],
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: false,
+        pagination: false,
+        allowTouchMove: window.innerWidth <= 768,
+      },
+    }
   },
   computed: {
     product() {
@@ -111,7 +149,58 @@ export default {
       return cartItem ? cartItem.quantity : 0
     },
   },
+  created() {
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize)
+  },
+  watch: {
+    shouldLoop(newValue) {
+      if (this.swiper) {
+        this.swiper.params.loop = newValue
+        this.swiper.loopDestroy()
+        if (newValue) {
+          this.swiper.loopCreate()
+        }
+        this.swiper.update()
+      }
+    },
+    isMobile(newValue) {
+      if (this.swiper) {
+        this.swiper.params.allowTouchMove = newValue
+        this.swiper.update()
+      }
+    },
+  },
   methods: {
+    onSwiper(swiper) {
+      this.swiper = swiper
+      this.swiper.params.loop = this.shouldLoop
+      this.swiper.params.allowTouchMove = this.isMobile
+      if (this.shouldLoop) {
+        this.swiper.loopCreate()
+      }
+      this.updatePagination()
+    },
+    updatePagination() {
+      if (this.swiper) {
+        this.activeSlide = this.swiper.realIndex
+      }
+    },
+    handleHover(index) {
+      console.log('handleHover triggered', index, 'isMobile:', this.isMobile)
+      if (!this.isMobile && this.swiper) {
+        if (this.shouldLoop) {
+          this.swiper.slideToLoop(index)
+        } else {
+          this.swiper.slideTo(index)
+        }
+      }
+    },
+    handleResize() {
+      this.isMobile = window.innerWidth <= 768
+    },
     addToCart() {
       if (!this.product) {
         console.error('Товар не найден')
@@ -130,6 +219,7 @@ export default {
 <style lang="scss">
 .product-card {
   max-width: 374px;
+  height: 405px;
   width: 100%;
   padding: 16px;
   background-color: var(--white);
@@ -142,8 +232,15 @@ export default {
   transition: all 0.3s ease;
 
   &__top {
+    // max-width: 344px;
+    // width: 100%;
     display: flex;
     justify-content: space-between;
+    position: relative;
+    z-index: 11;
+    // top: 16px;
+    // left: 50%;
+    // transform: translateX(-50%);
   }
 
   &__top-info {
@@ -155,9 +252,44 @@ export default {
   &__top-info-article {
   }
 
+  .swiper-wrapper {
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+  }
+
+  .swiper-slide {
+    width: auto;
+    height: auto;
+  }
+
   &__images {
-    position: relative;
-    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 20;
+    &:not(.is-mobile) {
+      cursor: pointer;
+
+      .swiper {
+        touch-action: none;
+      }
+
+      .product-card__image-item,
+      .product-card__pagination-item {
+        pointer-events: auto;
+      }
+    }
+
+    &.is-mobile {
+      cursor: grab;
+
+      .product-card__image-item,
+      .product-card__pagination-item {
+        pointer-events: none;
+      }
+    }
   }
 
   &__images-wrapper {
@@ -167,6 +299,15 @@ export default {
   }
 
   &__img {
+    max-height: 240px;
+    height: 100%;
+
+    img {
+      max-height: 240px;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
   }
 
   &__pagination-list {
@@ -176,6 +317,7 @@ export default {
     position: absolute;
     bottom: 0;
     left: 50%;
+    z-index: 11;
   }
 
   &__pagination-item {
@@ -191,10 +333,13 @@ export default {
   }
 
   &__text {
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: 8px;
     cursor: pointer;
+    // position: relative;
+    // z-index: 9;
 
     h3 {
       margin: 0;

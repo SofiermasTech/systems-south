@@ -3,7 +3,7 @@
     <BreadcrumbsList class="product-page__breadcrumbs" />
     <section class="product-general">
       <div class="product-general__top">
-        <h1 class="product-general__title">{{ product.description }}</h1>
+        <h1 class="product-general__title">{{ product.name }}</h1>
         <div class="product-general__info">
           <StockStatus :stock="product.stock" />
           <p class="product-general__info-article aticle-number">Арт: {{ product.article }}</p>
@@ -80,7 +80,7 @@
 
           <div class="about-product__panels">
             <div id="section-product-tab1" class="about-product__panel" v-if="productTab === 't1'">
-              <p>Описание</p>
+              <p>{{ product.description }}</p>
             </div>
             <div id="section-product-tab2" class="about-product__panel" v-if="productTab === 't2'">
               <dl class="about-product__characteristics characteristic">

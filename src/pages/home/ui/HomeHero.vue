@@ -130,7 +130,7 @@
           </div>
         </div>
       </div>
-      <div class="hero__block hero__block--faq">
+      <RouterLink to="/faq" class="hero__block hero__block--faq">
         <div class="hero__block-content">
           <h2 class="hero__block-title">FAQ</h2>
           <div class="hero__block-bottom">
@@ -151,7 +151,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </RouterLink>
     </div>
   </section>
 </template>

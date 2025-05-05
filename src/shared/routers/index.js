@@ -8,6 +8,7 @@ import PersonalProfile from '@/pages/personal/PersonalProfile.vue'
 import PersonalFavorites from '@/pages/personal/PersonalFavorite.vue'
 import PersonalOrders from '@/pages/personal/PersonalOrders.vue'
 import AboutUsPage from '@/pages/about-us/AboutUsPage.vue'
+import FaqPage from '@/pages/faq/FaqPage.vue'
 
 const routes = [
   {
@@ -71,11 +72,25 @@ const routes = [
     component: AboutUsPage,
     meta: { breadcrumb: "О нас" },
   },
+  {
+    path: '/faq',
+    name: 'FaqPage',
+    component: FaqPage,
+    meta: { breadcrumb: "Вопросы и ответы" },
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // Если есть сохранённая позиция (например, при возврате назад), используем её
+    if (savedPosition) {
+      return savedPosition;
+    }
+    // Иначе всегда прокручиваем в начало страницы
+    return { top: 0 };
+  },
 })
 
 export default router

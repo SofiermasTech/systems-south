@@ -23,22 +23,22 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .about-us {
-  height: 85vh;
-  max-height: 1000px;
+  height: 100vh;
+  max-height: 1080px;
   padding: 50px 40px;
   padding-bottom: clamp(40px, 12vh, 120px);
   background-image: url('@/assets/images/about-us-back.jpg');
-  background-position: center;
+  background-position: top;
   background-size: cover;
 
-  .breadcrumb__item {
+  & .breadcrumb__item {
     color: var(--white);
   }
 
-  .breadcrumb__item:not(:last-child) a,
-  .breadcrumb__item:not(:last-child) a::after {
+  & .breadcrumb__item:not(:last-child) a,
+  & .breadcrumb__item:not(:last-child) a::after {
     color: var(--blue-100) !important;
   }
 
