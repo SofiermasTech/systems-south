@@ -5,18 +5,7 @@
         <div class="hero__block-wrapper">
           <div class="hero__block-top">
             <span class="hero__top-sticker">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                width="18"
-                height="20"
-                viewBox="0 0 18 20"
-              >
-                <path
-                  fill="#FF6F39"
-                  d="m14.542 2.375.508 3.217 2.925 1.491L16.5 10l1.483 2.917-2.95 1.491-.508 3.217-3.242-.508-2.308 2.3-2.317-2.334-3.216.534-.517-3.242-2.908-1.483L1.5 9.975.025 7.083 2.95 5.575l.508-3.192 3.225.534L9 .575l2.308 2.308 3.234-.508ZM6.917 5.833a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4.166 5.834a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm-5.075 2.5 7.159-7.159-1.175-1.175-7.159 7.159 1.175 1.175Z"
-                />
-              </svg>
+              <BaseIcon name="StickerSaleIcon" />
             </span>
             <p class="hero__top-text">ТОП-продаж</p>
           </div>
@@ -44,18 +33,7 @@
       <div class="hero__block hero__block--sale">
         <div class="hero__block-wrapper">
           <span class="hero__top-sticker">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              width="18"
-              height="20"
-              viewBox="0 0 18 20"
-            >
-              <path
-                fill="#FF6F39"
-                d="m14.542 2.375.508 3.217 2.925 1.491L16.5 10l1.483 2.917-2.95 1.491-.508 3.217-3.242-.508-2.308 2.3-2.317-2.334-3.216.534-.517-3.242-2.908-1.483L1.5 9.975.025 7.083 2.95 5.575l.508-3.192 3.225.534L9 .575l2.308 2.308 3.234-.508ZM6.917 5.833a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm4.166 5.834a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm-5.075 2.5 7.159-7.159-1.175-1.175-7.159 7.159 1.175 1.175Z"
-              />
-            </svg>
+            <BaseIcon name="StickerSaleIcon" />
           </span>
           <div class="hero__sale-timer"></div>
         </div>
@@ -73,15 +51,7 @@
               incididunt ut
             </div>
             <div class="hero__block-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 10">
-                <path
-                  stroke="#1C71B7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m2.224 1 6.682.095m0 0L9 7.777m-.094-6.682L1 9"
-                />
-              </svg>
+              <BaseIcon name="ArrowUpRightIcon" />
             </div>
           </div>
         </div>
@@ -95,15 +65,7 @@
               incididunt ut
             </div>
             <div class="hero__block-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 10">
-                <path
-                  stroke="#1C71B7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m2.224 1 6.682.095m0 0L9 7.777m-.094-6.682L1 9"
-                />
-              </svg>
+              <BaseIcon name="ArrowUpRightIcon" />
             </div>
           </div>
         </div>
@@ -117,15 +79,7 @@
               incididunt ut
             </div>
             <div class="hero__block-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 10">
-                <path
-                  stroke="#1C71B7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m2.224 1 6.682.095m0 0L9 7.777m-.094-6.682L1 9"
-                />
-              </svg>
+              <BaseIcon name="ArrowUpRightIcon" />
             </div>
           </div>
         </div>
@@ -139,15 +93,7 @@
               incididunt ut
             </div>
             <div class="hero__block-arrow">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 10">
-                <path
-                  stroke="#1C71B7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m2.224 1 6.682.095m0 0L9 7.777m-.094-6.682L1 9"
-                />
-              </svg>
+              <BaseIcon name="ArrowUpRightIcon" />
             </div>
           </div>
         </div>
@@ -155,7 +101,9 @@
     </div>
   </section>
 </template>
+
 <script></script>
+
 <style lang="scss">
 .hero {
   margin-top: 12px;
@@ -185,7 +133,7 @@
 
   &__block--main {
     grid-column: span 3;
-    max-height: 460px;
+    // max-height: 460px;
     padding-top: 32px;
     padding-bottom: 44px;
     display: flex;
@@ -373,6 +321,7 @@
       svg {
         width: 10px;
         height: 10px;
+        color: var(--blue);
       }
     }
   }

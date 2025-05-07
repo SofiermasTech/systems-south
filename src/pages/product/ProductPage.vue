@@ -104,21 +104,7 @@
           <div class="about-product__doc-list">
             <div class="about-product__doc-item">
               <span class="about-product__doc-item-img">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  width="20"
-                  height="22"
-                  viewBox="0 0 20 22"
-                >
-                  <path
-                    stroke="#242527"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.5"
-                    d="M9.7 20.6h-6a2.4 2.4 0 0 1-2.4-2.4V3.8a2.4 2.4 0 0 1 2.4-2.4h10.8a2.4 2.4 0 0 1 2.4 2.4v4.8M5.5 6.2h7.2M5.5 9.8h7.2m0 4.754v2.944c0 1.455 1.552 2.79 3.007 2.79 1.454 0 2.993-1.335 2.993-2.79V13.78c0-.77-.443-1.552-1.428-1.552-1.053 0-1.565.782-1.565 1.552v3.564M5.5 13.4h3.6"
-                  />
-                </svg>
+               <BaseIcon name="DocumentIcon" />
               </span>
               <h4 class="about-product__doc-item-title">Сертификат соответствия</h4>
               <p class="about-product__doc-item-subtitle">PDF&emsp;556 кб</p>
@@ -128,19 +114,7 @@
         <div class="about-product__other">
           <div class="about-product__other-block">
             <span class="about-product__other-img">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fill="#9F9E9E"
-                  d="m12.72 8-.493-.082a.5.5 0 0 0 .493.582V8Zm-11 0v-.5a.5.5 0 0 0-.5.5h.5Zm2 10.5h11.36v-1H3.72v1Zm12.56-11h-3.56v1h3.56v-1Zm-3.067.582.806-4.835-.986-.165-.806 4.836.986.164ZM12.54 1.5h-.213v1h.213v-1ZM9.414 3.059 6.898 6.832l.832.555 2.515-3.774-.83-.554ZM5.65 7.5H1.72v1h3.93v-1ZM1.22 8v8h1V8h-1Zm16.312 8.49 1.2-6-.98-.196-1.2 6 .98.196ZM6.898 6.832A1.5 1.5 0 0 1 5.65 7.5v1a2.5 2.5 0 0 0 2.08-1.113l-.832-.555Zm7.121-3.585A1.5 1.5 0 0 0 12.54 1.5v1a.5.5 0 0 1 .494.582l.985.165ZM16.28 8.5a1.5 1.5 0 0 1 1.472 1.794l.98.196a2.5 2.5 0 0 0-2.45-2.99l-.002 1Zm-1.2 10a2.5 2.5 0 0 0 2.452-2.01l-.98-.196A1.5 1.5 0 0 1 15.08 17.5v1Zm-2.754-17a3.5 3.5 0 0 0-2.913 1.559l.832.554a2.5 2.5 0 0 1 2.08-1.113l.001-1Zm-8.606 16a1.5 1.5 0 0 1-1.5-1.5h-1a2.5 2.5 0 0 0 2.5 2.5v-1Z"
-                />
-                <path stroke="#9F9E9E" d="M5.72 8v10" />
-              </svg>
+             <BaseIcon name="GuaranteeIcon" />
             </span>
             <h3 class="about-product__other-title h3-title">Гарантия качества</h3>
             <p class="about-product__other-text">
@@ -150,37 +124,7 @@
           </div>
           <div class="about-product__other-block">
             <span class="about-product__other-img">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                width="22"
-                height="20"
-                viewBox="0 0 22 20"
-              >
-                <path
-                  stroke="#9F9E9E"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-miterlimit="1.5"
-                  d="M7.364 15.91a1.818 1.818 0 1 0 0-3.637 1.818 1.818 0 0 0 0 3.636Zm9.09 0a1.818 1.818 0 1 0 0-3.637 1.818 1.818 0 0 0 0 3.636Z"
-                />
-                <path
-                  stroke="#9F9E9E"
-                  stroke-linecap="round"
-                  d="M9.227 14.09h4.5V4.637a.545.545 0 0 0-.545-.545H1m4.227 10H3.364a.546.546 0 0 1-.546-.546V9.091"
-                />
-                <path
-                  stroke="#9F9E9E"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M1.91 6.818h3.636"
-                />
-                <path
-                  stroke="#9F9E9E"
-                  stroke-linecap="round"
-                  d="M13.727 6.818h5.1a.545.545 0 0 1 .498.324l1.628 3.662c.03.07.047.144.047.22v2.521a.546.546 0 0 1-.546.546h-1.727m-5 0h.91"
-                />
-              </svg>
+              <BaseIcon name="DeliveryIcon" />
             </span>
             <h3 class="about-product__other-title h3-title">Быстрая доставка</h3>
             <p class="about-product__other-text">
@@ -190,19 +134,7 @@
           </div>
           <div class="about-product__other-block">
             <span class="about-product__other-img">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.5162 2.81869C11.2021 1.50544 10.5459 0.848387 9.69334 0.604437C8.84079 0.359636 7.93554 0.568736 6.12588 0.986937L5.08208 1.22749C3.55888 1.57854 2.79728 1.75449 2.27537 2.27554C1.75347 2.79659 1.57922 3.55989 1.22732 5.08225L0.985921 6.12605C0.56857 7.93655 0.35947 8.84095 0.60342 9.69351C0.848221 10.5461 1.50527 11.2023 2.81853 12.5155L4.37403 14.071C6.66053 16.3584 7.80294 17.4999 9.22244 17.4999C10.6428 17.4999 11.7852 16.3575 14.0708 14.0719C16.3574 11.7854 17.4998 10.643 17.4998 9.22261C17.4998 8.0819 16.762 7.1197 15.2864 5.5999"
-                  stroke="#9F9E9E"
-                  stroke-linecap="round"
-                />
-              </svg>
+             <BaseIcon name="AccessiblePriceIcon" />
             </span>
             <h3 class="about-product__other-title h3-title">Доступные цены</h3>
             <p class="about-product__other-text">

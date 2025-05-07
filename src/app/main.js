@@ -9,6 +9,7 @@ import { useFavoritesStore } from '@/shared/stores/favorites.js'
 import { useCartStore } from '@/shared/stores/cart.js'
 
 import '@/assets/styles/style.scss'
+// import '@/assets/images/icons/svg-sprite.svg';
 
 const app = createApp(App)
 const pinia = createPinia()

@@ -268,7 +268,7 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 20;
+    // z-index: 20;
     &:not(.is-mobile) {
       cursor: pointer;
 

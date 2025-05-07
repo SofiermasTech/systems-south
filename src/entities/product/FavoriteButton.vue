@@ -1,14 +1,11 @@
 <template>
-  <button type="button" class="favorite-button" :class="{ 'favorite-page': isProductPage }" @click.stop="toggleFavorite">
-    <svg v-if="!isInFavorites" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
-      <path
-        stroke="#242527"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="1.5"
-        d="M13.914 1.5c-1.704 0-3.174.998-3.914 2.453C9.261 2.498 7.79 1.5 6.087 1.5c-2.442 0-4.42 2.047-4.42 4.567s1.514 4.83 3.471 6.728C7.095 14.693 10 16.5 10 16.5s2.812-1.777 4.863-3.705c2.187-2.055 3.47-4.2 3.47-6.728 0-2.527-1.978-4.567-4.42-4.567Z"
-      />
-    </svg>
+  <button
+    type="button"
+    class="favorite-button"
+    :class="{ 'favorite-page': isProductPage }"
+    @click.stop="toggleFavorite"
+  >
+    <BaseIcon v-if="!isInFavorites" name="FavouriteIcon" />
     <svg
       v-else
       class="like-active"
@@ -43,7 +40,7 @@ export default {
       return favoritesStore.isFavorite(this.product.id)
     },
     isProductPage() {
-      return this.$route.path.startsWith('/product/');
+      return this.$route.path.startsWith('/product/')
     },
   },
   methods: {

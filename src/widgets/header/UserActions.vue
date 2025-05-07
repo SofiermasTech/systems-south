@@ -3,15 +3,7 @@
     <!-- Кнопка избранного -->
     <RouterLink to="/personal/favorites" class="user-actions__btn user-actions__btn--favorites">
       <div class="user-actions__icon">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 22 20">
-          <path
-            stroke="#242527"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-            d="M15.696 1C13.652 1 11.887 2.197 11 3.943 10.113 2.197 8.348 1 6.304 1 3.374 1 1 3.457 1 6.481s1.817 5.796 4.165 8.073S11 19 11 19s3.374-2.133 5.835-4.446C19.46 12.088 21 9.514 21 6.481 21 3.448 18.626 1 15.696 1Z"
-          />
-        </svg>
+        <BaseIcon name="FavouriteIcon" />
         <span v-if="favoritesCount > 0" class="user-actions__counter">{{ favoritesCount }}</span>
       </div>
 
@@ -21,28 +13,10 @@
     <template v-if="cartItemsCount === 0 || isCartPage">
       <RouterLink to="/cart" class="user-actions__btn user-actions__btn--cart">
         <span class="user-actions__icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <path
-              stroke="#242527"
-              stroke-width="1.5"
-              d="M9.611 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832ZM18.553 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832Z"
-            />
-            <path
-              stroke="#242527"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M1.309 1.712h2.554l4.476 14.05h10.214"
-            />
-            <path
-              stroke="#242527"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M7.343 12.57 4.886 4.904h15.976a.638.638 0 0 1 .607.84l-2.13 6.388a.639.639 0 0 1-.605.436H7.344Z"
-            />
-          </svg>
-          <span v-if="isCartPage && cartItemsCount !== 0" class="user-actions__counter">{{ cartItemsCount }}</span>
+          <BaseIcon name="CartIcon" />
+          <span v-if="isCartPage && cartItemsCount !== 0" class="user-actions__counter">{{
+            cartItemsCount
+          }}</span>
         </span>
         <span class="user-actions__text">Корзина</span>
       </RouterLink>
@@ -55,27 +29,7 @@
         :class="{ 'popup-open': isOpen }"
       >
         <span class="user-actions__icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <path
-              stroke="#242527"
-              stroke-width="1.5"
-              d="M9.611 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832ZM18.553 22.788a1.916 1.916 0 1 0 0-3.832 1.916 1.916 0 0 0 0 3.832Z"
-            />
-            <path
-              stroke="#242527"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M1.309 1.712h2.554l4.476 14.05h10.214"
-            />
-            <path
-              stroke="#242527"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M7.343 12.57 4.886 4.904h15.976a.638.638 0 0 1 .607.84l-2.13 6.388a.639.639 0 0 1-.605.436H7.344Z"
-            />
-          </svg>
+          <BaseIcon name="CartIcon" />
           <span class="user-actions__counter">{{ cartItemsCount }}</span>
         </span>
         <span class="user-actions__text">Корзина</span>
@@ -84,14 +38,7 @@
     <!-- Кнопки личного кабинета -->
     <RouterLink to="/personal" class="user-actions__btn user-actions__btn--personal">
       <span class="user-actions__icon">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24">
-          <path
-            stroke="#242527"
-            stroke-linecap="round"
-            stroke-width="2"
-            d="M3.738 19.5c1.325-2.21 4.23-3.724 8.762-3.724s7.437 1.513 8.762 3.724M16.1 8.1a3.6 3.6 0 1 1-7.2 0 3.6 3.6 0 0 1 7.2 0Z"
-          />
-        </svg>
+        <BaseIcon name="UserIcon" />
       </span>
       <span class="user-actions__text">Личный кабинет</span>
     </RouterLink>
