@@ -83,15 +83,17 @@ export default {
 </script>
 <style lang="scss">
 .user-actions {
+  flex-shrink: 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1.2fr;
+  background-image: linear-gradient(to bottom, #fff 0%, transparent);
 
   &__btn {
     text-decoration: none;
     background-color: var(--white);
     border: 1px solid var(--grey-100);
     border-radius: var(--br-btn);
-    padding: 16px 17px;
+    padding: 14px 17px;
     position: relative;
     display: flex;
     flex-direction: column;

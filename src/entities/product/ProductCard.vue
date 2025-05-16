@@ -53,17 +53,36 @@
   </article>
 
   <article v-else class="product-card card-horizontal" @click="goToProduct">
-    <div class="product-card__images">
-      <div class="product-card__images-wrapper">
-        <div class="product-card__image-item">
+    <div class="product-card__images" :class="{ 'is-mobile': isMobile }">
+      <!-- <div class="product-card__images-wrapper"> -->
+      <!-- <div class="product-card__image-item"> -->
+      <swiper
+        ref="imageSwiper"
+        v-bind="swiperOptions"
+        @swiper="onSwiper"
+        @slide-change="updatePagination"
+      >
+        <swiper-slide
+          v-for="(image, index) in product.images"
+          :key="index"
+          class="product-card__image-item"
+          @mouseenter="handleHover(index)"
+        >
           <div class="product-card__img">
-            <img :src="product.image" :alt="product.name" width="376" height="234" loading="lazy" />
+            <img :src="image" :alt="product.name" width="376" height="234" loading="lazy" />
           </div>
-        </div>
-      </div>
-      <ul class="product-card__pagination-list">
-        <li class="product-card__pagination-item active-item"></li>
-        <li class="product-card__pagination-item"></li>
+        </swiper-slide>
+      </swiper>
+      <!-- </div> -->
+      <!-- </div> -->
+      <ul class="product-card__pagination-list" v-if="product.images?.length > 1">
+        <li
+          class="product-card__pagination-item"
+          v-for="(image, index) in product.images"
+          :key="index"
+          :class="{ 'active-item': activeSlide === index }"
+          @mouseenter="handleHover(index)"
+        ></li>
       </ul>
     </div>
     <div class="product-card__info">
@@ -236,11 +255,9 @@ export default {
     // width: 100%;
     display: flex;
     justify-content: space-between;
-    position: relative;
+    position: absolute;
     z-index: 11;
-    // top: 16px;
-    // left: 50%;
-    // transform: translateX(-50%);
+    width: 92%;
   }
 
   &__top-info {
@@ -264,10 +281,11 @@ export default {
   }
 
   &__images {
-    position: absolute;
-    top: 0;
-    left: 0;
+    // position: absolute;
+    // top: 0;
+    // left: 0;
     width: 100%;
+    position: relative;
     // z-index: 20;
     &:not(.is-mobile) {
       cursor: pointer;
@@ -315,7 +333,7 @@ export default {
     gap: 4px;
     align-items: center;
     position: absolute;
-    bottom: 0;
+    bottom: 20px;
     left: 50%;
     z-index: 11;
   }
@@ -380,6 +398,7 @@ export default {
   &.card-horizontal {
     max-width: 100%;
     flex-direction: row;
+    height: 235px;
     gap: 16px;
     padding: 0;
 
@@ -403,6 +422,7 @@ export default {
     }
 
     .product-card__text {
+      margin-top: 0;
     }
 
     .product-card__right {

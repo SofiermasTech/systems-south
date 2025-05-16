@@ -1,14 +1,26 @@
 <template>
   <article class="contacts-block">
-    <a href="#" class="contacts-block__btn">Заказать звонок</a>
+    <BaseButtonCall @click="openPopup" />
     <a href="tel:+78612125445" class="contacts-block__item">+7 (861) 212-54-45</a>
     <a href="mailto:sales@ingsystemyuga.ru" class="contacts-block__item">sales@ingsystemyuga.ru</a>
+
   </article>
+
 </template>
 
 <script>
+
 export default {
   name: 'ContactsPageBlock',
+
+  // components: {
+  //   CallbackPopup,
+  // },
+  methods: {
+    openPopup() {
+      this.$emit('open-popup')
+    },
+  },
 }
 </script>
 

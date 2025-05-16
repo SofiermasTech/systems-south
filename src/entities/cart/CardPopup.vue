@@ -2,7 +2,7 @@
   <article class="popup-card" :class="{ 'cart-card': isCartPage }">
     <div class="popup-card__img">
       <img
-        :src="item.product.image"
+        :src="item.product.images[0]"
         :alt="item.product.name"
         loading="lazy"
         width="68"
@@ -10,8 +10,8 @@
       />
     </div>
     <div class="popup-card__info">
-      <p class="popup-card__text">{{ item.product.description }}</p>
-      <p class="popup-card__price">{{ item.product.price.toLocaleString('ru-RU') }} ₽</p>
+      <p class="popup-card__text">{{ item.product.name }}</p>
+      <p class="popup-card__price">{{ (item.product.price * item.quantity).toLocaleString('ru-RU') }} ₽</p>
       <div class="popup-card__btn-wrapper">
         <ProductQuantity
           :class="{ 'popup-card__quantity': !isCartPage }"
@@ -91,10 +91,12 @@ export default {
       width: 100%;
       object-fit: cover;
       object-position: center;
+      border-radius: 10px;
     }
   }
 
   &__info {
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;

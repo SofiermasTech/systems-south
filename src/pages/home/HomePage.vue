@@ -13,6 +13,8 @@
   />
   <HomeWorkWithUs />
   <HomeAboutUs />
+  <CallbackSection />
+  <HomeNews />
 </template>
 
 <script>
@@ -20,6 +22,8 @@ import HomeHero from '@/pages/home/ui/HomeHero.vue'
 import ProductSection from '@widgets/product-section/ProductSection.vue'
 import HomeWorkWithUs from '@/pages/home/ui/HomeWorkWithUs.vue'
 import HomeAboutUs from '@/pages/home/ui/HomeAboutUs.vue'
+import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import HomeNews from '@/pages/home/ui/HomeNews.vue'
 import { useFavoritesStore } from '@/shared/stores/favorites'
 
 export default {
@@ -29,6 +33,8 @@ export default {
     ProductSection,
     HomeWorkWithUs,
     HomeAboutUs,
+    CallbackSection,
+    HomeNews,
   },
   data() {
     return {

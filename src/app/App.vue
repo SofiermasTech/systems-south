@@ -1,7 +1,8 @@
 <template>
-  <HeaderApp />
+  <HeaderApp ref="headerContacts" @toggle-overlay="updateOverlay" />
   <main class="main">
     <router-view />
+    <div class="overlay-page" v-if="isOverlayVisible" @click="closeOverlay"></div>
   </main>
   <FooterApp />
 </template>
@@ -16,7 +17,27 @@ export default {
     FooterApp,
   },
   data() {
-    return {}
+    return {
+      isOverlayVisible: false,
+    }
+  },
+  methods: {
+    updateOverlay(isVisible) {
+      this.isOverlayVisible = isVisible
+    },
+    closeOverlay() {
+      this.isOverlayVisible = false
+      this.$refs.headerContacts.closeAll()
+    },
+  },
+  watch: {
+    '$route.path': {
+      handler() {
+        this.isOverlayVisible = false
+        this.$refs.headerContacts.closeAll()
+      },
+      // immediate: true,
+    },
   },
 }
 </script>
@@ -25,5 +46,14 @@ export default {
 .main {
   margin-top: 140px;
   flex-shrink: 1;
+}
+.overlay-page {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 100vw;
+  height: calc(100vh - 121px);
+  background-color: var(--grey-300);
+  z-index: 95;
 }
 </style>

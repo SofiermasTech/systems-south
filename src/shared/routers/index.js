@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useNewsStore } from '@/shared/stores/news.js'
 import HomePage from '@/pages/home/HomePage.vue'
 import CatalogPage from '@/pages/catalog/CatalogPage.vue'
 import ProductPage from '@/pages/product/ProductPage.vue'
@@ -9,6 +10,10 @@ import PersonalFavorites from '@/pages/personal/PersonalFavorite.vue'
 import PersonalOrders from '@/pages/personal/PersonalOrders.vue'
 import AboutUsPage from '@/pages/about-us/AboutUsPage.vue'
 import FaqPage from '@/pages/faq/FaqPage.vue'
+import SearchPage from '@/pages/search/SearchPage.vue'
+import ContactsPage from '@/pages/contacts/ContactsPage.vue'
+import NewsPage from '@/pages/news/NewsPage.vue'
+import NewsItemPage from '@/pages/news/NewsItemPage.vue'
 
 const routes = [
   {
@@ -21,19 +26,19 @@ const routes = [
     path: '/catalog',
     name: 'CatalogPage',
     component: CatalogPage,
-    meta: { breadcrumb: "Каталог" },
+    meta: { breadcrumb: 'Каталог' },
   },
   {
     path: '/product/:id',
     name: 'ProductPage',
     component: ProductPage,
-    meta: { breadcrumb: "Товар" },
+    meta: { breadcrumb: 'Товар' },
   },
   {
     path: '/cart',
     name: 'CartPage',
     component: CartPage,
-    meta: { breadcrumb: "Корзина" },
+    meta: { breadcrumb: 'Корзина' },
   },
   {
     path: '/personal',
@@ -70,13 +75,48 @@ const routes = [
     path: '/about-us',
     name: 'AboutUsPage',
     component: AboutUsPage,
-    meta: { breadcrumb: "О нас" },
+    meta: { breadcrumb: 'О нас' },
   },
   {
     path: '/faq',
     name: 'FaqPage',
     component: FaqPage,
-    meta: { breadcrumb: "Вопросы и ответы" },
+    meta: { breadcrumb: 'Вопросы и ответы' },
+  },
+  {
+    path: '/contacts',
+    name: 'ContactsPage',
+    component: ContactsPage,
+    meta: { breadcrumb: 'Контакты' },
+  },
+  {
+    path: '/search',
+    name: 'SearchPage',
+    component: SearchPage,
+    meta: { breadcrumb: 'Результат поиска' },
+  },
+  {
+    path: '/news',
+    name: 'NewsPage',
+    component: NewsPage,
+    meta: { breadcrumb: 'Новости' },
+  },
+  {
+    path: '/news/:id',
+    name: 'NewsItemPage',
+    component: NewsItemPage,
+    meta: {
+      breadcrumb: (route) => {
+        const newsStore = useNewsStore()
+        const news = newsStore.getNewsById(route.params.id)
+        return news ? news.title : 'Новость'
+      },
+      parentRoute: {
+        path: '/news',
+        name: 'NewsPage',
+        breadcrumb: 'Новости',
+      },
+    },
   },
 ]
 
@@ -86,10 +126,10 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     // Если есть сохранённая позиция (например, при возврате назад), используем её
     if (savedPosition) {
-      return savedPosition;
+      return savedPosition
     }
     // Иначе всегда прокручиваем в начало страницы
-    return { top: 0 };
+    return { top: 0 }
   },
 })
 

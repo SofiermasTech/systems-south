@@ -15,6 +15,7 @@ import DocumentIcon from '@/shared/ui/icons/DocumentIcon.vue'
 import GuaranteeIcon from '@/shared/ui/icons/GuaranteeIcon.vue'
 import DeliveryIcon from '@/shared/ui/icons/DeliveryIcon.vue'
 import AccessiblePriceIcon from '@/shared/ui/icons/AccessiblePriceIcon.vue'
+import CloseIcon from '@/shared/ui/icons/CloseIcon.vue'
 
 export default {
   name: 'BaseIcon',
@@ -31,6 +32,7 @@ export default {
     GuaranteeIcon,
     DeliveryIcon,
     AccessiblePriceIcon,
+    CloseIcon,
   },
   props: {
     name: {
@@ -53,6 +55,7 @@ export default {
         GuaranteeIcon,
         DeliveryIcon,
         AccessiblePriceIcon,
+        CloseIcon,
       }
     },
   },

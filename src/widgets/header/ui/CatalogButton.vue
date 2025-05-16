@@ -26,6 +26,7 @@
 <script></script>
 <style lang="scss">
 .btn-catalog {
+  flex-shrink: 0;
   padding: 28px 20px;
   background-color: var(--blue);
   border-color: transparent;

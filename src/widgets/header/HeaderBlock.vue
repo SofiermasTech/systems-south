@@ -31,7 +31,7 @@
                   </a>
                 </li>
                 <li class="header__nav-item">
-                  <a href="" class="header__nav-item-link"><p>Контакты</p></a>
+                  <RouterLink to="/contacts" class="header__nav-item-link"><p>Контакты</p></RouterLink>
                 </li>
                 <li class="header__nav-item">
                   <RouterLink to="/faq" class="header__nav-item-link"><p>FAQ</p></RouterLink>
@@ -45,6 +45,8 @@
           <div class="header__bottom">
             <!-- Кнопка каталога -->
             <CatalogButton />
+            <HeaderSearch ref="search" @toggle-overlay="$emit('toggle-overlay', $event)" />
+            <HeaderContacts ref="contacts" @toggle-overlay="$emit('toggle-overlay', $event)" />
             <UserActions
               :favorites-count="favoritesCount"
               @toggle-cart-popup="toggleCartPopup"
@@ -59,8 +61,10 @@
 </template>
 
 <script>
-import CatalogButton from '@widgets/header/CatalogButton.vue'
-import UserActions from '@widgets/header/UserActions.vue'
+import CatalogButton from '@widgets/header/ui/CatalogButton.vue'
+import UserActions from '@widgets/header/ui/UserActions.vue'
+import HeaderSearch from '@widgets/header/ui/HeaderSearch.vue'
+import HeaderContacts from '@widgets/header/ui/HeaderContacts.vue'
 import { useFavoritesStore } from '@/shared/stores/favorites.js'
 import CartPopup from '@/entities/cart/CartPopup.vue'
 
@@ -69,6 +73,8 @@ export default {
   components: {
     CatalogButton,
     UserActions,
+    HeaderSearch,
+    HeaderContacts,
     CartPopup,
   },
   data() {
@@ -88,6 +94,11 @@ export default {
   methods: {
     toggleCartPopup() {
       this.isCartPopupOpen = !this.isCartPopupOpen
+    },
+    closeAll() {
+      this.$refs.contacts.closeAll();
+      this.$refs.search.closeSearchPopup();
+      this.isCartPopupOpen = false;
     },
   },
 }
@@ -109,7 +120,7 @@ export default {
 
   &__wrapper {
     width: 100%;
-    background-color: var(--white);
+
     // background-image: linear-gradient(
     //   to bottom,
     //   rgba(255, 255, 255, 1) 95%,
@@ -123,7 +134,7 @@ export default {
     width: 100%;
     display: grid;
     grid-template-columns: 180px 1fr;
-    grid-template-rows: 44px, 76px;
+    grid-template-rows: 44px 77px;
   }
 
   &__logo {
@@ -134,7 +145,7 @@ export default {
     padding-block: 12px;
     padding-left: 24px;
     width: 100%;
-    // background-color: var(--white);
+    background-color: var(--white);
     display: flex;
     justify-content: space-between;
     line-height: 0.9;

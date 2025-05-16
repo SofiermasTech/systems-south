@@ -29,8 +29,10 @@
         <div class="cart__total">
           <div class="cart__total-text">
             <p class="cart__total-title">Итого</p>
-            <p class="cart__total-quantity">3 товара</p>
-            <div class="cart__total-sum">18 742 ₽</div>
+            <p class="cart__total-quantity">
+              {{ totalQuantity }} {{ declineItems(totalQuantity) }}
+            </p>
+            <div class="cart__total-sum">{{ formattedTotalSum }} ₽</div>
           </div>
           <base-button><span>Перейти к оформлению</span></base-button>
         </div>
@@ -38,11 +40,18 @@
           <p class="cart__contacts-text">
             Есть вопросы по заказу? Свяжитесь с нами и мы поможем оформить заказ
           </p>
-          <ContactsPageBlock />
+          <ContactsPageBlock @open-popup="openCallbackPopup" />
         </div>
       </div>
     </div>
   </div>
+  <CallbackPopup
+    v-show="callbackPopupVisible"
+    @close-popup="closeCallbackPopup"
+    @submit-success="openSuccessPopup"
+  />
+  <SuccessPopup :isVisible="successPopupVisible" @close-popup="closeSuccessPopup" />
+  <CallbackSection v-if="cartItems.length > 0" />
 </template>
 
 <script>
@@ -50,16 +59,24 @@ import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import CardPopup from '@/entities/cart/CardPopup.vue'
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
+import CallbackPopup from '@/widgets/callbackPopup/CallbackPopup.vue'
+import SuccessPopup from '@/widgets/successPopup/SuccessPopup.vue'
+import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
 
 export default {
   name: 'CartPage',
   components: {
     IntroPages,
     CardPopup,
+    CallbackPopup,
+    SuccessPopup,
+    CallbackSection,
   },
   data() {
     return {
       cartStore: null,
+      callbackPopupVisible: false,
+      successPopupVisible: false,
     }
   },
   created() {
@@ -78,11 +95,40 @@ export default {
         product: catalogStore.getProductById(item.id) || {},
       }))
     },
+    totalQuantity() {
+      return this.cartItems.reduce((total, item) => total + item.quantity, 0)
+    },
+    totalSum() {
+      return this.cartItemsWithDetails.reduce((total, item) => {
+        const price = item.product.price || 0
+        return total + price * item.quantity
+      }, 0)
+    },
+    formattedTotalSum() {
+      return this.totalSum.toLocaleString('ru-RU')
+    },
   },
   methods: {
     removeItem(productId) {
       this.cartStore.cartItems = this.cartStore.cartItems.filter((item) => item.id !== productId)
       this.cartStore.saveCart()
+    },
+    declineItems(count) {
+      if (count % 10 === 1 && count % 100 !== 11) return 'товар'
+      if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) return 'товара'
+      return 'товаров'
+    },
+    openCallbackPopup() {
+      this.callbackPopupVisible = true
+    },
+    closeCallbackPopup() {
+      this.callbackPopupVisible = false
+    },
+    closeSuccessPopup() {
+      this.successPopupVisible = false
+    },
+    openSuccessPopup() {
+      this.successPopupVisible = true
     },
   },
 }

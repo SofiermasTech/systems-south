@@ -37,8 +37,10 @@
         :is-horizontal="viewMode === 'horizontal'"
         @toggle-favorite="handleToggleFavorite"
       />
+      <p v-if="filteredProducts.length === 0">Нет результатов по запросу</p>
     </div>
   </div>
+  <CallbackSection />
 </template>
 
 <script>
@@ -48,6 +50,7 @@ import CatalogSortPanel from '@/features/catalog-filters/CatalogSortPanel.vue'
 import CatalogSortView from '@/features/catalog-filters/CatalogSortView.vue'
 import ProductCard from '@/entities/product/ProductCard.vue'
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
+import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
 
 export default {
   components: {
@@ -56,13 +59,15 @@ export default {
     CatalogSortPanel,
     CatalogSortView,
     ProductCard,
+    CallbackSection,
   },
   data() {
     return {
       catalogStore: null,
       sortType: 'cheap-first',
       appliedFilters: {
-        brands: [], // Храним применённые фильтры
+        brands: [],
+        priceRange: [null, null],
       },
       viewMode: localStorage.getItem('viewMode') || 'vertical',
     }
@@ -100,6 +105,18 @@ export default {
       if (this.appliedFilters.brands.length > 0) {
         products = products.filter((product) => this.appliedFilters.brands.includes(product.brand))
       }
+
+      if (
+        this.appliedFilters.priceRange &&
+        (this.appliedFilters.priceRange[0] !== null || this.appliedFilters.priceRange[1] !== null)
+      ) {
+        products = products.filter((product) => {
+          const price = product.price
+          const min = this.appliedFilters.priceRange[0]
+          const max = this.appliedFilters.priceRange[1]
+          return (min === null || price >= min) && (max === null || price <= max)
+        })
+      }
       return products
     },
   },
@@ -112,7 +129,10 @@ export default {
       this.sortType = sortType
     },
     handleApplyFilters(filters) {
-      this.appliedFilters.brands = filters.brands
+      this.appliedFilters = {
+        brands: filters.brands || [],
+        priceRange: filters.priceRange || [null, null],
+      }
     },
     handleToggleFavorite(product) {
       this.$emit('toggle-favorite', product)
@@ -183,6 +203,8 @@ export default {
   }
 
   &__sort {
+    max-height: 60px;
+    height: fit-content;
     border: 1px solid var(--blue-100);
     border-radius: 12px;
     padding-block: 8px;

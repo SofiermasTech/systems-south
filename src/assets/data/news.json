@@ -1,0 +1,90 @@
+[
+  {
+    "id": "news-1",
+    "title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed ",
+    "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitation ",
+    "image": "/images/news.jpg",
+    "date": "2024-12-29",
+    "description1": "Активно развивающаяся компания в сфере цифровых вычислительных технологий.",
+    "description2": "С 2022 г. реализует различные проекты в сфере компьютерных технологий.",
+    "description3": "С 2023 г. активно ведет разработку собственного цифрового вычислительного оборудования и производит серийный выпуск серверного оборудования в России.",
+    "description4": "Компания нацелена на качественное выполнение договорных обязательств перед ключевыми предприятиями-заказчиками, разработку современных решений и развитие новых возможностей."
+  },
+  {
+    "id": "news-2",
+    "title": "Lorem ipsum dolor sit amet 2",
+    "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitation ",
+    "image": "/images/news-2.jpg",
+    "date": "2024-12-30",
+    "description1": "Активно развивающаяся компания в сфере цифровых вычислительных технологий.",
+    "description2": "С 2022 г. реализует различные проекты в сфере компьютерных технологий.",
+    "description3": "С 2023 г. активно ведет разработку собственного цифрового вычислительного оборудования и производит серийный выпуск серверного оборудования в России.",
+    "description4": "Компания нацелена на качественное выполнение договорных обязательств перед ключевыми предприятиями-заказчиками, разработку современных решений и развитие новых возможностей."
+  },
+  {
+    "id": "news-3",
+    "title": "Lorem ipsum dolor sit amet 3",
+    "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitation ",
+    "image": "/images/news.jpg",
+    "date": "2024-12-31",
+    "description1": "Активно развивающаяся компания в сфере цифровых вычислительных технологий.",
+    "description2": "С 2022 г. реализует различные проекты в сфере компьютерных технологий.",
+    "description3": "С 2023 г. активно ведет разработку собственного цифрового вычислительного оборудования и производит серийный выпуск серверного оборудования в России.",
+    "description4": "Компания нацелена на качественное выполнение договорных обязательств перед ключевыми предприятиями-заказчиками, разработку современных решений и развитие новых возможностей."
+  },
+  {
+    "id": "news-4",
+    "title": "Lorem ipsum dolor sit amet 4",
+    "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitation ",
+    "image": "/images/news-2.jpg",
+    "date": "2025-05-09",
+    "description1": "Активно развивающаяся компания в сфере цифровых вычислительных технологий.",
+    "description2": "С 2022 г. реализует различные проекты в сфере компьютерных технологий.",
+    "description3": "С 2023 г. активно ведет разработку собственного цифрового вычислительного оборудования и производит серийный выпуск серверного оборудования в России.",
+    "description4": "Компания нацелена на качественное выполнение договорных обязательств перед ключевыми предприятиями-заказчиками, разработку современных решений и развитие новых возможностей."
+  },
+  {
+    "id": "news-5",
+    "title": "Lorem ipsum dolor sit amet 5",
+    "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitation ",
+    "image": "/images/news.jpg",
+    "date": "2025-05-12",
+    "description1": "Активно развивающаяся компания в сфере цифровых вычислительных технологий.",
+    "description2": "С 2022 г. реализует различные проекты в сфере компьютерных технологий.",
+    "description3": "С 2023 г. активно ведет разработку собственного цифрового вычислительного оборудования и производит серийный выпуск серверного оборудования в России.",
+    "description4": "Компания нацелена на качественное выполнение договорных обязательств перед ключевыми предприятиями-заказчиками, разработку современных решений и развитие новых возможностей."
+  },
+  {
+    "id": "news-6",
+    "title": "Lorem ipsum dolor sit amet 6",
+    "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitation ",
+    "image": "/images/news-2.jpg",
+    "date": "2024-07-05",
+    "description1": "Активно развивающаяся компания в сфере цифровых вычислительных технологий.",
+    "description2": "С 2022 г. реализует различные проекты в сфере компьютерных технологий.",
+    "description3": "С 2023 г. активно ведет разработку собственного цифрового вычислительного оборудования и производит серийный выпуск серверного оборудования в России.",
+    "description4": "Компания нацелена на качественное выполнение договорных обязательств перед ключевыми предприятиями-заказчиками, разработку современных решений и развитие новых возможностей."
+  },
+  {
+    "id": "news-7",
+    "title": "Lorem ipsum dolor sit amet 7",
+    "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitation ",
+    "image": "/images/news.jpg",
+    "date": "2023-08-05",
+    "description1": "Активно развивающаяся компания в сфере цифровых вычислительных технологий.",
+    "description2": "С 2022 г. реализует различные проекты в сфере компьютерных технологий.",
+    "description3": "С 2023 г. активно ведет разработку собственного цифрового вычислительного оборудования и производит серийный выпуск серверного оборудования в России.",
+    "description4": "Компания нацелена на качественное выполнение договорных обязательств перед ключевыми предприятиями-заказчиками, разработку современных решений и развитие новых возможностей."
+  },
+  {
+    "id": "news-8",
+    "title": "Lorem ipsum dolor sit amet 8",
+    "subtitle": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitation ",
+    "image": "/images/news-2.jpg",
+    "date": "2024-09-05",
+    "description1": "Активно развивающаяся компания в сфере цифровых вычислительных технологий.",
+    "description2": "С 2022 г. реализует различные проекты в сфере компьютерных технологий.",
+    "description3": "С 2023 г. активно ведет разработку собственного цифрового вычислительного оборудования и производит серийный выпуск серверного оборудования в России.",
+    "description4": "Компания нацелена на качественное выполнение договорных обязательств перед ключевыми предприятиями-заказчиками, разработку современных решений и развитие новых возможностей."
+  }
+]

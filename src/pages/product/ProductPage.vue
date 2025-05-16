@@ -37,15 +37,26 @@
         <div class="product-general__details">
           <div class="product-general__purchase">
             <p class="product-general__price">{{ formattedPrice }} ₽</p>
-            <ProductQuantity
+            <!-- <ProductQuantity
               :product-id="Number($route.params.id)"
               :initial-quantity="cartItemQuantity"
-            />
-            <base-button class="product-general__btn-cart" @click.stop="addToCart"
-              ><span>Добавить в корзину</span></base-button
+            /> -->
+            <base-button
+              class="product-general__btn-cart"
+              v-if="cartItemQuantity === 0"
+              @click.stop="addToCart"
             >
+              <span>Добавить в корзину</span>
+            </base-button>
+            <RouterLink
+              to="/cart"
+              class="product-general__btn-cart product-general__btn-cart--in base-button"
+              v-else
+            >
+              <span>В корзине</span>
+            </RouterLink>
           </div>
-          <ContactsPageBlock />
+          <ContactsPageBlock @open-popup="openCallbackPopup" />
         </div>
       </div>
     </section>
@@ -104,7 +115,7 @@
           <div class="about-product__doc-list">
             <div class="about-product__doc-item">
               <span class="about-product__doc-item-img">
-               <BaseIcon name="DocumentIcon" />
+                <BaseIcon name="DocumentIcon" />
               </span>
               <h4 class="about-product__doc-item-title">Сертификат соответствия</h4>
               <p class="about-product__doc-item-subtitle">PDF&emsp;556 кб</p>
@@ -114,7 +125,7 @@
         <div class="about-product__other">
           <div class="about-product__other-block">
             <span class="about-product__other-img">
-             <BaseIcon name="GuaranteeIcon" />
+              <BaseIcon name="GuaranteeIcon" />
             </span>
             <h3 class="about-product__other-title h3-title">Гарантия качества</h3>
             <p class="about-product__other-text">
@@ -134,7 +145,7 @@
           </div>
           <div class="about-product__other-block">
             <span class="about-product__other-img">
-             <BaseIcon name="AccessiblePriceIcon" />
+              <BaseIcon name="AccessiblePriceIcon" />
             </span>
             <h3 class="about-product__other-title h3-title">Доступные цены</h3>
             <p class="about-product__other-text">
@@ -151,27 +162,42 @@
     filter-type="recommended"
     @toggle-favorite="handleToggleFavorite"
   />
+  <CallbackPopup
+    v-show="callbackPopupVisible"
+    @close-popup="closeCallbackPopup"
+    @submit-success="openSuccessPopup"
+  />
+  <SuccessPopup :isVisible="successPopupVisible" @close-popup="closeSuccessPopup" />
+  <CallbackSection />
 </template>
 <script>
 import { useCatalogStore } from '@/shared/stores/catalog'
 import { useCartStore } from '@/shared/stores/cart'
 import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
 import FavoriteButton from '@/entities/product/FavoriteButton.vue'
-import ProductQuantity from '@widgets/product-quantity/ProductQuantity.vue'
+// import ProductQuantity from '@widgets/product-quantity/ProductQuantity.vue'
 import ProductSection from '@widgets/product-section/ProductSection.vue'
+import CallbackPopup from '@/widgets/callbackPopup/CallbackPopup.vue'
+import SuccessPopup from '@/widgets/successPopup/SuccessPopup.vue'
+import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
 
 export default {
   data() {
     return {
       recProductsTitle: 'Рекомендуем',
       productTab: 't1',
+      callbackPopupVisible: false,
+      successPopupVisible: false,
     }
   },
   components: {
     BreadcrumbsList,
     FavoriteButton,
-    ProductQuantity,
+    // ProductQuantity,
     ProductSection,
+    CallbackPopup,
+    SuccessPopup,
+    CallbackSection,
   },
   computed: {
     product() {
@@ -196,6 +222,18 @@ export default {
     },
     handleToggleFavorite(product) {
       this.$emit('toggle-favorite', product)
+    },
+    openCallbackPopup() {
+      this.callbackPopupVisible = true
+    },
+    closeCallbackPopup() {
+      this.callbackPopupVisible = false
+    },
+    closeSuccessPopup() {
+      this.successPopupVisible = false
+    },
+    openSuccessPopup() {
+      this.successPopupVisible = true
     },
   },
 }
@@ -344,7 +382,21 @@ export default {
   }
 
   &__btn-cart {
-    width: 100% !important;
+    &.base-button {
+      max-width: 215px;
+      width: 100%;
+      grid-column: span 2;
+    }
+
+    &--in.base-button {
+      background-color: var(--white);
+      color: var(--black);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }
 
@@ -522,5 +574,11 @@ export default {
 .h3-title {
   font-weight: 600;
   font-size: 16px;
+}
+</style>
+
+<style lang="scss" scoped>
+.product {
+  margin-bottom: var(--section-offset);
 }
 </style>

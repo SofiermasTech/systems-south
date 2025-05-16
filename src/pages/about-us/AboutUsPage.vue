@@ -4,6 +4,9 @@
     <TeamBlock />
     <AboutUsDelivery />
     <AboutUsReviews />
+    <div class="main-about-us__wrapper">
+      <CallbackSection />
+    </div>
   </div>
 </template>
 
@@ -12,6 +15,8 @@ import AboutUsHero from '@/pages/about-us/ui/AboutUsHero.vue'
 import TeamBlock from '@/pages/about-us/ui/TeamBlock.vue'
 import AboutUsDelivery from '@/pages/about-us/ui/AboutUsDelivery.vue'
 import AboutUsReviews from '@/pages/about-us/ui/AboutUsReviews.vue'
+import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+
 
 export default {
   name: 'AboutUsPage',
@@ -20,6 +25,7 @@ export default {
     TeamBlock,
     AboutUsDelivery,
     AboutUsReviews,
+    CallbackSection,
   },
 }
 </script>
@@ -27,5 +33,10 @@ export default {
 <style lang="scss">
 .main-about-us {
   background-color: var(--blue-0);
+
+  &__wrapper {
+    padding-top: var(--section-offset);
+    background-color: var(--white);
+  }
 }
 </style>

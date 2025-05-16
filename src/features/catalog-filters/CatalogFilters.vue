@@ -58,7 +58,7 @@
           <div class="aside-filters__options-btn">
             <label class="aside-filters__label-price">
               <div class="aside-filters__price">
-                <!-- <span class="aside-filters__price-from">от</span> -->
+                <span class="aside-filters__price-from">от</span>
                 <input
                   id="price-from"
                   class="filter-input"
@@ -66,9 +66,11 @@
                   inputmode="numeric"
                   pattern="[0-9]*"
                   value=""
-                  placeholder="от 0 ₽"
+                  placeholder="0"
                   minlength="2"
+                  v-model.number="priceFrom"
                 />
+                <span class="aside-filters__price-coin">₽</span>
               </div>
             </label>
             <label class="aside-filters__label-price">
@@ -83,7 +85,9 @@
                   value=""
                   placeholder="9999"
                   minlength="2"
+                  v-model.number="priceTo"
                 />
+                <span class="aside-filters__price-coin">₽</span>
               </div>
             </label>
           </div>
@@ -114,6 +118,9 @@ export default {
       },
       selectedBrands: [],
       appliedBrands: [],
+      priceFrom: null,
+      priceTo: null,
+      appliedPriceRange: [null, null],
     }
   },
   emits: ['apply-filters'],
@@ -138,6 +145,23 @@ export default {
       // Эмитим событие, чтобы применить сохранённые фильтры
       this.$emit('apply-filters', { brands: this.appliedBrands })
     }
+    const savedPriceFrom = localStorage.getItem('priceFrom')
+    if (savedPriceFrom) {
+      this.priceFrom = JSON.parse(savedPriceFrom)
+    }
+
+    const savedPriceTo = localStorage.getItem('priceTo')
+    if (savedPriceTo) {
+      this.priceTo = JSON.parse(savedPriceTo)
+    }
+    const savedAppliedPriceRange = localStorage.getItem('appliedPriceRange')
+    if (savedAppliedPriceRange) {
+      this.appliedPriceRange = JSON.parse(savedAppliedPriceRange)
+      this.$emit('apply-filters', {
+        brands: this.appliedBrands,
+        priceRange: this.appliedPriceRange,
+      })
+    }
   },
   watch: {
     filterStates: {
@@ -151,6 +175,15 @@ export default {
     },
     appliedBrands(newValue) {
       localStorage.setItem('appliedBrands', JSON.stringify(newValue))
+    },
+    priceFrom(newValue) {
+      localStorage.setItem('priceFrom', JSON.stringify(newValue))
+    },
+    priceTo(newValue) {
+      localStorage.setItem('priceTo', JSON.stringify(newValue))
+    },
+    appliedPriceRange(newValue) {
+      localStorage.setItem('appliedPriceRange', JSON.stringify(newValue))
     },
   },
   computed: {
@@ -173,15 +206,32 @@ export default {
     },
     applyFilters() {
       this.appliedBrands = [...this.selectedBrands]
-      this.$emit('apply-filters', { brands: this.appliedBrands })
+      let priceFrom = this.priceFrom !== null ? Number(this.priceFrom) : null
+      let priceTo = this.priceTo !== null ? Number(this.priceTo) : null
+
+      if (priceFrom !== null && priceTo !== null && priceFrom > priceTo) {
+        ;[priceFrom, priceTo] = [priceTo, priceFrom] // Поменять местами, если from > to
+      }
+
+      this.appliedPriceRange = [priceFrom, priceTo]
+      this.$emit('apply-filters', {
+        brands: this.appliedBrands,
+        priceRange: this.appliedPriceRange,
+      })
     },
     resetFilters() {
       this.selectedBrands = []
       this.appliedBrands = []
+      this.priceFrom = null
+      this.priceTo = null
+      this.appliedPriceRange = [null, null]
       this.$emit('apply-filters', { brands: this.appliedBrands })
       localStorage.removeItem('filterStates')
       localStorage.removeItem('selectedBrands')
       localStorage.removeItem('appliedBrands')
+      localStorage.removeItem('priceFrom')
+      localStorage.removeItem('priceTo')
+      localStorage.removeItem('appliedPriceRange')
     },
   },
 }
@@ -220,7 +270,7 @@ export default {
   &__item-arrow {
     width: 20px;
     height: 20px;
-    transform: 0.3s ease;
+    transition: 0.3s ease;
     transform-origin: 10px 10px;
     display: flex;
     align-items: center;
@@ -233,7 +283,7 @@ export default {
 
     &.arrow-open {
       transform: rotate(180deg);
-      transform: 0.3s ease;
+      transition: 0.3s ease;
     }
   }
 
@@ -306,12 +356,42 @@ export default {
   }
 
   &__options-btn {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
   }
 
   &__label-price {
+    max-width: 142px;
   }
 
   &__price {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 12px 16px;
+    border: 1px solid var(--blue-200);
+    border-radius: 10px;
+
+    span {
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--blue-200);
+    }
+
+    input {
+      flex-shrink: 1;
+      border: none;
+      outline: none;
+      max-width: 70px;
+      width: fit-content;
+
+      &::placeholder {
+        font-weight: 500;
+        font-size: 16px;
+        color: var(--blue-200);
+      }
+    }
   }
 
   &__price-to {

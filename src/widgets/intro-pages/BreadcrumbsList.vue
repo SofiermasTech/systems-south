@@ -5,7 +5,6 @@
         <RouterLink v-if="item.link" :to="item.link" class="breadcrumb__link">
           {{ item.name }}
         </RouterLink>
-
         <span v-else class="breadcrumb__current" aria-current="page">
           {{ item.name }}
         </span>
@@ -22,10 +21,10 @@ export default {
       const homeBreadcrumb = {
         name: 'Главная',
         link: '/',
-      }
+      };
 
       // Убираем подстраницы из крошек для /personal
-      const isPersonalRoute = this.$route.path.startsWith('/personal')
+      const isPersonalRoute = this.$route.path.startsWith('/personal');
       if (isPersonalRoute) {
         return [
           homeBreadcrumb,
@@ -33,29 +32,35 @@ export default {
             name: 'Личный кабинет',
             link: null,
           },
-        ]
+        ];
       }
 
-      // Получаем все маршруты
-      const matchedRoutes = this.$route.matched
+      // Формируем крошки
+      let crumbs = [homeBreadcrumb];
 
-      // Формируем массив
-      const routeBreadcrumbs = matchedRoutes
-        .filter((route) => route.path !== '/')
-        .map((route, index, array) => {
-          const isLast = index === array.length - 1
+      // Если есть parentRoute (для /news/:id)
+      if (this.$route.meta.parentRoute) {
+        crumbs.push({
+          name: this.$route.meta.parentRoute.breadcrumb,
+          link: this.$route.meta.parentRoute.path,
+        });
+      }
 
-          return {
-            name: route.meta.breadcrumb,
-            link: isLast ? null : route.path,
-          }
-        })
+      // Добавляем текущий маршрут
+      const currentRoute = this.$route.matched.find(r => r.name === this.$route.name);
+      if (currentRoute) {
+        crumbs.push({
+          name: typeof currentRoute.meta.breadcrumb === 'function'
+            ? currentRoute.meta.breadcrumb(this.$route)
+            : currentRoute.meta.breadcrumb,
+          link: null,
+        });
+      }
 
-      // Возвращаем главную страницу + остальные маршруты
-      return [homeBreadcrumb, ...routeBreadcrumbs]
+      return crumbs;
     },
   },
-}
+};
 </script>
 
 <style lang="scss">

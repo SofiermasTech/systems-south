@@ -74,7 +74,7 @@
   }
 
   &__benf-list {
-    max-width: 80%;
+    max-width: 1400px;
     width: 100%;
     color: var(--white);
     display: flex;

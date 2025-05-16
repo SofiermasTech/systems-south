@@ -6,16 +6,20 @@
       <BaseAccordion :items="accordionItems" />
     </section>
   </div>
+  <CallbackSection />
 </template>
 
 <script>
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import BaseAccordion from '@/shared/ui/BaseAccordion.vue'
+import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+
 export default {
   name: 'FaqPage',
   components: {
     IntroPages,
     BaseAccordion,
+    CallbackSection,
   },
   data() {
     return {

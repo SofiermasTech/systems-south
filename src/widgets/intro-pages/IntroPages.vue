@@ -1,7 +1,7 @@
 <template>
   <div class="intro-pages">
     <BreadcrumbsList />
-    <h2 class="intro-pages__title">{{ currentRouteTitle }}</h2>
+    <h2 class="intro-pages__title">{{ title || currentRouteTitle }}</h2>
   </div>
 </template>
 
@@ -12,7 +12,12 @@ export default {
   components: {
     BreadcrumbsList,
   },
-  props: {},
+  props: {
+    title: {
+      type: String,
+      default: '',
+    },
+  },
   computed: {
     currentRouteTitle() {
       // Берем последний маршрут из $route.matched
@@ -25,7 +30,7 @@ export default {
 
 <style lang="scss" scoped>
 .intro-pages {
-  height: 28vh;
+  height: 26vh;
   margin-top: 12px;
   background-image: radial-gradient(
     160.58% 121.28% at 84.47% 95.14%,
@@ -40,6 +45,7 @@ export default {
   justify-content: space-between;
 
   &__title {
+    max-width: 60%;
     font-weight: 500;
     font-size: 60px;
     line-height: 110%;

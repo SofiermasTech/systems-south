@@ -70,7 +70,7 @@
           </div>
         </div>
       </div>
-      <div class="hero__block hero__block--contacts">
+      <RouterLink to="/contacts" class="hero__block hero__block--contacts">
         <div class="hero__block-content">
           <h2 class="hero__block-title">Контакты</h2>
           <div class="hero__block-bottom">
@@ -83,7 +83,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </RouterLink>
       <RouterLink to="/faq" class="hero__block hero__block--faq">
         <div class="hero__block-content">
           <h2 class="hero__block-title">FAQ</h2>
