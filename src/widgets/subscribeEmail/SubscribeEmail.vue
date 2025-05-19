@@ -5,26 +5,31 @@
       <label class="subscribe__label">
         <input
           class="subscribe__input"
+          :class="{ error: errors.email }"
           type="email"
-          v-model="formSubscribe.email"
+          v-model.trim="formSubscribe.email"
           required
           placeholder="Введите ваш e-mail"
         />
         <span v-if="errors.email" class="subscribe__error">{{ errors.email }}</span>
       </label>
       <label class="subscribe__label subscribe__label--checkbox">
-        <input type="checkbox" v-model="formSubscribe.checkbox" required />
+        <input
+          type="checkbox"
+          v-model="formSubscribe.checkbox"
+          :class="{ error: errors.checkbox }"
+          required
+        />
         <p>Я согласен/на на обработку персональных данных</p>
         <span v-if="errors.checkbox" class="subscribe__error">{{ errors.checkbox }}</span>
       </label>
       <button
         class="subscribe__btn-submit base-button"
         type="submit"
-        @submit.prevent
-        :disabled="!isFormValid || isSubmitting"
+        :disabled="isSubmitting"
         :aria-disabled="!isFormValid || isSubmitting"
       >
-        Отправить
+        {{ isSubmitting ? 'Отправка...' : 'Отправить' }}
       </button>
     </form>
   </div>
@@ -44,35 +49,64 @@ export default {
         checkbox: '',
       },
       isSubmitting: false,
+      emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      messages: {
+        emailRequired: 'Введите email',
+        emailInvalid: 'Некорректный email',
+        checkboxRequired: 'Необходимо согласие',
+        submitError: 'Ошибка при отправке. Попробуйте снова.',
+        success: 'Вы успешно подписались!',
+      },
     }
   },
   methods: {
     submitSubscribeForm() {
-      this.errors = { email: '', checkbox: '' }
+      const isEmailValid =
+        this.formSubscribe.email !== '' && this.emailRegex.test(this.formSubscribe.email)
+      const isCheckboxValid = this.formSubscribe.checkbox
 
-      // Валидация
-      if (!this.isFormValid) {
-        if (!this.formSubscribe.email.trim()) this.errors.email = 'Введите email'
-        if (
-          this.formSubscribe.email.trim() &&
-          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formSubscribe.email)
-        ) {
-          this.errors.email = 'Некорректный email'
-        }
-        if (!this.formSubscribe.checkbox) this.errors.checkbox = 'Необходимо согласие'
+      if (!this.formSubscribe.email) {
+        this.errors.email = this.messages.emailRequired
+      } else if (!this.emailRegex.test(this.formSubscribe.email)) {
+        this.errors.email = this.messages.emailInvalid
+      }
+      if (!this.formSubscribe.checkbox) {
+        this.errors.checkbox = this.messages.checkboxRequired
+      }
+
+      if (!isEmailValid || !isCheckboxValid) {
         return
       }
       // Если валидация пройдена
       console.log('Отправка данных:', this.formSubscribe)
       this.isSubmitting = true
+
+      setTimeout(() => {
+        this.resetForm()
+      }, 1500)
+    },
+    resetForm() {
+      this.formSubscribe = { email: '', checkbox: false }
+      this.errors = { email: '', checkbox: '' }
+      this.isSubmitting = false
     },
   },
   computed: {
     isFormValid() {
       const isEmailValid =
-        this.formSubscribe.email.trim() !== '' &&
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formSubscribe.email)
+        this.formSubscribe.email.trim() !== '' && this.emailRegex.test(this.formSubscribe.email)
       return this.formSubscribe.checkbox && isEmailValid
+    },
+  },
+  watch: {
+    'formSubscribe.email'(newValue) {
+      this.errors.email = ''
+      if (newValue.trim() && !this.emailRegex.test(newValue)) {
+        this.errors.email = this.messages.emailInvalid
+      }
+    },
+    'formSubscribe.checkbox'(newValue) {
+      this.errors.checkbox = newValue ? '' : this.messages.checkboxRequired
     },
   },
 }
@@ -95,10 +129,11 @@ export default {
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
 
   &__label {
+    position: relative;
   }
 
   &__input {
@@ -124,10 +159,23 @@ export default {
     display: flex;
     gap: 8px;
     align-items: center;
+
+    p {
+      margin: 0;
+      color: var(--grey-200);
+    }
+
+    input {
+      &.error {
+        border-color: var(--red);
+      }
+    }
   }
 
   &__error {
-    margin-left: 16px;
+    position: absolute;
+    bottom: -13px;
+    left: 16px;
     color: var(--red);
     font-size: 10px;
   }

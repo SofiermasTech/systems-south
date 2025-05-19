@@ -15,7 +15,11 @@
   </div>
   <section class="additional container">
     <SubscribeEmail />
-    <NewsOtherItems />
+    <SliderOtherItems :items="allNews" :exclude-id="$route.params.id" title="Другие новости">
+      <template #default="{ item }">
+        <NewsCard :news="item" :is-first="true" />
+      </template>
+    </SliderOtherItems>
   </section>
   <CallbackSection />
 </template>
@@ -23,19 +27,24 @@
 <script>
 import { useNewsStore } from '@/shared/stores/news.js'
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
-import NewsOtherItems from '@/pages/news/ui/NewsOtherItems.vue'
+import SliderOtherItems from '@/shared/ui/SliderOtherItems.vue'
 import SubscribeEmail from '@/widgets/subscribeEmail/SubscribeEmail.vue'
 import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import NewsCard from '@/entities/news/NewsCard.vue';
 
 export default {
   name: 'NewsItemPage',
   components: {
     IntroPages,
-    NewsOtherItems,
+    SliderOtherItems,
     SubscribeEmail,
     CallbackSection,
+    NewsCard,
   },
   computed: {
+    allNews() {
+      return useNewsStore().getNews
+    },
     news() {
       const newsStore = useNewsStore()
       const newsId = this.$route.params.id
@@ -84,7 +93,7 @@ export default {
   justify-content: space-between;
   gap: 20px;
 
-  .other-news {
+  .other-items {
     margin-top: 28px;
   }
 }
