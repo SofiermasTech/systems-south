@@ -1,44 +1,26 @@
 <template>
-  <div class="news-page container">
-    <IntroPages :title="news.title" />
-    <section class="news-page__content">
-      <div class="news-page__img">
-        <img :src="news.image" alt="" />
-      </div>
-      <div class="news-page__text">
-        <p>{{ news.description1 }}</p>
-        <p>{{ news.description2 }}</p>
-        <p>{{ news.description3 }}</p>
-        <p>{{ news.description4 }}</p>
-      </div>
-    </section>
-  </div>
-  <section class="additional container">
-    <SubscribeEmail />
-    <SliderOtherItems :items="allNews" :exclude-id="$route.params.id" title="Другие новости">
-      <template #default="{ item }">
-        <NewsCard :news="item" :is-first="true" />
-      </template>
-    </SliderOtherItems>
-  </section>
-  <CallbackSection />
+  <BaseEventItemPage
+    :item="news"
+    :event-items="allNews"
+    :exclude-id="$route.params.id"
+    :theme="'news'"
+    event-title="Другие новости"
+  >
+    <template #event-card="{ item }">
+      <NewsCard :news="item" :is-first="true" />
+    </template>
+  </BaseEventItemPage>
 </template>
 
 <script>
 import { useNewsStore } from '@/shared/stores/news.js'
-import IntroPages from '@widgets/intro-pages/IntroPages.vue'
-import SliderOtherItems from '@/shared/ui/SliderOtherItems.vue'
-import SubscribeEmail from '@/widgets/subscribeEmail/SubscribeEmail.vue'
-import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
-import NewsCard from '@/entities/news/NewsCard.vue';
+import BaseEventItemPage from '@/shared/layouts/BaseEventItemPage.vue'
+import NewsCard from '@/entities/news/NewsCard.vue'
 
 export default {
   name: 'NewsItemPage',
   components: {
-    IntroPages,
-    SliderOtherItems,
-    SubscribeEmail,
-    CallbackSection,
+    BaseEventItemPage,
     NewsCard,
   },
   computed: {

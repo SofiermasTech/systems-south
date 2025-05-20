@@ -103,5 +103,23 @@ export default {
 
   &__content {
   }
+
+  .promo-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, auto);
+    grid-template-areas:
+      'title img'
+      'subtitle img'
+      'date img';
+    gap: 32px;
+  }
+
+  .promo-card__img {
+    img {
+      max-height: 300px;
+      height: 300px;
+    }
+  }
 }
 </style>

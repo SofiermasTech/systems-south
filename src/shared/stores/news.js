@@ -31,7 +31,9 @@ export const useNewsStore = defineStore('news', {
     },
     getNewsCount: (state) => (filter) => {
       if (filter === 'all') {
-        return state.news.length
+        const sixMonthsAgo = new Date()
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+        return state.news.filter((news) => new Date(news.date) >= sixMonthsAgo).length
       }
       if (filter === 'new') {
         const thirtyDaysAgo = new Date()

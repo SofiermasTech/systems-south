@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useNewsStore } from '@/shared/stores/news.js'
+import { usePromoStore } from '@/shared/stores//promo.js'
 import HomePage from '@/pages/home/HomePage.vue'
 import CatalogPage from '@/pages/catalog/CatalogPage.vue'
 import ProductPage from '@/pages/product/ProductPage.vue'
@@ -14,6 +15,8 @@ import SearchPage from '@/pages/search/SearchPage.vue'
 import ContactsPage from '@/pages/contacts/ContactsPage.vue'
 import NewsPage from '@/pages/news/NewsPage.vue'
 import NewsItemPage from '@/pages/news/NewsItemPage.vue'
+import PromoPage from '@/pages/promo/PromoPage.vue'
+import PromoItemPage from '@/pages/promo/PromoItemPage.vue'
 
 const routes = [
   {
@@ -115,6 +118,29 @@ const routes = [
         path: '/news',
         name: 'NewsPage',
         breadcrumb: 'Новости',
+      },
+    },
+  },
+  {
+    path: '/promo',
+    name: 'PromoPage',
+    component: PromoPage,
+    meta: { breadcrumb: 'Акции' },
+  },
+  {
+    path: '/promo/:id',
+    name: 'PromoItemPage',
+    component: PromoItemPage,
+    meta: {
+      breadcrumb: (route) => {
+        const promoStore = usePromoStore()
+        const promo = promoStore.getPromoById(route.params.id)
+        return promo ? promo.title : 'Новость'
+      },
+      parentRoute: {
+        path: '/promo',
+        name: 'PromoPage',
+        breadcrumb: 'Акции',
       },
     },
   },

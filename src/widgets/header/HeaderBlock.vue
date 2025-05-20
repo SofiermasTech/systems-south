@@ -23,12 +23,12 @@
                   >
                 </li>
                 <li class="header__nav-item">
-                  <a href="" class="header__nav-item-link">
+                  <RouterLink to="/promo" class="header__nav-item-link">
                     <span class="header__nav-item-icon">
                       <BaseIcon name="StickerSaleIcon" />
                     </span>
                     <p>Акции</p>
-                  </a>
+                  </RouterLink>
                 </li>
                 <li class="header__nav-item">
                   <RouterLink to="/contacts" class="header__nav-item-link"><p>Контакты</p></RouterLink>
