@@ -1,13 +1,14 @@
 <template>
   <div class="event-item-page container" :class="`event-item-page--${theme}`">
+    <BaseTimer v-if="isPromoItemPage" :promo="item" />
     <IntroPages :title="item.title" />
     <section class="event-item-page__content">
       <div class="event-item-page__img">
         <img :src="item.image" alt="" />
       </div>
       <div class="event-item-page__text">
-        <p class="event-item-page__text-accent" v-if="isPromoPage">
-          Акция действует до {{ item.date }}
+        <p class="event-item-page__text-accent" v-if="isPromoItemPage">
+          Акция действует до {{ formatDate(item.date) }}
         </p>
         <p>{{ item.description1 }}</p>
         <p>{{ item.description2 }}</p>
@@ -32,6 +33,7 @@ import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import SliderOtherItems from '@/shared/ui/SliderOtherItems.vue'
 import SubscribeEmail from '@/widgets/subscribeEmail/SubscribeEmail.vue'
 import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import BaseTimer from '@/shared/ui/BaseTimer.vue'
 
 export default {
   name: 'BaseEventItemPage',
@@ -40,6 +42,7 @@ export default {
     SliderOtherItems,
     SubscribeEmail,
     CallbackSection,
+    BaseTimer,
   },
   props: {
     item: {
@@ -69,8 +72,17 @@ export default {
     },
   },
   computed: {
-    isPromoPage() {
-      return this.$route.path.startsWith('/promo/')
+    isPromoItemPage() {
+      return this.theme === 'promo'
+    },
+  },
+  methods: {
+    formatDate(dateStr) {
+      const date = new Date(dateStr)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      return `${day}.${month}.${year}`
     },
   },
 }
@@ -78,6 +90,8 @@ export default {
 
 <style lang="scss">
 .event-item-page {
+  position: relative;
+
   &__content {
     margin-top: 60px;
     display: flex;

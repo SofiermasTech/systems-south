@@ -9,7 +9,7 @@
       <!-- Кнопки навигации -->
 
       <!-- Пагинация -->
-      <div v-if="swiperOptions.pagination" class="swiper-pagination-${uniqueId}"></div>
+      <div v-if="swiperOptions.pagination" :class="`swiper-pagination swiper-pagination-${uniqueId}`"></div>
     </swiper>
   </div>
 </template>
@@ -52,8 +52,9 @@ export default {
         slidesPerView: 4,
         spaceBetween: 8,
         pagination: {
-          el: '',
+          el: `.swiper-pagination-${this.uniqueId}`,
           clickable: true,
+          type: 'bullets',
         },
         navigation: {
           nextEl: '',
@@ -85,15 +86,16 @@ export default {
   },
   computed: {
     swiperOptions() {
-      const options = { ...this.defaultOptions, ...this.options };
+      const options = { ...this.defaultOptions, ...this.options }
       if (options.pagination) {
-        options.pagination.el = `.swiper-pagination-${this.uniqueId}`;
+        options.pagination.el = `.swiper-pagination-${this.uniqueId}`
+        options.pagination.type = options.pagination.type || 'bullets'
       }
       if (options.navigation) {
-      options.navigation.nextEl = `.slider-arrow__item--right-${this.uniqueId}`;
-      options.navigation.prevEl = `.slider-arrow__item--left-${this.uniqueId}`;
-    }
-      return options;
+        options.navigation.nextEl = `.slider-arrow__item--right-${this.uniqueId}`
+        options.navigation.prevEl = `.slider-arrow__item--left-${this.uniqueId}`
+      }
+      return options
     },
   },
 }

@@ -30,18 +30,7 @@
           <img src="@/assets/images/hero-1.png" alt="" width="535" height="424" />
         </div>
       </div>
-      <div class="hero__block hero__block--sale">
-        <div class="hero__block-wrapper">
-          <span class="hero__top-sticker">
-            <BaseIcon name="StickerSaleIcon" />
-          </span>
-          <div class="hero__sale-timer"></div>
-        </div>
-        <h3 class="hero__sale-title">
-          При покупке кабеля или провода фирмы Noname получите скидку 5%
-        </h3>
-        <a href="#" class="hero__sale-link base-button">Подробнее</a>
-      </div>
+      <PromoWidget />
       <RouterLink to="/about-us" class="hero__block hero__block--about">
         <div class="hero__block-content">
           <h2 class="hero__block-title">О нас</h2>
@@ -102,7 +91,15 @@
   </section>
 </template>
 
-<script></script>
+<script>
+import PromoWidget from '@/widgets/promo-widget/PromoWidget.vue'
+
+export default {
+  components: {
+    PromoWidget,
+  },
+}
+</script>
 
 <style lang="scss">
 .hero {
@@ -222,64 +219,7 @@
     }
   }
 
-  &__block--sale {
-    padding: 20px 24px 52px 24px;
-    background-image: url('@/assets/images/hero-sale-1.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-
-    .hero__block-wrapper {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .hero__top-sticker {
-      width: 40px;
-      height: 40px;
-      background-color: var(--white);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        color: var(--orange);
-      }
-    }
-
-    .hero__sale-timer {
-      background-color: var(--white-0);
-      border-radius: 10px;
-      padding: 12px;
-      width: 209px;
-      height: 55px;
-    }
-
-    .hero__sale-title {
-      margin-top: auto;
-      font-weight: 600;
-      font-size: 20px;
-      line-height: 110%;
-      color: var(--white);
-    }
-
-    .hero__sale-link {
-      width: 130px;
-      background-color: var(--white);
-      font-weight: 500;
-      font-size: 12px;
-      color: var(--black);
-      text-decoration: none;
-      text-align: center;
-      display: inline;
-    }
-  }
-
-  &__block--delivery,
+    &__block--delivery,
   &__block--contacts,
   &__block--faq,
   &__block--about {

@@ -7,6 +7,7 @@
 
 <script>
 import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
+
 export default {
   name: 'IntroPages',
   components: {
