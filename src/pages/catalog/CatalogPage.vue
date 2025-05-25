@@ -1,28 +1,32 @@
 <template>
   <div class="catalog container">
-    <IntroPages class="catalog__intro" />
+    <IntroPages class="catalog__intro" :title="activeCategoryName" />
     <div class="catalog__categories">
       <p class="catalog__categories-title">Категории:</p>
       <ul class="catalog__categories-list">
-        <li class="catalog__categories-item active">
-          <base-button>
-            <span>Категория 1</span>
-          </base-button>
-        </li>
-        <li class="catalog__categories-item">
-          <base-button>
-            <span>Категория 2</span>
-          </base-button>
-        </li>
-        <li class="catalog__categories-item">
-          <base-button>
-            <span>Категория 3</span>
-          </base-button>
+        <li
+          class="catalog__categories-item"
+          v-for="category in categories"
+          :key="category.slug"
+          :class="{ active: activeCategory === category.slug }"
+        >
+          <RouterLink
+            class="base-button"
+            :to="`/catalog/${category.slug}`"
+            :class="{ 'base-button--active': activeCategory === category.slug }"
+          >
+            <span>{{ category.name }}</span>
+          </RouterLink>
         </li>
       </ul>
     </div>
 
-    <CatalogFilters class="catalog__filters" @apply-filters="handleApplyFilters" />
+    <CatalogFilters
+      class="catalog__filters"
+      @apply-filters="handleApplyFilters"
+      :category="category"
+      :subcategory="subcategory"
+    />
 
     <div class="catalog__sort">
       <CatalogSortPanel @sort-change="handleSortChange" />
@@ -70,15 +74,70 @@ export default {
         priceRange: [null, null],
       },
       viewMode: localStorage.getItem('viewMode') || 'vertical',
+      categoryNames: {
+        'interior-lighting': 'Домашнее освещение',
+        'light-bulbs': 'Лампочки',
+        chandelier: 'Люстры',
+        category1: 'Категория 1',
+        category2: 'Категория 2',
+        category3: 'Категория 3',
+      },
     }
   },
+  props: {
+    category: {
+      type: String,
+      default: null,
+    },
+    subcategory: {
+      type: String,
+      default: null,
+    },
+  },
   computed: {
+    categories() {
+      const catalogStore = useCatalogStore()
+      return catalogStore.getCategories.map((category) => ({
+        slug: category,
+        name: this.categoryNames[category] || category,
+      }))
+    },
+    subcategories() {
+      return this.activeCategory
+        ? this.catalogStore.getSubcategoriesByCategory(this.activeCategory).map((subcategory) => ({
+            slug: subcategory,
+            name: this.categoryNames[subcategory] || subcategory,
+          }))
+        : []
+    },
+    activeCategory() {
+      return this.category || null
+    },
+    activeCategoryName() {
+      if (this.subcategory) {
+        return this.categoryNames[this.subcategory] || this.subcategory
+      }
+      if (this.category) {
+        return this.categoryNames[this.category] || this.category
+      }
+      return 'Каталог'
+    },
     products() {
       const catalogStore = useCatalogStore()
+      if (this.subcategory) {
+        const products = catalogStore.getProductsByCategoryAndSubcategory(
+          this.category,
+          this.subcategory,
+        )
+        // console.log(`Products for ${this.category}/${this.subcategory}:`, products)
+        return products
+      }
+      if (this.category) {
+        return catalogStore.getProductsByCategory(this.category)
+      }
       return catalogStore.getProducts
     },
     sortedProducts() {
-      // Копируем массив, чтобы не мутировать оригинальный
       const products = [...this.products]
 
       if (!this.sortType) {
@@ -101,7 +160,6 @@ export default {
     },
     filteredProducts() {
       let products = [...this.sortedProducts]
-      // Фильтрация по брендам
       if (this.appliedFilters.brands.length > 0) {
         products = products.filter((product) => this.appliedFilters.brands.includes(product.brand))
       }
@@ -121,8 +179,8 @@ export default {
     },
   },
   mounted() {
-    const catalogStore = useCatalogStore()
-    catalogStore.loadProducts()
+    this.catalogStore = useCatalogStore()
+    this.catalogStore.loadProducts()
   },
   methods: {
     handleSortChange(sortType) {
@@ -144,6 +202,15 @@ export default {
   watch: {
     viewMode(newValue) {
       localStorage.setItem('viewMode', newValue)
+    },
+    $route(to, from) {
+      // Сбрасываем фильтры и сортировку при смене маршрута
+      if (to.path !== from.path) {
+        this.appliedFilters = {
+          brands: [],
+          priceRange: [null, null],
+        }
+      }
     },
   },
 }
@@ -188,6 +255,7 @@ export default {
     .base-button {
       background-color: var(--blue-100);
       color: var(--black);
+      text-decoration: none;
     }
 
     &.active {

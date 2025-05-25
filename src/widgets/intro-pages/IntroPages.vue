@@ -23,7 +23,13 @@ export default {
     currentRouteTitle() {
       // Берем последний маршрут из $route.matched
       const lastRoute = this.$route.matched[this.$route.matched.length - 1]
-      return lastRoute ? lastRoute.meta.breadcrumb : ''
+      if (!lastRoute || !lastRoute.meta.breadcrumb) {
+        return ''
+      }
+      // Проверяем, является ли breadcrumb функцией, и вызываем её с текущим маршрутом
+      return typeof lastRoute.meta.breadcrumb === 'function'
+        ? lastRoute.meta.breadcrumb(this.$route)
+        : lastRoute.meta.breadcrumb
     },
   },
 }

@@ -1,7 +1,12 @@
 <template>
   <nav class="breadcrumb" aria-label="breadcrumb">
     <ul class="breadcrumb__list">
-      <li class="breadcrumb__item" v-for="(item, index) in breadcrumbs" :key="index">
+      <li
+        class="breadcrumb__item"
+        v-for="(item, index) in breadcrumbs"
+        :key="index"
+        :aria-current="index === breadcrumbs.length - 1 ? 'page' : null"
+      >
         <RouterLink v-if="item.link" :to="item.link" class="breadcrumb__link">
           {{ item.name }}
         </RouterLink>
@@ -21,10 +26,10 @@ export default {
       const homeBreadcrumb = {
         name: 'Главная',
         link: '/',
-      };
+      }
 
       // Убираем подстраницы из крошек для /personal
-      const isPersonalRoute = this.$route.path.startsWith('/personal');
+      const isPersonalRoute = this.$route.path.startsWith('/personal')
       if (isPersonalRoute) {
         return [
           homeBreadcrumb,
@@ -32,35 +37,70 @@ export default {
             name: 'Личный кабинет',
             link: null,
           },
-        ];
+        ]
       }
 
-      // Формируем крошки
-      let crumbs = [homeBreadcrumb];
-
-      // Если есть parentRoute (для /news/:id)
-      if (this.$route.meta.parentRoute) {
-        crumbs.push({
-          name: this.$route.meta.parentRoute.breadcrumb,
-          link: this.$route.meta.parentRoute.path,
-        });
+      let crumbs = []
+      let currentRoute = {
+        path: this.$route.path,
+        name: this.$route.name,
+        meta: this.$route.meta,
+        params: this.$route.params,
       }
 
-      // Добавляем текущий маршрут
-      const currentRoute = this.$route.matched.find(r => r.name === this.$route.name);
-      if (currentRoute) {
-        crumbs.push({
-          name: typeof currentRoute.meta.breadcrumb === 'function'
-            ? currentRoute.meta.breadcrumb(this.$route)
-            : currentRoute.meta.breadcrumb,
-          link: null,
-        });
+      // Рекурсивно собираем крошки
+      while (currentRoute) {
+        const breadcrumb =
+          typeof currentRoute.meta.breadcrumb === 'function'
+            ? currentRoute.meta.breadcrumb({ params: currentRoute.params })
+            : currentRoute.meta.breadcrumb
+
+        if (breadcrumb) {
+          crumbs.push({
+            name: breadcrumb,
+            link: currentRoute.path !== this.$route.path ? this.resolvePath(currentRoute) : null,
+          })
+        }
+
+        currentRoute = currentRoute.meta.parentRoute
+          ? {
+              path: currentRoute.meta.parentRoute.path,
+              name: currentRoute.meta.parentRoute.name,
+              meta: {
+                breadcrumb: currentRoute.meta.parentRoute.breadcrumb,
+                parentRoute: currentRoute.meta.parentRoute.parentRoute,
+              },
+              params: this.getParamsForRoute(currentRoute.meta.parentRoute.path),
+            }
+          : null
       }
 
-      return crumbs;
+      console.log('Breadcrumbs:', crumbs) // Отладка
+      return crumbs.reverse()
     },
   },
-};
+  methods: {
+    resolvePath(route) {
+      let path = route.path
+      if (route.params) {
+        Object.keys(route.params).forEach((param) => {
+          path = path.replace(`:${param}`, route.params[param])
+        })
+      }
+      return path
+    },
+    getParamsForRoute(path) {
+      const params = { ...this.$route.params }
+      // Ограничиваем параметры в зависимости от пути
+      if (path === '/catalog') {
+        return {} // Нет параметров
+      } else if (path === '/catalog/:category') {
+        return { category: params.category } // Только category
+      }
+      return params // Для /catalog/:category/:subcategory все параметры
+    },
+  },
+}
 </script>
 
 <style lang="scss">

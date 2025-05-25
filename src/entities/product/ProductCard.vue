@@ -240,7 +240,7 @@ export default {
   max-width: 374px;
   height: 405px;
   width: 100%;
-  padding: 16px;
+  padding-bottom: 16px;
   background-color: var(--white);
   border: 1px solid var(--blue-100);
   border-radius: var(--br-block);
@@ -252,12 +252,12 @@ export default {
 
   &__top {
     // max-width: 344px;
-    // width: 100%;
+    width: 100%;
+    padding: 16px;
     display: flex;
     justify-content: space-between;
     position: absolute;
     z-index: 11;
-    width: 92%;
   }
 
   &__top-info {
@@ -353,6 +353,7 @@ export default {
 
   &__text {
     margin-top: auto;
+    padding: 0 16px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -375,7 +376,8 @@ export default {
   }
 
   &__bottom {
-    margin-top: 10px;
+    // margin-top: 10px;
+    padding: 0 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -407,6 +409,10 @@ export default {
       border-radius: 16px;
       width: 280px;
       height: 234px;
+    }
+
+    .product-card__img img {
+      max-height: 235px;
     }
 
     .product-card__info {

@@ -12,7 +12,7 @@ export default {
 .base-button {
   width: fit-content;
   border-radius: 500px;
-  padding: 14px 23px 15px;
+  padding: 15px 23px 14px;
   background-color: var(--blue);
   border: none;
   font-weight: 500;

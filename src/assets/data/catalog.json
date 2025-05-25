@@ -11,7 +11,8 @@
     "best": false,
     "recommended": false,
     "stock": true,
-    "category": "category1"
+    "category": "category1",
+    "subcategory": "subcategory1"
   },
   {
     "id": 2,
@@ -25,7 +26,8 @@
     "best": false,
     "recommended": false,
     "stock": true,
-    "category": "category2"
+    "category": "category2",
+    "subcategory": "subcategory2"
   },
   {
     "id": 3,
@@ -39,7 +41,8 @@
     "best": false,
     "recommended": true,
     "stock": true,
-    "category": "category3"
+    "category": "category3",
+    "subcategory": "subcategory3"
   },
   {
     "id": 4,
@@ -53,7 +56,8 @@
     "best": true,
     "recommended": true,
     "stock": false,
-    "category": "category1"
+    "category": "category1",
+    "subcategory": "subcategory11"
   },
   {
     "id": 5,
@@ -67,7 +71,8 @@
     "best": true,
     "recommended": false,
     "stock": false,
-    "category": "category2"
+    "category": "category2",
+    "subcategory": "subcategory22"
   },
   {
     "id": 6,
@@ -81,7 +86,8 @@
     "best": true,
     "recommended": true,
     "stock": false,
-    "category": "category3"
+    "category": "category3",
+    "subcategory": "subcategory33"
   },
   {
     "id": 7,
@@ -95,7 +101,8 @@
     "best": true,
     "recommended": true,
     "stock": true,
-    "category": "category1"
+    "category": "category1",
+    "subcategory": "subcategory111"
   },
   {
     "id": 8,

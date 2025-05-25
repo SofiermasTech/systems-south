@@ -1,6 +1,6 @@
 <template>
-  <RouterLink to="/catalog">
-    <button type="button" class="header__btn-catalog btn-catalog">
+  <!-- <RouterLink to="/catalog"> -->
+    <button type="button" class="header__btn-catalog btn-catalog" @click="$emit('click')">
       <span class="btn-catalog__icon">
         <svg
           width="21"
@@ -21,9 +21,14 @@
       </span>
       <p class="btn-catalog__text">Каталог товаров</p>
     </button>
-  </RouterLink>
+  <!-- </RouterLink> -->
 </template>
-<script></script>
+<script>
+export default {
+  name: "CatalogButton",
+  emits: ['click'],
+}
+</script>
 <style lang="scss">
 .btn-catalog {
   flex-shrink: 0;

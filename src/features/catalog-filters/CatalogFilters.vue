@@ -109,6 +109,16 @@
 import { useCatalogStore } from '@/shared/stores/catalog'
 
 export default {
+  props: {
+    category: {
+      type: String,
+      default: null,
+    },
+    subcategory: {
+      type: String,
+      default: null,
+    },
+  },
   data() {
     return {
       catalogStore: null,
@@ -185,18 +195,35 @@ export default {
     appliedPriceRange(newValue) {
       localStorage.setItem('appliedPriceRange', JSON.stringify(newValue))
     },
+    category() {
+      this.resetFilters()
+    },
+    subcategory() {
+      this.resetFilters()
+    },
   },
   computed: {
     products() {
       return this.catalogStore.getProducts
     },
     brands() {
-      if (!this.products || !Array.isArray(this.products)) {
+      let products = []
+      if (this.subcategory) {
+        products = this.catalogStore.getProductsByCategoryAndSubcategory(
+          this.category,
+          this.subcategory,
+        )
+      } else if (this.category) {
+        products = this.catalogStore.getProductsByCategory(this.category)
+      } else {
+        products = this.catalogStore.getProducts
+      }
+
+      if (!products || !Array.isArray(products)) {
         return []
       }
-      // Извлекаем все бренды и убираем дубликаты
-      const brands = [...new Set(this.products.map((product) => product.brand))]
-      // Фильтруем, чтобы убрать undefined или пустые строки
+
+      const brands = [...new Set(products.map((product) => product.brand))]
       return brands.filter((brand) => brand && brand.trim() !== '')
     },
   },

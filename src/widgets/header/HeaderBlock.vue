@@ -31,7 +31,9 @@
                   </RouterLink>
                 </li>
                 <li class="header__nav-item">
-                  <RouterLink to="/contacts" class="header__nav-item-link"><p>Контакты</p></RouterLink>
+                  <RouterLink to="/contacts" class="header__nav-item-link"
+                    ><p>Контакты</p></RouterLink
+                  >
                 </li>
                 <li class="header__nav-item">
                   <RouterLink to="/faq" class="header__nav-item-link"><p>FAQ</p></RouterLink>
@@ -44,7 +46,7 @@
           </div>
           <div class="header__bottom">
             <!-- Кнопка каталога -->
-            <CatalogButton />
+            <CatalogButton @click="toggleMenu" />
             <HeaderSearch ref="search" @toggle-overlay="$emit('toggle-overlay', $event)" />
             <HeaderContacts ref="contacts" @toggle-overlay="$emit('toggle-overlay', $event)" />
             <UserActions
@@ -57,6 +59,7 @@
       </div>
     </div>
     <CartPopup v-model:isOpen="isCartPopupOpen" />
+    <MenuBlock v-model:open="isMenuOpen" />
   </header>
 </template>
 
@@ -67,6 +70,7 @@ import HeaderSearch from '@widgets/header/ui/HeaderSearch.vue'
 import HeaderContacts from '@widgets/header/ui/HeaderContacts.vue'
 import { useFavoritesStore } from '@/shared/stores/favorites.js'
 import CartPopup from '@/entities/cart/CartPopup.vue'
+import MenuBlock from '@widgets/menu/MenuBlock.vue'
 
 export default {
   name: 'HeaderApp',
@@ -76,11 +80,13 @@ export default {
     HeaderSearch,
     HeaderContacts,
     CartPopup,
+    MenuBlock,
   },
   data() {
     return {
       favoritesStore: null,
       isCartPopupOpen: false,
+      isMenuOpen: false,
     }
   },
   created() {
@@ -95,10 +101,23 @@ export default {
     toggleCartPopup() {
       this.isCartPopupOpen = !this.isCartPopupOpen
     },
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen
+      if (this.isMenuOpen) {
+        // Закрываем другие попапы при открытии меню
+        this.$refs.contacts.closeAll()
+        this.$refs.search.closeSearchPopup()
+        this.isCartPopupOpen = false
+      }
+    },
+    // closeMenu() {
+    //   this.isMenuOpen = false
+    // },
     closeAll() {
-      this.$refs.contacts.closeAll();
-      this.$refs.search.closeSearchPopup();
-      this.isCartPopupOpen = false;
+      this.$refs.contacts.closeAll()
+      this.$refs.search.closeSearchPopup()
+      this.isCartPopupOpen = false
+      this.isMenuOpen = false
     },
   },
 }

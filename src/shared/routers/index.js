@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useNewsStore } from '@/shared/stores/news.js'
-import { usePromoStore } from '@/shared/stores//promo.js'
+import { usePromoStore } from '@/shared/stores/promo.js'
+// import { useCatalogStore } from '@/shared/stores/catalog.js'
 import HomePage from '@/pages/home/HomePage.vue'
 import CatalogPage from '@/pages/catalog/CatalogPage.vue'
 import ProductPage from '@/pages/product/ProductPage.vue'
@@ -18,6 +19,15 @@ import NewsItemPage from '@/pages/news/NewsItemPage.vue'
 import PromoPage from '@/pages/promo/PromoPage.vue'
 import PromoItemPage from '@/pages/promo/PromoItemPage.vue'
 
+const categoryNames = {
+  'interior-lighting': 'Домашнее освещение',
+  'light-bulbs': 'Лампочки',
+  chandelier: 'Люстры',
+  category1: 'Категория 1',
+  category2: 'Категория 2',
+  category3: 'Категория 3',
+}
+
 const routes = [
   {
     path: '/',
@@ -29,7 +39,57 @@ const routes = [
     path: '/catalog',
     name: 'CatalogPage',
     component: CatalogPage,
+    props: true,
     meta: { breadcrumb: 'Каталог' },
+  },
+  {
+    path: '/catalog/:category',
+    name: 'CatalogCategory',
+    component: CatalogPage,
+    props: true,
+    meta: {
+      breadcrumb: (route) => {
+        return categoryNames[route.params.category] || route.params.category || 'Категория'
+      },
+      parentRoute: {
+        path: '/catalog',
+        name: 'CatalogPage',
+        breadcrumb: 'Каталог',
+        parentRoute: {
+          path: '/',
+          name: 'HomePage',
+          breadcrumb: 'Главная',
+        },
+      },
+    },
+  },
+  {
+    path: '/catalog/:category/:subcategory',
+    name: 'CatalogSubcategory',
+    component: CatalogPage,
+    props: true,
+    meta: {
+      breadcrumb: (route) => {
+        return categoryNames[route.params.subcategory] || route.params.subcategory || 'Подкатегория'
+      },
+      parentRoute: {
+        path: '/catalog/:category',
+        name: 'CatalogCategory',
+        breadcrumb: (route) => {
+          return categoryNames[route.params.category] || route.params.category || 'Категория'
+        },
+        parentRoute: {
+          path: '/catalog',
+          name: 'CatalogPage',
+          breadcrumb: 'Каталог',
+          parentRoute: {
+            path: '/',
+            name: 'HomePage',
+            breadcrumb: 'Главная',
+          },
+        },
+      },
+    },
   },
   {
     path: '/product/:id',
