@@ -5,13 +5,13 @@
     "name": "Название бренда 1",
     "brand": "Бренд 1",
     "description": "Бленда с сетчатым фильтром и посадочным кольцом LGD-NIKA-BDH-R100 (BK) (Arlight, Металл)",
-    "images": ["/images/product-cart.png", "/images/product-cart.png"],
+    "images": ["/images/product-cart-2.png", "/images/product-cart.png"],
     "price": 18742,
     "new": true,
     "best": false,
     "recommended": false,
     "stock": true,
-    "category": "category1",
+    "category": "cables",
     "subcategory": "subcategory1"
   },
   {
@@ -26,7 +26,7 @@
     "best": false,
     "recommended": false,
     "stock": true,
-    "category": "category2",
+    "category": "electrical-panels",
     "subcategory": "subcategory2"
   },
   {
@@ -41,7 +41,7 @@
     "best": false,
     "recommended": true,
     "stock": true,
-    "category": "category3",
+    "category": "automation",
     "subcategory": "subcategory3"
   },
   {
@@ -56,7 +56,7 @@
     "best": true,
     "recommended": true,
     "stock": false,
-    "category": "category1",
+    "category": "cables",
     "subcategory": "subcategory11"
   },
   {
@@ -71,7 +71,7 @@
     "best": true,
     "recommended": false,
     "stock": false,
-    "category": "category2",
+    "category": "electrical-panels",
     "subcategory": "subcategory22"
   },
   {
@@ -80,13 +80,13 @@
     "name": "Название бренда 5",
     "brand": "Бренд 5",
     "description": "Бленда с сетчатым фильтром и посадочным кольцом LGD-NIKA-BDH-R100 (BK) (Arlight, Металл)",
-    "images": ["/images/product-cart.png"],
+    "images": ["/images/product-cart-2.png"],
     "price": 157042,
     "new": false,
     "best": true,
     "recommended": true,
     "stock": false,
-    "category": "category3",
+    "category": "automation",
     "subcategory": "subcategory33"
   },
   {
@@ -101,7 +101,7 @@
     "best": true,
     "recommended": true,
     "stock": true,
-    "category": "category1",
+    "category": "cables",
     "subcategory": "subcategory111"
   },
   {
@@ -133,5 +133,20 @@
     "stock": true,
     "category": "interior-lighting",
     "subcategory": "light-bulbs"
+  },
+  {
+    "id": 10,
+    "article": "038016",
+    "name": "Лампа светодиодная Gauss Filament Diamond E27 5 Вт 450 Лм свет тёплый белый",
+    "brand": "Бренд 9",
+    "description": "Лампа LED filament Gauss Diamond светодиодная имеет встроенное устройство управления. Гармонично сочетает в себе традиционный дизайн ламп накаливания и инновационную экономичность LED приборов. Технология изготовления базируется на применении светодиодной нити, заменяющей вольфрамовую. Она помещена в колбу-алмаз из золотистого стекла. Янтарный световой поток 450 Лм рассеивается равномерно под углом 320 градусов. Индекс цветопередачи (CRI) 80 — это комфортные условия для отдыха или работы. Лампа предназначена для бытового наружного применения.",
+    "images": ["/images/product-cart-2.png"],
+    "price": 6470,
+    "new": true,
+    "best": true,
+    "recommended": true,
+    "stock": true,
+    "category": "warm-floor",
+    "subcategory": "warm-floor"
   }
 ]

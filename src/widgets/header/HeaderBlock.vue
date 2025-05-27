@@ -46,7 +46,7 @@
           </div>
           <div class="header__bottom">
             <!-- Кнопка каталога -->
-            <CatalogButton @click="toggleMenu" />
+            <CatalogButton @click="toggleMenu" :active="isMenuOpen" />
             <HeaderSearch ref="search" @toggle-overlay="$emit('toggle-overlay', $event)" />
             <HeaderContacts ref="contacts" @toggle-overlay="$emit('toggle-overlay', $event)" />
             <UserActions

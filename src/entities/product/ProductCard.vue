@@ -323,7 +323,7 @@ export default {
     img {
       max-height: 240px;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center;
       border-radius: 10px;
     }

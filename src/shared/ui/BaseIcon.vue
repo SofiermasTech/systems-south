@@ -16,6 +16,12 @@ import GuaranteeIcon from '@/shared/ui/icons/GuaranteeIcon.vue'
 import DeliveryIcon from '@/shared/ui/icons/DeliveryIcon.vue'
 import AccessiblePriceIcon from '@/shared/ui/icons/AccessiblePriceIcon.vue'
 import CloseIcon from '@/shared/ui/icons/CloseIcon.vue'
+import CatalogButtonIcon from '@/shared/ui/icons/CatalogButtonIcon.vue'
+import CabelIcon from '@/shared/ui/icons/CabelIcon.vue'
+import ElectroIcon from '@/shared/ui/icons/ElectroIcon.vue'
+import AutomaticaIcon from '@/shared/ui/icons/AutomaticaIcon.vue'
+import LightTechnicIcon from '@/shared/ui/icons/LightTechnicIcon.vue'
+import WarmFloorIcon from '@/shared/ui/icons/WarmFloorIcon.vue'
 
 export default {
   name: 'BaseIcon',
@@ -33,6 +39,12 @@ export default {
     DeliveryIcon,
     AccessiblePriceIcon,
     CloseIcon,
+    CatalogButtonIcon,
+    CabelIcon,
+    ElectroIcon,
+    AutomaticaIcon,
+    LightTechnicIcon,
+    WarmFloorIcon,
   },
   props: {
     name: {
@@ -56,6 +68,12 @@ export default {
         DeliveryIcon,
         AccessiblePriceIcon,
         CloseIcon,
+        CatalogButtonIcon,
+        CabelIcon,
+        ElectroIcon,
+        AutomaticaIcon,
+        LightTechnicIcon,
+        WarmFloorIcon,
       }
     },
   },

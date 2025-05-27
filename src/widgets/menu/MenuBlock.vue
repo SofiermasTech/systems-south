@@ -28,7 +28,10 @@
               v-for="subcategory in subcategories"
               :key="subcategory.slug"
             >
-              <RouterLink :to="`/catalog/${activeCategory}/${subcategory.slug}`" @click="closePopup">
+              <RouterLink
+                :to="`/catalog/${activeCategory}/${subcategory.slug}`"
+                @click="closePopup"
+              >
                 <p>{{ subcategory.name }}</p>
                 <span>
                   <BaseIcon name="SelectArrowIcon" />
@@ -44,6 +47,7 @@
 
 <script>
 import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { categoryNames } from '@/shared/config/categoryNames.js'
 
 export default {
   name: 'MenuBlock',
@@ -52,14 +56,6 @@ export default {
     return {
       catalogStore: useCatalogStore(),
       activeCategory: null,
-      categoryNames: {
-        'interior-lighting': 'Домашнее освещение',
-        'light-bulbs': 'Лампочки',
-        chandelier: 'Люстры',
-        category1: 'Категория 1',
-        category2: 'Категория 2',
-        category3: 'Категория 3',
-      },
     }
   },
   props: {
@@ -72,14 +68,14 @@ export default {
     categories() {
       return this.catalogStore.getCategories.map((category) => ({
         slug: category,
-        name: this.categoryNames[category] || category,
+        name: categoryNames[category] || category,
       }))
     },
     subcategories() {
       return this.activeCategory
         ? this.catalogStore.getSubcategoriesByCategory(this.activeCategory).map((subcategory) => ({
             slug: subcategory,
-            name: this.categoryNames[subcategory] || subcategory,
+            name: categoryNames[subcategory] || subcategory,
           }))
         : []
     },
@@ -123,19 +119,11 @@ export default {
     display: flex;
     // grid-template-columns: 1fr 1fr;
     gap: 32px;
-
-    a {
-      text-decoration: none;
-      color: var(--black);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
   }
 
   &__left {
-    // width: 24vh;
-    flex: 0 0 23vw;
+    // flex: 0 0 23vw;
+    width: 23vw;
   }
 
   &__left-title {
@@ -155,10 +143,15 @@ export default {
     padding: 16px;
     border: 1px solid var(--blue-0);
     border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     cursor: pointer;
+
+    a {
+      text-decoration: none;
+      color: var(--black);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     p {
       margin: 0;
@@ -178,9 +171,17 @@ export default {
   }
 
   &__right {
-    // width: 24vh;
-    flex: 0 0 25vw;
+    width: 25vw;
+    // flex: 0 0 25vw;
     padding-top: 42px;
+
+    a {
+      text-decoration: none;
+      color: var(--black);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 
   &__right-item {

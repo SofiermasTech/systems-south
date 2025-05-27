@@ -27,9 +27,24 @@
                 <p>{{ brand }}</p>
               </label>
             </li>
-            <!-- <li class="aside-filters__list-item">
+          </ul>
+        </div>
+      </div>
+      <div class="aside-filters__item" v-if="category && !subcategory && subcategories.length > 0">
+        <div class="aside-filters__item-heading" @click="toggleFilter('subcategory')">
+          <h3 class="aside-filters__item-title">Подкатегории</h3>
+          <span
+            class="aside-filters__item-arrow select-arrow"
+            :class="{ 'arrow-open': filterStates.subcategory }"
+          >
+            <BaseIcon name="SelectArrowIcon" />
+          </span>
+        </div>
+        <div class="aside-filters__item-content" v-show="filterStates.subcategory">
+          <ul class="aside-filters__list">
+            <li class="aside-filters__list-item" v-for="subcat in subcategories" :key="subcat.slug">
               <label class="aside-filters__list-item-label">
-                <input type="checkbox" />
+                <input type="checkbox" :value="subcat.slug" v-model="selectedSubcategories" />
                 <span class="aside-filters__list-item-check">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 9">
                     <path
@@ -38,9 +53,9 @@
                     />
                   </svg>
                 </span>
-                <p>Бренд 2</p>
+                <p>{{ subcat.name }}</p>
               </label>
-            </li> -->
+            </li>
           </ul>
         </div>
       </div>
@@ -83,7 +98,7 @@
                   inputmode="numeric"
                   pattern="[0-9]*"
                   value=""
-                  placeholder="9999"
+                  :placeholder="maxPrice || 99999"
                   minlength="2"
                   v-model.number="priceTo"
                 />
@@ -106,7 +121,8 @@
 </template>
 
 <script>
-import { useCatalogStore } from '@/shared/stores/catalog'
+import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { categoryNames } from '@/shared/config/categoryNames.js'
 
 export default {
   props: {
@@ -128,6 +144,8 @@ export default {
       },
       selectedBrands: [],
       appliedBrands: [],
+      selectedSubcategories: [],
+      appliedSubcategories: [],
       priceFrom: null,
       priceTo: null,
       appliedPriceRange: [null, null],
@@ -155,6 +173,17 @@ export default {
       // Эмитим событие, чтобы применить сохранённые фильтры
       this.$emit('apply-filters', { brands: this.appliedBrands })
     }
+
+    const savedSelectedSubcategories = localStorage.getItem('selectedSubcategories')
+    if (savedSelectedSubcategories) {
+      this.selectedSubcategories = JSON.parse(savedSelectedSubcategories)
+    }
+
+    const savedAppliedSubcategories = localStorage.getItem('appliedSubcategories')
+    if (savedAppliedSubcategories) {
+      this.appliedSubcategories = JSON.parse(savedAppliedSubcategories)
+    }
+
     const savedPriceFrom = localStorage.getItem('priceFrom')
     if (savedPriceFrom) {
       this.priceFrom = JSON.parse(savedPriceFrom)
@@ -185,6 +214,12 @@ export default {
     },
     appliedBrands(newValue) {
       localStorage.setItem('appliedBrands', JSON.stringify(newValue))
+    },
+    selectedSubcategories(newValue) {
+      localStorage.setItem('selectedSubcategories', JSON.stringify(newValue))
+    },
+    appliedSubcategories(newValue) {
+      localStorage.setItem('appliedSubcategories', JSON.stringify(newValue))
     },
     priceFrom(newValue) {
       localStorage.setItem('priceFrom', JSON.stringify(newValue))
@@ -226,6 +261,36 @@ export default {
       const brands = [...new Set(products.map((product) => product.brand))]
       return brands.filter((brand) => brand && brand.trim() !== '')
     },
+    subcategories() {
+      if (!this.category || this.subcategory) {
+        return []
+      }
+      const subcats = this.catalogStore.getSubcategoriesByCategory(this.category)
+      return subcats.map((subcat) => ({
+        slug: subcat,
+        name: categoryNames[subcat] || subcat,
+      }))
+    },
+    maxPrice() {
+      let products = []
+      if (this.subcategory) {
+        products = this.catalogStore.getProductsByCategoryAndSubcategory(
+          this.category,
+          this.subcategory,
+        )
+      } else if (this.category) {
+        products = this.catalogStore.getProductsByCategory(this.category)
+      } else {
+        products = this.catalogStore.getProducts
+      }
+
+      if (!products || !Array.isArray(products) || products.length === 0) {
+        return null
+      }
+
+      const max = Math.max(...products.map((product) => product.price))
+      return isFinite(max) ? max : null
+    },
   },
   methods: {
     toggleFilter(filterId) {
@@ -233,6 +298,7 @@ export default {
     },
     applyFilters() {
       this.appliedBrands = [...this.selectedBrands]
+      this.appliedSubcategories = [...this.selectedSubcategories]
       let priceFrom = this.priceFrom !== null ? Number(this.priceFrom) : null
       let priceTo = this.priceTo !== null ? Number(this.priceTo) : null
 
@@ -243,12 +309,15 @@ export default {
       this.appliedPriceRange = [priceFrom, priceTo]
       this.$emit('apply-filters', {
         brands: this.appliedBrands,
+        subcategories: this.appliedSubcategories,
         priceRange: this.appliedPriceRange,
       })
     },
     resetFilters() {
       this.selectedBrands = []
       this.appliedBrands = []
+      this.selectedSubcategories = []
+      this.appliedSubcategories = []
       this.priceFrom = null
       this.priceTo = null
       this.appliedPriceRange = [null, null]
@@ -256,6 +325,8 @@ export default {
       localStorage.removeItem('filterStates')
       localStorage.removeItem('selectedBrands')
       localStorage.removeItem('appliedBrands')
+      localStorage.removeItem('selectedSubcategories')
+      localStorage.removeItem('appliedSubcategories')
       localStorage.removeItem('priceFrom')
       localStorage.removeItem('priceTo')
       localStorage.removeItem('appliedPriceRange')

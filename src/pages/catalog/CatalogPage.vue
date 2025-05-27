@@ -55,6 +55,7 @@ import CatalogSortView from '@/features/catalog-filters/CatalogSortView.vue'
 import ProductCard from '@/entities/product/ProductCard.vue'
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import { categoryNames } from '@/shared/config/categoryNames.js'
 
 export default {
   components: {
@@ -71,17 +72,10 @@ export default {
       sortType: 'cheap-first',
       appliedFilters: {
         brands: [],
+        subcategories: [],
         priceRange: [null, null],
       },
       viewMode: localStorage.getItem('viewMode') || 'vertical',
-      categoryNames: {
-        'interior-lighting': 'Домашнее освещение',
-        'light-bulbs': 'Лампочки',
-        chandelier: 'Люстры',
-        category1: 'Категория 1',
-        category2: 'Категория 2',
-        category3: 'Категория 3',
-      },
     }
   },
   props: {
@@ -99,14 +93,14 @@ export default {
       const catalogStore = useCatalogStore()
       return catalogStore.getCategories.map((category) => ({
         slug: category,
-        name: this.categoryNames[category] || category,
+        name: categoryNames[category] || category,
       }))
     },
     subcategories() {
       return this.activeCategory
         ? this.catalogStore.getSubcategoriesByCategory(this.activeCategory).map((subcategory) => ({
             slug: subcategory,
-            name: this.categoryNames[subcategory] || subcategory,
+            name: categoryNames[subcategory] || subcategory,
           }))
         : []
     },
@@ -115,10 +109,10 @@ export default {
     },
     activeCategoryName() {
       if (this.subcategory) {
-        return this.categoryNames[this.subcategory] || this.subcategory
+        return categoryNames[this.subcategory] || this.subcategory
       }
       if (this.category) {
-        return this.categoryNames[this.category] || this.category
+        return categoryNames[this.category] || this.category
       }
       return 'Каталог'
     },
@@ -164,6 +158,12 @@ export default {
         products = products.filter((product) => this.appliedFilters.brands.includes(product.brand))
       }
 
+      if (this.appliedFilters.subcategories.length > 0) {
+        products = products.filter((product) =>
+          this.appliedFilters.subcategories.includes(product.subcategory),
+        )
+      }
+
       if (
         this.appliedFilters.priceRange &&
         (this.appliedFilters.priceRange[0] !== null || this.appliedFilters.priceRange[1] !== null)
@@ -189,6 +189,7 @@ export default {
     handleApplyFilters(filters) {
       this.appliedFilters = {
         brands: filters.brands || [],
+        subcategories: filters.subcategories || [],
         priceRange: filters.priceRange || [null, null],
       }
     },
@@ -208,6 +209,7 @@ export default {
       if (to.path !== from.path) {
         this.appliedFilters = {
           brands: [],
+          subcategories: [],
           priceRange: [null, null],
         }
       }

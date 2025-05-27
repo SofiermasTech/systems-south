@@ -75,7 +75,7 @@ export default {
           : null
       }
 
-      console.log('Breadcrumbs:', crumbs) // Отладка
+      // console.log('Breadcrumbs:', crumbs)
       return crumbs.reverse()
     },
   },

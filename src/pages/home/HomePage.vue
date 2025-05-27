@@ -1,5 +1,6 @@
 <template>
   <HomeHero />
+  <HomePopularCat />
   <ProductSection
     :title="newProductsTitle"
     filter-type="new"
@@ -19,6 +20,7 @@
 
 <script>
 import HomeHero from '@/pages/home/ui/HomeHero.vue'
+import HomePopularCat from '@/pages/home/ui/HomePopularCat.vue'
 import ProductSection from '@widgets/product-section/ProductSection.vue'
 import HomeWorkWithUs from '@/pages/home/ui/HomeWorkWithUs.vue'
 import HomeAboutUs from '@/pages/home/ui/HomeAboutUs.vue'
@@ -30,6 +32,7 @@ export default {
   name: 'HomePage',
   components: {
     HomeHero,
+    HomePopularCat,
     ProductSection,
     HomeWorkWithUs,
     HomeAboutUs,
