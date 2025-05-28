@@ -1,109 +1,143 @@
 <template>
-  <div class="search-page container catalog">
-    <IntroPages title="Результат поиска" class="catalog__intro" />
-    <div class="catalog__categories">
-      <p class="catalog__categories-title">Категории:</p>
-      <ul class="catalog__categories-list">
-        <li class="catalog__categories-item active">
-          <base-button>
-            <span>Категория 1</span>
-          </base-button>
-        </li>
-        <li class="catalog__categories-item">
-          <base-button>
-            <span>Категория 2</span>
-          </base-button>
-        </li>
-        <li class="catalog__categories-item">
-          <base-button>
-            <span>Категория 3</span>
-          </base-button>
-        </li>
-      </ul>
-    </div>
-
-    <CatalogFilters class="catalog__filters" @apply-filters="handleApplyFilters" />
-
-    <div class="catalog__sort">
-      <CatalogSortPanel @sort-change="handleSortChange" />
-      <CatalogSortView :view-mode="viewMode" @view-change="handleViewChange" />
-    </div>
-
-    <div class="catalog__cards" :class="{ horizontal: viewMode === 'horizontal' }">
-      <ProductCard
-        v-for="product in filteredProducts"
-        :key="product.id"
-        :product-id="product.id"
-        :is-horizontal="viewMode === 'horizontal'"
-        @toggle-favorite="handleToggleFavorite"
-      />
-    </div>
-  </div>
+  <BaseCatalogPage
+    title="Результат поиска"
+    subtitle="Найдено в категориях:"
+    :products="filteredSearchProducts"
+    :categories="categories"
+    :activeCategory="activeCategory"
+    :category="category"
+    :subcategory="null"
+    @toggle-favorite="handleToggleFavorite"
+    @apply-filters="handleApplyFilters"
+  >
+  </BaseCatalogPage>
+  <CallbackSection />
 </template>
 
 <script>
 import { useCatalogStore } from '@/shared/stores/catalog'
-import IntroPages from '@widgets/intro-pages/IntroPages.vue'
-import CatalogFilters from '@/features/catalog-filters/CatalogFilters.vue'
-import CatalogSortPanel from '@/features/catalog-filters/CatalogSortPanel.vue'
-import CatalogSortView from '@/features/catalog-filters/CatalogSortView.vue'
-import ProductCard from '@/entities/product/ProductCard.vue'
+import BaseCatalogPage from '@/shared/layouts/BaseCatalogPage.vue'
+import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import { categoryNames } from '@/shared/config/categoryNames.js'
 
 export default {
   name: 'SearchPage',
   components: {
-    IntroPages,
-    CatalogFilters,
-    CatalogSortPanel,
-    CatalogSortView,
-    ProductCard,
+    BaseCatalogPage,
+    CallbackSection,
   },
   data() {
     return {
-      catalogStore: null,
-      sortType: 'cheap-first',
+      catalogStore: useCatalogStore(),
+      activeCategory: null,
       appliedFilters: {
-        brands: [], // Храним применённые фильтры
+        brands: [],
+        subcategories: [],
+        priceRange: [null, null],
       },
-      viewMode: localStorage.getItem('viewMode') || 'vertical',
     }
-  },
-  created() {
-    this.catalogStore = useCatalogStore()
-    this.catalogStore.loadProducts()
   },
   computed: {
     searchQuery() {
       return this.$route.query.query || ''
     },
-    filteredProducts() {
+    category() {
+      return this.$route.params.category || null
+    },
+    searchProducts() {
       const query = this.searchQuery.toLowerCase().trim()
-      if (!query || !this.catalogStore) return this.catalogStore?.getProducts || []
+      if (!query) return this.catalogStore?.getProducts || []
       return this.catalogStore.getProducts.filter((product) =>
         product.name.toLowerCase().includes(query),
       )
     },
+    categories() {
+      let products = this.searchProducts
+      if (this.appliedFilters.subcategories.length > 0) {
+        // Ограничиваем категории, если выбраны подкатегории
+        products = products.filter((product) =>
+          this.appliedFilters.subcategories.includes(product.subcategory),
+        )
+      }
+      const searchCategories = [...new Set(products.map((product) => product.category))]
+      return searchCategories.map((category) => ({
+        slug: category,
+        name: categoryNames[category] || category,
+        to: `/search/${category}?query=${encodeURIComponent(this.searchQuery)}`,
+      }))
+    },
+    filteredSearchProducts() {
+      let products = [...this.searchProducts]
+
+      if (this.activeCategory) {
+        products = products.filter((product) => product.category === this.activeCategory)
+      }
+
+      // Применяем фильтры из BaseCatalogPage
+      if (this.appliedFilters.brands.length > 0) {
+        products = products.filter((product) => this.appliedFilters.brands.includes(product.brand))
+      }
+
+      if (this.appliedFilters.subcategories.length > 0) {
+        products = products.filter((product) =>
+          this.appliedFilters.subcategories.includes(product.subcategory),
+        )
+      }
+
+      if (
+        this.appliedFilters.priceRange &&
+        (this.appliedFilters.priceRange[0] !== null || this.appliedFilters.priceRange[1] !== null)
+      ) {
+        products = products.filter((product) => {
+          const price = product.price
+          const min = this.appliedFilters.priceRange[0]
+          const max = this.appliedFilters.priceRange[1]
+          return (min === null || price >= min) && (max === null || price <= max)
+        })
+      }
+
+      return products
+    },
+  },
+  async created() {
+    await this.catalogStore.loadProducts()
+    if (this.category) {
+      this.activeCategory = this.category
+    }
   },
   methods: {
-    handleSortChange(sortType) {
-      this.sortType = sortType
-    },
-    handleApplyFilters(filters) {
-      this.appliedFilters.brands = filters.brands
-    },
     handleToggleFavorite(product) {
       this.$emit('toggle-favorite', product)
     },
-    handleViewChange(mode) {
-      this.viewMode = mode
+    handleApplyFilters(filters) {
+      this.appliedFilters = {
+        brands: filters.brands || [],
+        subcategories: filters.subcategories || [],
+        priceRange: filters.priceRange || [null, null],
+      }
+      // Если выбраны подкатегории, обновляем activeCategory
+      if (filters.subcategories?.length > 0) {
+        const subcategory = filters.subcategories[0]
+        const product = this.searchProducts.find((p) => p.subcategory === subcategory)
+        this.activeCategory = product ? product.category : null
+      } else {
+        this.activeCategory = this.category
+      }
     },
   },
   watch: {
-    viewMode(newValue) {
-      localStorage.setItem('viewMode', newValue)
+    $route(to) {
+      this.activeCategory = to.params.category || null
+      if (to.query.query !== this.searchQuery) {
+        this.appliedFilters = {
+          brands: [],
+          subcategories: [],
+          priceRange: [null, null],
+        }
+      }
     },
   },
 }
 </script>
 
-<style></style>
+<style lang="scss"></style>

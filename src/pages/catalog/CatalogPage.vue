@@ -1,81 +1,31 @@
 <template>
-  <div class="catalog container">
-    <IntroPages class="catalog__intro" :title="activeCategoryName" />
-    <div class="catalog__categories">
-      <p class="catalog__categories-title">Категории:</p>
-      <ul class="catalog__categories-list">
-        <li
-          class="catalog__categories-item"
-          v-for="category in categories"
-          :key="category.slug"
-          :class="{ active: activeCategory === category.slug }"
-        >
-          <RouterLink
-            class="base-button"
-            :to="`/catalog/${category.slug}`"
-            :class="{ 'base-button--active': activeCategory === category.slug }"
-          >
-            <span>{{ category.name }}</span>
-          </RouterLink>
-        </li>
-      </ul>
-    </div>
-
-    <CatalogFilters
-      class="catalog__filters"
-      @apply-filters="handleApplyFilters"
-      :category="category"
-      :subcategory="subcategory"
-    />
-
-    <div class="catalog__sort">
-      <CatalogSortPanel @sort-change="handleSortChange" />
-      <CatalogSortView :view-mode="viewMode" @view-change="handleViewChange" />
-    </div>
-
-    <div class="catalog__cards" :class="{ horizontal: viewMode === 'horizontal' }">
-      <ProductCard
-        v-for="product in filteredProducts"
-        :key="product.id"
-        :product-id="product.id"
-        :is-horizontal="viewMode === 'horizontal'"
-        @toggle-favorite="handleToggleFavorite"
-      />
-      <p v-if="filteredProducts.length === 0">Нет результатов по запросу</p>
-    </div>
-  </div>
+  <BaseCatalogPage
+    :title="activeCategoryName"
+    subtitle="Категории:"
+    :products="products"
+    :categories="categories"
+    :activeCategory="activeCategory"
+    :category="category"
+    :subcategory="subcategory"
+    @toggle-favorite="handleToggleFavorite"
+  />
   <CallbackSection />
 </template>
 
 <script>
 import { useCatalogStore } from '@/shared/stores/catalog'
-import CatalogFilters from '@/features/catalog-filters/CatalogFilters.vue'
-import CatalogSortPanel from '@/features/catalog-filters/CatalogSortPanel.vue'
-import CatalogSortView from '@/features/catalog-filters/CatalogSortView.vue'
-import ProductCard from '@/entities/product/ProductCard.vue'
-import IntroPages from '@widgets/intro-pages/IntroPages.vue'
+import BaseCatalogPage from '@/shared/layouts/BaseCatalogPage.vue'
 import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
 import { categoryNames } from '@/shared/config/categoryNames.js'
 
 export default {
   components: {
-    IntroPages,
-    CatalogFilters,
-    CatalogSortPanel,
-    CatalogSortView,
-    ProductCard,
+    BaseCatalogPage,
     CallbackSection,
   },
   data() {
     return {
       catalogStore: null,
-      sortType: 'cheap-first',
-      appliedFilters: {
-        brands: [],
-        subcategories: [],
-        priceRange: [null, null],
-      },
-      viewMode: localStorage.getItem('viewMode') || 'vertical',
     }
   },
   props: {
@@ -94,6 +44,7 @@ export default {
       return catalogStore.getCategories.map((category) => ({
         slug: category,
         name: categoryNames[category] || category,
+        to: `/catalog/${category}`,
       }))
     },
     subcategories() {
@@ -123,7 +74,6 @@ export default {
           this.category,
           this.subcategory,
         )
-        // console.log(`Products for ${this.category}/${this.subcategory}:`, products)
         return products
       }
       if (this.category) {
@@ -131,74 +81,74 @@ export default {
       }
       return catalogStore.getProducts
     },
-    sortedProducts() {
-      const products = [...this.products]
+    // sortedProducts() {
+    //   const products = [...this.products]
 
-      if (!this.sortType) {
-        return products
-      }
+    //   if (!this.sortType) {
+    //     return products
+    //   }
 
-      if (this.sortType === 'cheap-first') {
-        return products.sort((a, b) => a.price - b.price)
-      }
+    //   if (this.sortType === 'cheap-first') {
+    //     return products.sort((a, b) => a.price - b.price)
+    //   }
 
-      if (this.sortType === 'expensive-first') {
-        return products.sort((a, b) => b.price - a.price)
-      }
+    //   if (this.sortType === 'expensive-first') {
+    //     return products.sort((a, b) => b.price - a.price)
+    //   }
 
-      if (this.sortType === 'in-stock') {
-        return products.sort((a, b) => (a.stock === b.stock ? 0 : a.stock ? -1 : 1))
-      }
+    //   if (this.sortType === 'in-stock') {
+    //     return products.sort((a, b) => (a.stock === b.stock ? 0 : a.stock ? -1 : 1))
+    //   }
 
-      return products
-    },
-    filteredProducts() {
-      let products = [...this.sortedProducts]
-      if (this.appliedFilters.brands.length > 0) {
-        products = products.filter((product) => this.appliedFilters.brands.includes(product.brand))
-      }
+    //   return products
+    // },
+    // filteredProducts() {
+    //   let products = [...this.sortedProducts]
+    //   if (this.appliedFilters.brands.length > 0) {
+    //     products = products.filter((product) => this.appliedFilters.brands.includes(product.brand))
+    //   }
 
-      if (this.appliedFilters.subcategories.length > 0) {
-        products = products.filter((product) =>
-          this.appliedFilters.subcategories.includes(product.subcategory),
-        )
-      }
+    //   if (this.appliedFilters.subcategories.length > 0) {
+    //     products = products.filter((product) =>
+    //       this.appliedFilters.subcategories.includes(product.subcategory),
+    //     )
+    //   }
 
-      if (
-        this.appliedFilters.priceRange &&
-        (this.appliedFilters.priceRange[0] !== null || this.appliedFilters.priceRange[1] !== null)
-      ) {
-        products = products.filter((product) => {
-          const price = product.price
-          const min = this.appliedFilters.priceRange[0]
-          const max = this.appliedFilters.priceRange[1]
-          return (min === null || price >= min) && (max === null || price <= max)
-        })
-      }
-      return products
-    },
+    //   if (
+    //     this.appliedFilters.priceRange &&
+    //     (this.appliedFilters.priceRange[0] !== null || this.appliedFilters.priceRange[1] !== null)
+    //   ) {
+    //     products = products.filter((product) => {
+    //       const price = product.price
+    //       const min = this.appliedFilters.priceRange[0]
+    //       const max = this.appliedFilters.priceRange[1]
+    //       return (min === null || price >= min) && (max === null || price <= max)
+    //     })
+    //   }
+    //   return products
+    // },
   },
   mounted() {
     this.catalogStore = useCatalogStore()
     this.catalogStore.loadProducts()
   },
   methods: {
-    handleSortChange(sortType) {
-      this.sortType = sortType
-    },
-    handleApplyFilters(filters) {
-      this.appliedFilters = {
-        brands: filters.brands || [],
-        subcategories: filters.subcategories || [],
-        priceRange: filters.priceRange || [null, null],
-      }
-    },
+    // handleSortChange(sortType) {
+    //   this.sortType = sortType
+    // },
+    // handleApplyFilters(filters) {
+    //   this.appliedFilters = {
+    //     brands: filters.brands || [],
+    //     subcategories: filters.subcategories || [],
+    //     priceRange: filters.priceRange || [null, null],
+    //   }
+    // },
     handleToggleFavorite(product) {
       this.$emit('toggle-favorite', product)
     },
-    handleViewChange(mode) {
-      this.viewMode = mode
-    },
+    // handleViewChange(mode) {
+    //   this.viewMode = mode
+    // },
   },
   watch: {
     viewMode(newValue) {

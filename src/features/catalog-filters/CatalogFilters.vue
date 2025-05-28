@@ -13,7 +13,7 @@
         </div>
         <div class="aside-filters__item-content" v-show="filterStates.brand">
           <ul class="aside-filters__list">
-            <li class="aside-filters__list-item" v-for="brand in brands" :key="brand">
+            <li class="aside-filters__list-item" v-for="brand in availableBrands" :key="brand">
               <label class="aside-filters__list-item-label">
                 <input type="checkbox" :value="brand" v-model="selectedBrands" />
                 <span class="aside-filters__list-item-check">
@@ -30,7 +30,7 @@
           </ul>
         </div>
       </div>
-      <div class="aside-filters__item" v-if="category && !subcategory && subcategories.length > 0">
+      <div class="aside-filters__item">
         <div class="aside-filters__item-heading" @click="toggleFilter('subcategory')">
           <h3 class="aside-filters__item-title">Подкатегории</h3>
           <span
@@ -42,7 +42,7 @@
         </div>
         <div class="aside-filters__item-content" v-show="filterStates.subcategory">
           <ul class="aside-filters__list">
-            <li class="aside-filters__list-item" v-for="subcat in subcategories" :key="subcat.slug">
+            <li class="aside-filters__list-item" v-for="subcat in availableSubcategories" :key="subcat.slug">
               <label class="aside-filters__list-item-label">
                 <input type="checkbox" :value="subcat.slug" v-model="selectedSubcategories" />
                 <span class="aside-filters__list-item-check">
@@ -80,7 +80,6 @@
                   type="text"
                   inputmode="numeric"
                   pattern="[0-9]*"
-                  value=""
                   placeholder="0"
                   minlength="2"
                   v-model.number="priceFrom"
@@ -97,7 +96,6 @@
                   type="text"
                   inputmode="numeric"
                   pattern="[0-9]*"
-                  value=""
                   :placeholder="maxPrice || 99999"
                   minlength="2"
                   v-model.number="priceTo"
@@ -121,218 +119,116 @@
 </template>
 
 <script>
-import { useCatalogStore } from '@/shared/stores/catalog.js'
-import { categoryNames } from '@/shared/config/categoryNames.js'
+import { useCatalogStore } from '@/shared/stores/catalog';
+import { categoryNames } from '@/shared/config/categoryNames';
 
 export default {
+  name: 'CatalogFilters',
   props: {
-    category: {
-      type: String,
-      default: null,
-    },
-    subcategory: {
-      type: String,
-      default: null,
-    },
+    category: { type: String, default: null },
+    subcategory: { type: String, default: null },
+    products: { type: Array, default: () => [] },
   },
   data() {
     return {
-      catalogStore: null,
+      catalogStore: useCatalogStore(),
       filterStates: {
         brand: true,
+        subcategory: true,
         price: false,
       },
       selectedBrands: [],
-      appliedBrands: [],
       selectedSubcategories: [],
-      appliedSubcategories: [],
       priceFrom: null,
       priceTo: null,
-      appliedPriceRange: [null, null],
-    }
+    };
   },
   emits: ['apply-filters'],
   async created() {
-    this.catalogStore = useCatalogStore()
-    await this.catalogStore.loadProducts()
-
-    // Восстанавливаем состояния из localStorage
-    const savedFilterStates = localStorage.getItem('filterStates')
-    if (savedFilterStates) {
-      this.filterStates = JSON.parse(savedFilterStates)
-    }
-
-    const savedSelectedBrands = localStorage.getItem('selectedBrands')
-    if (savedSelectedBrands) {
-      this.selectedBrands = JSON.parse(savedSelectedBrands)
-    }
-
-    const savedAppliedBrands = localStorage.getItem('appliedBrands')
-    if (savedAppliedBrands) {
-      this.appliedBrands = JSON.parse(savedAppliedBrands)
-      // Эмитим событие, чтобы применить сохранённые фильтры
-      this.$emit('apply-filters', { brands: this.appliedBrands })
-    }
-
-    const savedSelectedSubcategories = localStorage.getItem('selectedSubcategories')
-    if (savedSelectedSubcategories) {
-      this.selectedSubcategories = JSON.parse(savedSelectedSubcategories)
-    }
-
-    const savedAppliedSubcategories = localStorage.getItem('appliedSubcategories')
-    if (savedAppliedSubcategories) {
-      this.appliedSubcategories = JSON.parse(savedAppliedSubcategories)
-    }
-
-    const savedPriceFrom = localStorage.getItem('priceFrom')
-    if (savedPriceFrom) {
-      this.priceFrom = JSON.parse(savedPriceFrom)
-    }
-
-    const savedPriceTo = localStorage.getItem('priceTo')
-    if (savedPriceTo) {
-      this.priceTo = JSON.parse(savedPriceTo)
-    }
-    const savedAppliedPriceRange = localStorage.getItem('appliedPriceRange')
-    if (savedAppliedPriceRange) {
-      this.appliedPriceRange = JSON.parse(savedAppliedPriceRange)
-      this.$emit('apply-filters', {
-        brands: this.appliedBrands,
-        priceRange: this.appliedPriceRange,
-      })
-    }
-  },
-  watch: {
-    filterStates: {
-      handler(newValue) {
-        localStorage.setItem('filterStates', JSON.stringify(newValue))
-      },
-      deep: true, // Отслеживаем изменения внутри объекта
-    },
-    selectedBrands(newValue) {
-      localStorage.setItem('selectedBrands', JSON.stringify(newValue))
-    },
-    appliedBrands(newValue) {
-      localStorage.setItem('appliedBrands', JSON.stringify(newValue))
-    },
-    selectedSubcategories(newValue) {
-      localStorage.setItem('selectedSubcategories', JSON.stringify(newValue))
-    },
-    appliedSubcategories(newValue) {
-      localStorage.setItem('appliedSubcategories', JSON.stringify(newValue))
-    },
-    priceFrom(newValue) {
-      localStorage.setItem('priceFrom', JSON.stringify(newValue))
-    },
-    priceTo(newValue) {
-      localStorage.setItem('priceTo', JSON.stringify(newValue))
-    },
-    appliedPriceRange(newValue) {
-      localStorage.setItem('appliedPriceRange', JSON.stringify(newValue))
-    },
-    category() {
-      this.resetFilters()
-    },
-    subcategory() {
-      this.resetFilters()
-    },
+    await this.catalogStore.loadProducts();
   },
   computed: {
-    products() {
-      return this.catalogStore.getProducts
-    },
-    brands() {
-      let products = []
+    availableBrands() {
+      if (this.products && this.products.length > 0) {
+        const brands = [...new Set(this.products.map((product) => product.brand))];
+        return brands.filter((brand) => brand && brand.trim() !== '');
+      }
+      // Для страницы каталога, если products не переданы
+      let products = this.catalogStore.getProducts;
       if (this.subcategory) {
-        products = this.catalogStore.getProductsByCategoryAndSubcategory(
-          this.category,
-          this.subcategory,
-        )
+        products = this.catalogStore.getProductsByCategoryAndSubcategory(this.category, this.subcategory);
       } else if (this.category) {
-        products = this.catalogStore.getProductsByCategory(this.category)
-      } else {
-        products = this.catalogStore.getProducts
+        products = this.catalogStore.getProductsByCategory(this.category);
       }
-
-      if (!products || !Array.isArray(products)) {
-        return []
-      }
-
-      const brands = [...new Set(products.map((product) => product.brand))]
-      return brands.filter((brand) => brand && brand.trim() !== '')
+      const brands = [...new Set(products.map((product) => product.brand))];
+      return brands.filter((brand) => brand && brand.trim() !== '');
     },
-    subcategories() {
-      if (!this.category || this.subcategory) {
-        return []
+    availableSubcategories() {
+      if (this.products && this.products.length > 0) {
+        const subcats = [...new Set(this.products.map((product) => product.subcategory))];
+        return subcats
+          .filter((subcat) => subcat && subcat.trim() !== '')
+          .map((subcat) => ({
+            slug: subcat,
+            name: categoryNames[subcat] || subcat,
+          }));
       }
-      const subcats = this.catalogStore.getSubcategoriesByCategory(this.category)
+      
+      if (!this.category) {
+        const subcats = [...new Set(this.catalogStore.getProducts.map((product) => product.subcategory))];
+        return subcats
+          .filter((subcat) => subcat && subcat.trim() !== '')
+          .map((subcat) => ({
+            slug: subcat,
+            name: categoryNames[subcat] || subcat,
+          }));
+      }
+      const subcats = this.catalogStore.getSubcategoriesByCategory(this.category);
       return subcats.map((subcat) => ({
         slug: subcat,
         name: categoryNames[subcat] || subcat,
-      }))
+      }));
     },
     maxPrice() {
-      let products = []
-      if (this.subcategory) {
-        products = this.catalogStore.getProductsByCategoryAndSubcategory(
-          this.category,
-          this.subcategory,
-        )
-      } else if (this.category) {
-        products = this.catalogStore.getProductsByCategory(this.category)
-      } else {
-        products = this.catalogStore.getProducts
-      }
-
+      const products = this.products && this.products.length > 0 ? this.products : this.catalogStore.getProducts;
       if (!products || !Array.isArray(products) || products.length === 0) {
-        return null
+        return null;
       }
-
-      const max = Math.max(...products.map((product) => product.price))
-      return isFinite(max) ? max : null
+      const max = Math.max(...products.map((product) => product.price));
+      return isFinite(max) ? max : null;
     },
   },
   methods: {
     toggleFilter(filterId) {
-      this.filterStates[filterId] = !this.filterStates[filterId]
+      this.filterStates[filterId] = !this.filterStates[filterId];
     },
     applyFilters() {
-      this.appliedBrands = [...this.selectedBrands]
-      this.appliedSubcategories = [...this.selectedSubcategories]
-      let priceFrom = this.priceFrom !== null ? Number(this.priceFrom) : null
-      let priceTo = this.priceTo !== null ? Number(this.priceTo) : null
+      let priceFrom = this.priceFrom !== null ? Number(this.priceFrom) : null;
+      let priceTo = this.priceTo !== null ? Number(this.priceTo) : null;
 
       if (priceFrom !== null && priceTo !== null && priceFrom > priceTo) {
-        ;[priceFrom, priceTo] = [priceTo, priceFrom] // Поменять местами, если from > to
+        [priceFrom, priceTo] = [priceTo, priceFrom];
       }
 
-      this.appliedPriceRange = [priceFrom, priceTo]
       this.$emit('apply-filters', {
-        brands: this.appliedBrands,
-        subcategories: this.appliedSubcategories,
-        priceRange: this.appliedPriceRange,
-      })
+        brands: [...this.selectedBrands],
+        subcategories: [...this.selectedSubcategories],
+        priceRange: [priceFrom, priceTo],
+      });
     },
     resetFilters() {
-      this.selectedBrands = []
-      this.appliedBrands = []
-      this.selectedSubcategories = []
-      this.appliedSubcategories = []
-      this.priceFrom = null
-      this.priceTo = null
-      this.appliedPriceRange = [null, null]
-      this.$emit('apply-filters', { brands: this.appliedBrands })
-      localStorage.removeItem('filterStates')
-      localStorage.removeItem('selectedBrands')
-      localStorage.removeItem('appliedBrands')
-      localStorage.removeItem('selectedSubcategories')
-      localStorage.removeItem('appliedSubcategories')
-      localStorage.removeItem('priceFrom')
-      localStorage.removeItem('priceTo')
-      localStorage.removeItem('appliedPriceRange')
+      this.selectedBrands = [];
+      this.selectedSubcategories = [];
+      this.priceFrom = null;
+      this.priceTo = null;
+      this.$emit('apply-filters', {
+        brands: [],
+        subcategories: [],
+        priceRange: [null, null],
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss">
@@ -450,9 +346,6 @@ export default {
     }
   }
 
-  &__options {
-  }
-
   &__options-btn {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -492,9 +385,6 @@ export default {
     }
   }
 
-  &__price-to {
-  }
-
   &__btn-wrapper {
     width: 100%;
     display: flex;
@@ -525,8 +415,6 @@ export default {
     color: var(--black);
   }
 }
-.select-arrow {
-}
-.filter-input {
-}
+.select-arrow {}
+.filter-input {}
 </style>

@@ -153,9 +153,10 @@ const routes = [
     meta: { breadcrumb: 'Контакты' },
   },
   {
-    path: '/search',
+    path: '/search/:category?',
     name: 'SearchPage',
     component: SearchPage,
+    props: true,
     meta: { breadcrumb: 'Результат поиска' },
   },
   {

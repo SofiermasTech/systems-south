@@ -42,41 +42,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-// .promo-page {
-//   &__content {
-//     margin-top: 60px;
-//     display: flex;
-//     justify-content: space-between;
-//     gap: 20px;
-//   }
-
-//   &__img {
-//     max-width: 550px;
-//     width: 100%;
-
-//     img {
-//       width: 100%;
-//       object-fit: cover;
-//       object-position: center;
-//     }
-//   }
-
-//   &__text {
-//     max-width: 50%;
-//     font-size: 14px;
-//   }
-// }
-
-// .additional {
-//   margin-bottom: var(--section-offset);
-//   margin-top: 32px;
-//   display: flex;
-//   justify-content: space-between;
-//   gap: 20px;
-
-//   .other-items {
-//     margin-top: 28px;
-//   }
-// }
-</style>
+<style lang="scss"></style>
