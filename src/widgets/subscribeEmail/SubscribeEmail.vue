@@ -2,27 +2,23 @@
   <div class="subscribe">
     <h3 class="subscribe__title">Будь в курсе акций!</h3>
     <form class="subscribe__form" novalidate @submit.prevent="submitSubscribeForm">
-      <label class="subscribe__label">
-        <input
-          class="subscribe__input"
-          :class="{ error: errors.email }"
-          type="email"
-          v-model.trim="formSubscribe.email"
-          required
-          placeholder="Введите ваш e-mail"
-        />
-        <span v-if="errors.email" class="subscribe__error">{{ errors.email }}</span>
-      </label>
-      <label class="subscribe__label subscribe__label--checkbox">
-        <input
-          type="checkbox"
-          v-model="formSubscribe.checkbox"
-          :class="{ error: errors.checkbox }"
-          required
-        />
-        <p>Я согласен/на на обработку персональных данных</p>
-        <span v-if="errors.checkbox" class="subscribe__error">{{ errors.checkbox }}</span>
-      </label>
+      <BaseInput
+        type="email"
+        placeholder="Введите ваш e-mail"
+        required
+        v-model.trim="formSubscribe.email"
+        :error="errors.email"
+      />
+      <base-input
+        type="checkbox"
+        required
+        v-model="formSubscribe.checkbox"
+        :error="errors.checkbox"
+      >
+        <template #label>
+          <p>Я согласен/на на обработку персональных данных</p>
+        </template>
+      </base-input>
       <button
         class="subscribe__btn-submit base-button"
         type="submit"
@@ -129,55 +125,7 @@ export default {
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-  }
-
-  &__label {
-    position: relative;
-  }
-
-  &__input {
-    width: 100%;
-    padding: 16px;
-    border-radius: 500px;
-    background-color: var(--blue-0);
-    border: 1px solid transparent;
-    font-size: 14px;
-    color: var(--black);
-
-    &::placeholder {
-      font-size: 14px;
-      color: var(--blue-300);
-    }
-
-    &.error {
-      border-color: var(--red);
-    }
-  }
-
-  &__label--checkbox {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-
-    p {
-      margin: 0;
-      color: var(--grey-200);
-    }
-
-    input {
-      &.error {
-        border-color: var(--red);
-      }
-    }
-  }
-
-  &__error {
-    position: absolute;
-    bottom: -13px;
-    left: 16px;
-    color: var(--red);
-    font-size: 10px;
+    gap: 16px;
   }
 
   &__btn-submit {

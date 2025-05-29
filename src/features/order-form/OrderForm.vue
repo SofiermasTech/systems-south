@@ -3,94 +3,45 @@
     <fieldset class="order-form__fieldset">
       <legend class="order-form__title">Данные заказчика</legend>
       <div class="order-form__wrapper">
-        <label class="order-form__label popup-form__label">
-          <input
-            class="order-form__input popup-form__input"
-            type="text"
-            required
-            placeholder="Имя"
-          />
-          <span class="order-form__error"></span>
-        </label>
-        <label class="order-form__label popup-form__label">
-          <input
-            class="order-form__input popup-form__input"
-            type="text"
-            required
-            placeholder="Фамилия"
-          />
-          <span class="order-form__error"></span>
-        </label>
-        <label class="order-form__label popup-form__label">
-          <input
-            class="order-form__input popup-form__input"
-            type="email"
-            required
-            placeholder="E-mail"
-          />
-          <span class="order-form__error"></span>
-        </label>
-        <label class="order-form__label popup-form__label">
-          <input
-            class="order-form__input popup-form__input"
-            type="tel"
-            required
-            placeholder="Телефон"
-          />
-          <span class="order-form__error"></span>
-        </label>
-        <label class="order-form__label popup-form__label popup-form__label--checkbox">
-          <input type="checkbox" />
-          <p style="margin-bottom: 0">Я - юридическое лицо</p>
-          <span class="order-form__error"></span>
-        </label>
-        <label class="order-form__label popup-form__label">
-          <input
-            class="order-form__input popup-form__input"
-            type="text"
-            required
-            placeholder="ИНН"
-          />
-          <span class="order-form__error"></span>
-        </label>
-        <label class="order-form__label popup-form__label">
-          <input
-            class="order-form__input popup-form__input"
-            type="text"
-            required
-            placeholder="Юр. адрес"
-          />
-          <span class="order-form__error"></span>
-        </label>
+        <BaseInput type="text" placeholder="Имя" required />
+        <BaseInput type="text" placeholder="Фамилия" required />
+        <BaseInput type="email" placeholder="E-mail" required />
+        <BaseInput type="tel" placeholder="Телефон" required />
+
+        <base-input type="checkbox" required>
+          <template #label>
+            <p>Я - юридическое лицо</p>
+          </template>
+        </base-input>
+        <BaseInput type="text" placeholder="ИНН" required />
+        <BaseInput type="text" placeholder="Юр. адрес" required />
       </div>
     </fieldset>
+
     <fieldset class="order-form__fieldset">
       <legend class="order-form__title">Способ доставки</legend>
       <div class="order-form__wrapper order-form__wrapper--delivery">
-        <div class="order-form__radio-wrapper">
-          <input class="order-form__radio" type="radio" name="delivery" value="Самовывоз" />
-          <p class="order-form__radio-name">Самовывоз</p>
-          <span class="order-form__radio-text">г. Москва, Варшавское шоссе, 118к1, оф.45</span>
-        </div>
-        <div class="order-form__radio-wrapper">
-          <input
-            class="order-form__radio"
-            type="radio"
-            name="delivery"
-            value="Транспортная компания"
-          />
-          <p class="order-form__radio-name">Транспортная компания</p>
-        </div>
+        <base-input type="radio" name="delivery" value="Самовывоз">
+          <template #label>
+            <p class="base-input__radio-name">Самовывоз</p>
+            <span class="base-input__radio-text">г. Москва, Варшавское шоссе, 118к1, оф.45</span>
+          </template>
+        </base-input>
+        <base-input type="radio" name="delivery" value="Транспортная компания">
+          <template #label>
+            <p class="base-input__radio-name">Транспортная компания</p>
+          </template>
+        </base-input>
       </div>
     </fieldset>
     <fieldset class="order-form__fieldset">
       <legend class="order-form__title">Комментарии к заказу</legend>
-      <textarea class="order-form__textarea" name="" id="">Оставьте свой комментарий</textarea>
-      <label class="order-form__label popup-form__label popup-form__label--checkbox">
-        <input type="checkbox" required />
-        <p>Я согласен/на на обработку персональных данных</p>
-        <span class="order-form__error"></span>
-      </label>
+      <base-input type="textarea" placeholder="Оставьте свой комментарий"></base-input>
+      <base-input type="checkbox" required>
+        <template #label>
+          <p>Я согласен/на на обработку персональных данных</p>
+        </template>
+      </base-input>
       <BaseButton><span>Отправить заявку</span></BaseButton>
     </fieldset>
   </section>
@@ -109,9 +60,6 @@ export default {
   gap: 48px;
 
   &__fieldset {
-    // display: flex;
-    // flex-direction: column;
-    // gap: 24px;
   }
 
   &__title {
@@ -131,23 +79,11 @@ export default {
     }
   }
 
-  &__label {
-    &.popup-form__label--checkbox {
-      grid-column: span 2;
-
-      p {
-        margin: 0;
-      }
-    }
+  .base-input-label--checkbox {
+    grid-column: span 2;
   }
 
-  &__input {
-  }
-
-  &__error {
-  }
-
-  &__radio-wrapper {
+  .base-input-label--radio {
     max-width: 265px;
     width: 100%;
     padding: 16px;
@@ -156,41 +92,21 @@ export default {
     display: grid;
     grid-template-columns: auto 1fr;
     justify-content: flex-start;
+    align-items: center;
     column-gap: 12px;
     row-gap: 4px;
   }
 
-  &__radio {
-    grid-row: span 2;
-    margin: 0;
-    align-self: flex-start;
-    width: 24px;
-    height: 24px;
-  }
-
-  &__radio-name {
+  .base-input__radio-name {
     font-weight: 500;
     font-size: 14px;
+    color: var(--black);
   }
 
-  &__radio-text {
+  .base-input__radio-text {
     font-weight: 400;
     font-size: 12px;
     color: var(--grey-200);
-  }
-
-  &__textarea {
-    margin-bottom: 16px;
-    padding: 16px;
-    background-color: var(--blue-0);
-    border-radius: 16px;
-    border: none;
-    resize: none;
-    width: 100%;
-    height: 180px;
-    font-weight: 400;
-    font-size: 14px;
-    color: var(--blue-300);
   }
 
   .base-button {

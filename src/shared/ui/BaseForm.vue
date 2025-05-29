@@ -1,34 +1,27 @@
 <template>
   <form class="popup-form" @submit.prevent="submitForm" novalidate>
-    <label class="popup-form__label">
-      <input class="popup-form__input" type="text" v-model="form.name" required placeholder="Имя" />
-      <span v-if="errors.name" class="popup-form__error">{{ errors.name }}</span>
-    </label>
-    <label class="popup-form__label" v-if="showEmail">
-      <input
-        class="popup-form__input"
-        type="email"
-        v-model="form.email"
-        required
-        placeholder="E-mail"
-      />
-      <span v-if="errors.email" class="popup-form__error">{{ errors.email }}</span>
-    </label>
-    <label class="popup-form__label">
-      <input
-        class="popup-form__input"
-        type="tel"
-        v-model="form.phone"
-        required
-        placeholder="Телефон"
-      />
-      <span v-if="errors.phone" class="popup-form__error">{{ errors.phone }}</span>
-    </label>
-    <label class="popup-form__label popup-form__label--checkbox">
-      <input type="checkbox" v-model="form.checkbox" required />
-      <p>Я согласен/на на обработку персональных данных</p>
-      <span v-if="errors.checkbox" class="popup-form__error">{{ errors.checkbox }}</span>
-    </label>
+    <BaseInput type="text" placeholder="Имя" required v-model="form.name" :error="errors.name" />
+    <BaseInput
+      v-if="showEmail"
+      type="email"
+      placeholder="E-mail"
+      required
+      v-model="form.email"
+      :error="errors.email"
+    />
+    <BaseInput
+      type="tel"
+      inputmode="tel"
+      placeholder="Телефон"
+      required
+      v-model="form.phone"
+      :error="errors.phone"
+    />
+    <base-input type="checkbox" required v-model="form.checkbox" :error="errors.checkbox">
+      <template #label>
+        <p>Я согласен/на на обработку персональных данных</p>
+      </template>
+    </base-input>
     <button
       class="popup-form__btn-submit base-button"
       type="submit"
@@ -129,56 +122,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 12px;
-
-  &__label {
-    width: 100%;
-    position: relative;
-
-    &--checkbox {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    &:not(.popup-form__label--checkbox)::after {
-      content: '*';
-      font-size: 14px;
-      color: var(--blue);
-      position: absolute;
-      top: 8px;
-      right: 20px;
-    }
-
-    p {
-      font-size: 12px;
-      color: var(--grey-200);
-    }
-  }
-
-  &__input {
-    width: 100%;
-    padding: 16px;
-    border-radius: 500px;
-    background-color: var(--blue-0);
-    border: 1px solid transparent;
-    font-size: 14px;
-    color: var(--black);
-
-    &::placeholder {
-      font-size: 14px;
-      color: var(--blue-300);
-    }
-
-    &.error {
-      border-color: var(--red);
-    }
-  }
-
-  &__error {
-    margin-left: 16px;
-    color: var(--red);
-    font-size: 10px;
-  }
 
   &__btn-submit {
     margin-top: 12px;

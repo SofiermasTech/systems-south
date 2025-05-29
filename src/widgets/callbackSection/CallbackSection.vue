@@ -73,13 +73,13 @@ export default {
       grid-template-columns: 1fr 1fr;
     }
 
-    .popup-form__label:first-child,
-    .popup-form__label:last-child,
+    .base-input-label:first-child,
+    .base-input-label:last-child,
     .popup-form__btn-submit {
       grid-column: span 2;
     }
 
-    .popup-form__input {
+    .base-input {
       background-color: var(--white);
     }
   }
