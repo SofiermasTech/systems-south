@@ -89,7 +89,9 @@ export default {
 
     img {
       width: 100%;
-      object-fit: cover;
+      max-height: 68px;
+      height: 100%;
+      object-fit: contain;
       object-position: center;
       border-radius: 10px;
     }
@@ -192,6 +194,7 @@ export default {
       margin: 0;
       width: 100%;
       justify-content: space-between;
+      align-items: flex-end;
     }
 
     .product-quantity {

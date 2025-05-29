@@ -6,6 +6,7 @@ import HomePage from '@/pages/home/HomePage.vue'
 import CatalogPage from '@/pages/catalog/CatalogPage.vue'
 import ProductPage from '@/pages/product/ProductPage.vue'
 import CartPage from '@/pages/cart/CartPage.vue'
+import OrderPage from '@/pages/cart/OrderPage.vue'
 import PersonalPage from '@/pages/personal/PersonalPage.vue'
 import PersonalProfile from '@/pages/personal/PersonalProfile.vue'
 import PersonalFavorites from '@/pages/personal/PersonalFavorite.vue'
@@ -18,15 +19,7 @@ import NewsPage from '@/pages/news/NewsPage.vue'
 import NewsItemPage from '@/pages/news/NewsItemPage.vue'
 import PromoPage from '@/pages/promo/PromoPage.vue'
 import PromoItemPage from '@/pages/promo/PromoItemPage.vue'
-
-const categoryNames = {
-  'interior-lighting': 'Домашнее освещение',
-  'light-bulbs': 'Лампочки',
-  chandelier: 'Люстры',
-  category1: 'Категория 1',
-  category2: 'Категория 2',
-  category3: 'Категория 3',
-}
+import { categoryNames } from '@/shared/config/categoryNames.js'
 
 const routes = [
   {
@@ -55,11 +48,6 @@ const routes = [
         path: '/catalog',
         name: 'CatalogPage',
         breadcrumb: 'Каталог',
-        parentRoute: {
-          path: '/',
-          name: 'HomePage',
-          breadcrumb: 'Главная',
-        },
       },
     },
   },
@@ -82,11 +70,6 @@ const routes = [
           path: '/catalog',
           name: 'CatalogPage',
           breadcrumb: 'Каталог',
-          parentRoute: {
-            path: '/',
-            name: 'HomePage',
-            breadcrumb: 'Главная',
-          },
         },
       },
     },
@@ -102,6 +85,19 @@ const routes = [
     name: 'CartPage',
     component: CartPage,
     meta: { breadcrumb: 'Корзина' },
+  },
+  {
+    path: '/order',
+    name: 'OrderPage',
+    component: OrderPage,
+    meta: {
+      breadcrumb: 'Оформление заказа',
+      parentRoute: {
+        path: '/cart',
+        name: 'CartPage',
+        breadcrumb: 'Корзина',
+      },
+    },
   },
   {
     path: '/personal',

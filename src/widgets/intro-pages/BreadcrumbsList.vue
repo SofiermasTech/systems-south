@@ -75,6 +75,10 @@ export default {
           : null
       }
 
+      if (!crumbs.some((crumb) => crumb.name === 'Главная')) {
+        crumbs.push({ name: 'Главная', link: '/' })
+      }
+
       // console.log('Breadcrumbs:', crumbs)
       return crumbs.reverse()
     },
