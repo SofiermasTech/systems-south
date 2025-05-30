@@ -16,6 +16,15 @@
           <p class="success-popup__subtitle">Наш менеджер свяжется с вами</p>
         </div>
         <button
+          @click.prevent="goToMain"
+          v-if="isOrderPage"
+          class="success-popup__btn success-popup__btn--main base-button"
+          type="button"
+        >
+          На главную
+        </button>
+        <button
+          v-else
           class="success-popup__btn base-button"
           type="button"
           @click.prevent="closePopupSuccess"
@@ -26,15 +35,38 @@
     </div>
   </div>
 </template>
+
 <script>
+import { useCartStore } from '@/shared/stores/cart'
+
 export default {
   name: 'SuccessPopup',
-   props: {
+  props: {
     isVisible: Boolean,
+  },
+  data() {
+    return {
+      cartStore: null,
+    }
+  },
+  created() {
+    this.cartStore = useCartStore()
   },
   methods: {
     closePopupSuccess() {
       this.$emit('close-popup')
+
+      if (this.$route.path.startsWith('/order')) {
+        this.$router.push('/')
+        this.cartStore.clearCart()
+      }
+    },
+    goToMain() {
+      this.closePopupSuccess()
+      this.$router.push('/')
+    },
+    isOrderPage() {
+      return this.$route.path.startsWith('/order')
     },
   },
 }
@@ -73,6 +105,11 @@ export default {
     justify-content: center;
     gap: 24px;
     position: relative;
+
+    a {
+      text-decoration: none;
+      justify-content: center;
+    }
   }
 
   &__img {

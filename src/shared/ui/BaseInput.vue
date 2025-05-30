@@ -14,8 +14,10 @@
       :required="required"
       :placeholder="placeholder"
       :value="type === 'radio' ? value : modelValue"
+      :checked="type === 'radio' && modelValue === value"
       :name="name"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="type === 'radio' ? $emit('update:modelValue', value) : $emit('update:modelValue', $event.target.value)"
+      @change="type === 'radio' ? $emit('change', value) : null"
     />
     <input
       v-if="type === 'checkbox'"
@@ -23,7 +25,8 @@
       type="checkbox"
       :required="required"
       :name="name"
-      @change="$emit('update:modelValue', $event.target.checked)"
+      :checked="modelValue"
+      @change="$emit('update:modelValue', $event.target.checked); $emit('change', $event.target.checked)"
       :class="{ error: error }"
     />
     <textarea
@@ -104,7 +107,7 @@ export default {
 
 .base-input {
   width: 100%;
-  padding: 16px;
+  padding: 15px 16px;
   border-radius: 500px;
   background-color: var(--blue-0);
   border: 1px solid transparent;

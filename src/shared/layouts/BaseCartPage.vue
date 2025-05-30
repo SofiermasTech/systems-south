@@ -33,7 +33,7 @@
     @close-popup="closeCallbackPopup"
     @submit-success="openSuccessPopup"
   />
-  <SuccessPopup :isVisible="successPopupVisible" @close-popup="closeSuccessPopup" />
+  <SuccessPopup :isVisible="showSuccess || successPopupVisible" @close-popup="closeSuccessPopup" />
   <CallbackSection v-if="cartItems.length > 0" />
 </template>
 
@@ -61,6 +61,10 @@ export default {
     theme: {
       type: String,
       required: true,
+    },
+    showSuccess: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -116,8 +120,10 @@ export default {
     },
     closeSuccessPopup() {
       this.successPopupVisible = false
+      this.$emit('update:show-success', false)
     },
     openSuccessPopup() {
+      console.log('BaseCartPage: Открываем SuccessPopup')
       this.successPopupVisible = true
     },
     goToOrder() {

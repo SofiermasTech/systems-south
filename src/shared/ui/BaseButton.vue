@@ -1,11 +1,17 @@
 <template>
-  <button class="base-button" type="button">
+  <button class="base-button" :type="type">
     <slot></slot>
   </button>
 </template>
 <script>
 export default {
   name: 'BaseButton',
+  props: {
+    type: {
+      type: String,
+      default: 'button',
+    },
+  },
 }
 </script>
 <style lang="scss">
