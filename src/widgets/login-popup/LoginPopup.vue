@@ -1,5 +1,5 @@
 <template>
-  <BasePopup :title="'Заказать звонок'" :is-visible="true">
+  <BasePopup :title="'Вход в аккаунт'" :is-visible="isVisible">
     <template #popup-content>
       <BaseForm @close-popup="closePopup" @submit-success="handleSubmitSuccess" />
     </template>
@@ -8,7 +8,13 @@
 
 <script>
 export default {
-  name: 'CallbackPopup',
+  name: 'LoginPopup',
+  props: {
+    isVisible: {
+      type: Boolean,
+      default: false,
+    },
+  },
   methods: {
     closePopup() {
       this.$emit('close-popup')

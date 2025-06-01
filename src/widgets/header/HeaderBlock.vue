@@ -52,6 +52,7 @@
             <UserActions
               :favorites-count="favoritesCount"
               @toggle-cart-popup="toggleCartPopup"
+              @login-popup="openLoginPopup"
               v-model:isOpen="isCartPopupOpen"
             />
           </div>
@@ -60,6 +61,7 @@
     </div>
     <CartPopup v-model:isOpen="isCartPopupOpen" />
     <MenuBlock v-model:open="isMenuOpen" />
+    <LoginPopup :is-visible="isLoginPopupOpen" @close-popup="closeLoginPopup" />
   </header>
 </template>
 
@@ -71,6 +73,7 @@ import HeaderContacts from '@widgets/header/ui/HeaderContacts.vue'
 import { useFavoritesStore } from '@/shared/stores/favorites.js'
 import CartPopup from '@/entities/cart/CartPopup.vue'
 import MenuBlock from '@widgets/menu/MenuBlock.vue'
+import LoginPopup from '@widgets/login-popup/LoginPopup.vue'
 
 export default {
   name: 'HeaderApp',
@@ -81,12 +84,14 @@ export default {
     HeaderContacts,
     CartPopup,
     MenuBlock,
+    LoginPopup,
   },
   data() {
     return {
       favoritesStore: null,
       isCartPopupOpen: false,
       isMenuOpen: false,
+      isLoginPopupOpen: false,
     }
   },
   created() {
@@ -118,6 +123,14 @@ export default {
       this.$refs.search.closeSearchPopup()
       this.isCartPopupOpen = false
       this.isMenuOpen = false
+    },
+    openLoginPopup() {
+      this.isLoginPopupOpen = true
+      this.isCartPopupOpen = false 
+      this.isMenuOpen = false
+    },
+    closeLoginPopup() {
+      this.isLoginPopupOpen = false
     },
   },
 }

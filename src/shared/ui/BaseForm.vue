@@ -1,6 +1,7 @@
 <template>
   <form class="popup-form" @submit.prevent="submitForm" novalidate>
     <BaseInput type="text" placeholder="Имя" required v-model="form.name" :error="errors.name" />
+    <!-- <BaseInput type="text" placeholder="Фамилия" required v-model="form.surname" :error="errors.surname" /> -->
     <BaseInput
       v-if="showEmail"
       type="email"

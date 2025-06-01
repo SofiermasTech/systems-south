@@ -36,15 +36,17 @@
       </button>
     </template>
     <!-- Кнопки личного кабинета -->
-    <RouterLink to="/personal" class="user-actions__btn user-actions__btn--personal">
-      <span class="user-actions__icon">
-        <BaseIcon name="UserIcon" />
-      </span>
-      <span class="user-actions__text">Личный кабинет</span>
-    </RouterLink>
-    <template>
+    <template v-if="isAuth">
+      <RouterLink to="/personal" class="user-actions__btn user-actions__btn--personal">
+        <span class="user-actions__icon">
+          <BaseIcon name="UserIcon" />
+        </span>
+        <span class="user-actions__text">Личный кабинет</span>
+      </RouterLink>
+    </template>
+    <template v-else>
       <!-- Если не авторизован, используем button для открытия попапа -->
-      <button class="user-actions__bbtn user-actions__btn--cart">
+      <button class="user-actions__btn user-actions__btn--personal" @click="openLoginPopup">
         <span class="user-actions__text">Вход</span>
       </button>
     </template>
@@ -78,6 +80,9 @@ export default {
     toggleCartPopup() {
       this.$emit('toggle-cart-popup')
     },
+    openLoginPopup() {
+      this.$emit('login-popup')
+    },
   },
 }
 </script>
@@ -98,6 +103,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 4px;
   }
 

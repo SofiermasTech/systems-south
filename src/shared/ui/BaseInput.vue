@@ -8,7 +8,7 @@
     ]"
   >
     <input
-      v-if="type === 'text' || type === 'email' || type === 'tel' || type === 'radio'"
+      v-if="type === 'text' || type === 'email' || type === 'tel' || type === 'radio' || type === 'password'"
       :class="['base-input', { 'base-input--radio': type === 'radio' }, { error: error }]"
       :type="type"
       :required="required"
@@ -50,7 +50,7 @@ export default {
       type: String,
       required: true,
       validator: (value) =>
-        ['text', 'email', 'tel', 'checkbox', 'radio', 'textarea'].includes(value),
+        ['text', 'email', 'tel', 'checkbox', 'radio', 'textarea', 'password'].includes(value),
     },
     placeholder: { type: String, default: '' },
     required: { type: Boolean, default: true },
