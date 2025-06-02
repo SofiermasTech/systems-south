@@ -1,7 +1,31 @@
 <template>
   <BasePopup :title="'Заказать звонок'" :is-visible="true">
     <template #popup-content>
-      <BaseForm @close-popup="closePopup" @submit-success="handleSubmitSuccess" />
+      <BaseForm
+        :fields="[
+          { name: 'name', type: 'text', placeholder: 'Имя', required: true },
+          {
+            name: 'phone',
+            type: 'tel',
+            placeholder: 'Телефон',
+            required: true,
+            rules: [
+              {
+                validator: (v) => /^\+?\d{10,}$/.test(v),
+                message: 'Номер должен содержать минимум 10 цифр',
+              },
+            ],
+          },
+          {
+            name: 'checkbox',
+            type: 'checkbox',
+            required: true,
+            label: 'Я согласен/на на обработку персональных данных',
+          },
+        ]"
+        @close-popup="closePopup"
+        @submit-success="handleSubmitSuccess"
+      />
     </template>
   </BasePopup>
 </template>

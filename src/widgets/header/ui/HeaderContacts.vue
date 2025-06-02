@@ -31,7 +31,30 @@
       </template>
       <template v-else>
         <p class="contacts__callback-form-title">Заказать звонок</p>
-        <BaseForm @submit-success="handleSubmitSuccess" />
+        <BaseForm
+          :fields="[
+            { name: 'name', type: 'text', placeholder: 'Имя', required: true },
+            {
+              name: 'phone',
+              type: 'tel',
+              placeholder: 'Телефон',
+              required: true,
+              rules: [
+                {
+                  validator: (v) => /^\+?\d{10,}$/.test(v),
+                  message: 'Номер должен содержать минимум 10 цифр',
+                },
+              ],
+            },
+            {
+              name: 'checkbox',
+              type: 'checkbox',
+              required: true,
+              label: 'Я согласен/на на обработку персональных данных',
+            },
+          ]"
+          @submit-success="handleSubmitSuccess"
+        />
       </template>
     </div>
   </div>

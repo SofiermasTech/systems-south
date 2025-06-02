@@ -1,10 +1,11 @@
 <template>
   <div class="base-popup" v-if="isVisible">
     <div class="base-popup__overlay" @click="closePopup">
-      <div class="base-popup__body" @click.stop>
+      <div class="base-popup__body" @click.stop :class="customClass">
         <div class="base-popup__content">
           <BaseButtonClosePopup @click="closePopup" />
           <h2 class="base-popup__title">{{ title }}</h2>
+          <slot name="subtitle"></slot>
           <slot
             name="popup-content"
             @close-popup="closePopup"
@@ -33,7 +34,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    customClass: {
+      type: String,
+      default: '',
+    },
   },
+  emits: ['close-popup'],
   methods: {
     closePopup() {
       this.$emit('close-popup')
@@ -82,6 +88,10 @@ export default {
     background-color: var(--white);
     border-radius: 16px;
     position: relative;
+
+    &.reg-popup {
+      max-width: 810px;
+    }
   }
 
   &__title {

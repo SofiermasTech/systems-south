@@ -22,7 +22,31 @@
             Нужен совет?<br />
             Оставляйте заявку, мы поможем!
           </h2>
-          <BaseForm :show-email="true" @submit-success="handleSubmitSuccess" />
+          <BaseForm
+            :fields="[
+              { name: 'name', type: 'text', placeholder: 'Имя', required: true },
+              { name: 'email', type: 'email', placeholder: 'E-mail', required: true },
+              {
+                name: 'phone',
+                type: 'tel',
+                placeholder: 'Телефон',
+                required: true,
+                rules: [
+                  {
+                    validator: (v) => /^\+?\d{10,}$/.test(v),
+                    message: 'Номер должен содержать минимум 10 цифр',
+                  },
+                ],
+              },
+              {
+                name: 'checkbox',
+                type: 'checkbox',
+                required: true,
+                label: 'Я согласен/на на обработку персональных данных',
+              },
+            ]"
+            @submit-success="handleSubmitSuccess"
+          />
         </div>
         <div class="callback-page__img">
           <img src="@/assets/images/callback-section-2.png" alt="" loading="lazy" />

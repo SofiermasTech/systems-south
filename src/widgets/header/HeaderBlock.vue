@@ -109,15 +109,11 @@ export default {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
       if (this.isMenuOpen) {
-        // Закрываем другие попапы при открытии меню
         this.$refs.contacts.closeAll()
         this.$refs.search.closeSearchPopup()
         this.isCartPopupOpen = false
       }
     },
-    // closeMenu() {
-    //   this.isMenuOpen = false
-    // },
     closeAll() {
       this.$refs.contacts.closeAll()
       this.$refs.search.closeSearchPopup()
@@ -126,7 +122,7 @@ export default {
     },
     openLoginPopup() {
       this.isLoginPopupOpen = true
-      this.isCartPopupOpen = false 
+      this.isCartPopupOpen = false
       this.isMenuOpen = false
     },
     closeLoginPopup() {

@@ -1,28 +1,20 @@
 <template>
   <form class="popup-form" @submit.prevent="submitForm" novalidate>
-    <BaseInput type="text" placeholder="Имя" required v-model="form.name" :error="errors.name" />
-    <!-- <BaseInput type="text" placeholder="Фамилия" required v-model="form.surname" :error="errors.surname" /> -->
     <BaseInput
-      v-if="showEmail"
-      type="email"
-      placeholder="E-mail"
-      required
-      v-model="form.email"
-      :error="errors.email"
-    />
-    <BaseInput
-      type="tel"
-      inputmode="tel"
-      placeholder="Телефон"
-      required
-      v-model="form.phone"
-      :error="errors.phone"
-    />
-    <base-input type="checkbox" required v-model="form.checkbox" :error="errors.checkbox">
-      <template #label>
-        <p>Я согласен/на на обработку персональных данных</p>
+      v-for="field in fields"
+      :key="field.name"
+      :type="field.type"
+      :placeholder="field.placeholder"
+      :required="field.required"
+      v-model="form[field.name]"
+      :error="touched[field.name] ? errors[field.name] : ''"
+      @input="handleInput(field.name, $event)"
+      @blur="handleBlur(field.name)"
+    >
+      <template v-if="field.type === 'checkbox'" #label>
+        <p>{{ field.label }}</p>
       </template>
-    </base-input>
+    </BaseInput>
     <button
       class="popup-form__btn-submit base-button"
       type="submit"
@@ -30,7 +22,7 @@
       :disabled="!isFormValid || isSubmitting"
       :aria-disabled="!isFormValid || isSubmitting"
     >
-      Отправить
+      {{ buttonText }}
     </button>
   </form>
 </template>
@@ -39,83 +31,131 @@
 export default {
   name: 'BaseForm',
   props: {
-    showEmail: {
-      type: Boolean,
-      default: false,
+    fields: {
+      type: Array,
+      required: true,
+    },
+    buttonText: {
+      type: String,
+      default: 'Отправить',
     },
   },
+  emits: ['close-popup', 'submit-success'],
   data() {
+    const form = {};
+    const errors = {};
+    const touched = {};
+
+    this.fields.forEach((field) => {
+      form[field.name] = field.type === 'checkbox' ? false : '';
+      errors[field.name] = '';
+      touched[field.name] = false;
+    });
+
     return {
-      form: {
-        name: '',
-        email: '',
-        phone: '',
-        checkbox: false,
-      },
-      errors: {
-        name: '',
-        email: '',
-        phone: '',
-        checkbox: '',
-      },
+      form,
+      errors,
+      touched,
       isSubmitting: false,
-    }
+    };
   },
   methods: {
     closePopup() {
-      this.$emit('close-popup')
-      this.resetForm()
+      this.$emit('close-popup');
+      this.resetForm();
+    },
+    validateField(field) {
+      const value = this.form[field.name];
+
+      // Специальная обработка для чекбоксов
+      if (field.type === 'checkbox' && field.required) {
+        if (!value) {
+          return { isValid: false, message: `Поле ${field.placeholder || field.name} обязательно` };
+        }
+        return { isValid: true, message: '' };
+      }
+
+      // Общие проверки для других типов
+      if (field.required && !value) {
+        return { isValid: false, message: `Поле ${field.placeholder || field.name} обязательно` };
+      }
+
+      if (field.rules) {
+        for (const rule of field.rules) {
+          if (rule.validator && !rule.validator(value)) {
+            return { isValid: false, message: rule.message };
+          }
+        }
+      }
+
+      if (field.name === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return { isValid: false, message: 'Некорректный email' };
+      }
+
+      return { isValid: true, message: '' };
+    },
+    handleInput(fieldName, event) {
+      this.touched[fieldName] = true;
+      const field = this.fields.find((f) => f.name === fieldName);
+      const validation = this.validateField(field);
+
+      // Для чекбоксов проверяем изменение с false на true
+      if (field.type === 'checkbox' && event.target.checked) {
+        this.errors[fieldName] = '';
+      } else {
+        this.errors[fieldName] = validation.message;
+      }
+    },
+    handleBlur(fieldName) {
+      this.touched[fieldName] = true;
+      const field = this.fields.find((f) => f.name === fieldName);
+      const validation = this.validateField(field);
+      this.errors[fieldName] = validation.message;
     },
     submitForm() {
-      this.errors = { name: '', email: '', phone: '', checkbox: '' }
+      Object.keys(this.touched).forEach((key) => {
+        this.touched[key] = true;
+      });
 
-      // Валидация
+      Object.keys(this.errors).forEach((key) => {
+        this.errors[key] = '';
+      });
+
       if (!this.isFormValid) {
-        if (!this.form.name.trim()) this.errors.name = 'Введите имя'
-        if (this.showEmail && !this.form.email.trim()) this.errors.email = 'Введите email'
-        if (
-          this.showEmail &&
-          this.form.email.trim() &&
-          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.email)
-        ) {
-          this.errors.email = 'Некорректный email'
-        }
-        if (!this.form.phone.trim()) this.errors.phone = 'Введите номер телефона'
-        if (!this.form.checkbox) this.errors.checkbox = 'Необходимо согласие'
-        return
+        this.fields.forEach((field) => {
+          const validation = this.validateField(field);
+          this.errors[field.name] = validation.message;
+        });
+        return;
       }
-      // Если валидация пройдена
-      console.log('Отправка данных:', this.form)
-      this.isSubmitting = true
-      // Пример отправки:
-      // fetch('/api/callback', {
-      //   method: 'POST',
-      //   body: JSON.stringify(this.form),
-      //   headers: { 'Content-Type': 'application/json' },
-      // });
-      this.closePopup()
-      this.$emit('submit-success')
+
+      console.log('Отправка данных:', this.form);
+      this.isSubmitting = true;
+      this.closePopup();
+      this.$emit('submit-success');
     },
     resetForm() {
-      this.form = { name: '', email: '', phone: '', checkbox: false }
-      this.errors = { name: '', email: '', phone: '', checkbox: '' }
-      this.isSubmitting = false
+      Object.keys(this.form).forEach((key) => {
+        this.form[key] = this.form[key] === true || this.form[key] === false ? false : '';
+      });
+      Object.keys(this.errors).forEach((key) => {
+        this.errors[key] = '';
+      });
+      Object.keys(this.touched).forEach((key) => {
+        this.touched[key] = false;
+      });
+      this.isSubmitting = false;
     },
   },
   computed: {
     isFormValid() {
-      const isEmailValid =
-        !this.showEmail ||
-        (this.form.email.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.email))
-      return (
-        this.form.name.trim() !== '' &&
-        this.form.phone.trim() !== '' &&
-        this.form.checkbox &&
-        isEmailValid
-      )
+      return this.fields.every((field) => {
+        const validation = this.validateField(field);
+        return validation.isValid;
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss">

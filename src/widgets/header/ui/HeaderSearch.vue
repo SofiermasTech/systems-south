@@ -80,7 +80,7 @@ export default {
 
 <style lang="scss">
 .header-search {
-  max-width: 28%;
+  max-width: 40%;
   width: 100%;
   flex-grow: 1;
   background-color: var(--white);
