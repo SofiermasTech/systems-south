@@ -32,7 +32,7 @@
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import SliderOtherItems from '@/shared/ui/SliderOtherItems.vue'
 import SubscribeEmail from '@/widgets/subscribeEmail/SubscribeEmail.vue'
-import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 import BaseTimer from '@/shared/ui/BaseTimer.vue'
 
 export default {

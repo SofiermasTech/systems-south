@@ -128,7 +128,7 @@
 <script>
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
-// import SuccessPopup from '@/widgets/successPopup/SuccessPopup.vue'
+// import SuccessPopup from '@/widgets/success-popup/SuccessPopup.vue'
 
 export default {
   name: 'OrderForm',

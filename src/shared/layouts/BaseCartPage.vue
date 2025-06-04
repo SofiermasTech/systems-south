@@ -41,9 +41,9 @@
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import { useCartStore } from '@/shared/stores/cart'
 import { useCatalogStore } from '@/shared/stores/catalog'
-import CallbackPopup from '@/widgets/callbackPopup/CallbackPopup.vue'
-import SuccessPopup from '@/widgets/successPopup/SuccessPopup.vue'
-import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
+import SuccessPopup from '@/widgets/success-popup/SuccessPopup.vue'
+import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 
 export default {
   name: 'BaseCartPage',

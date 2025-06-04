@@ -15,7 +15,7 @@ import AboutUsHero from '@/pages/about-us/ui/AboutUsHero.vue'
 import TeamBlock from '@/pages/about-us/ui/TeamBlock.vue'
 import AboutUsDelivery from '@/pages/about-us/ui/AboutUsDelivery.vue'
 import AboutUsReviews from '@/pages/about-us/ui/AboutUsReviews.vue'
-import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 
 
 export default {

@@ -30,10 +30,9 @@ const cartStore = useCartStore();
 cartStore.loadCart();
 
 // Запускаем MSW только в режиме разработки или при параметре ?test=true
-// if (process.env.NODE_ENV === 'development' || window.location.search.includes('test=true')) {
-//   import('@/mocks/browser').then(({ worker }) => {
-//     worker.start();
-//   });
-// }
-
+if (import.meta.env.MODE === 'development' || window.location.search.includes('test=true')) {
+  import('@/mocks/browser').then(({ worker }) => {
+    worker.start();
+  });
+}
 app.mount('#app')

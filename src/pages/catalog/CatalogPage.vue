@@ -15,7 +15,7 @@
 <script>
 import { useCatalogStore } from '@/shared/stores/catalog'
 import BaseCatalogPage from '@/shared/layouts/BaseCatalogPage.vue'
-import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 import { categoryNames } from '@/shared/config/categoryNames.js'
 
 export default {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api', // Относительный путь, чтобы MSW перехватывал запросы
+  baseURL: '/api',
 });
 
 api.interceptors.request.use((config) => {

@@ -42,120 +42,121 @@ export default {
   },
   emits: ['close-popup', 'submit-success'],
   data() {
-    const form = {};
-    const errors = {};
-    const touched = {};
+    const form = {}
+    const errors = {}
+    const touched = {}
 
     this.fields.forEach((field) => {
-      form[field.name] = field.type === 'checkbox' ? false : '';
-      errors[field.name] = '';
-      touched[field.name] = false;
-    });
+      form[field.name] = field.type === 'checkbox' ? false : ''
+      errors[field.name] = ''
+      touched[field.name] = false
+    })
 
     return {
       form,
       errors,
       touched,
       isSubmitting: false,
-    };
+    }
   },
   methods: {
     closePopup() {
-      this.$emit('close-popup');
-      this.resetForm();
+      this.$emit('close-popup')
+      this.resetForm()
     },
     validateField(field) {
-      const value = this.form[field.name];
+      const value = this.form[field.name]
 
       // Специальная обработка для чекбоксов
       if (field.type === 'checkbox' && field.required) {
         if (!value) {
-          return { isValid: false, message: `Поле ${field.placeholder || field.name} обязательно` };
+          return { isValid: false, message: `Поле ${field.placeholder || field.name} обязательно` }
         }
-        return { isValid: true, message: '' };
+        return { isValid: true, message: '' }
       }
 
       // Общие проверки для других типов
       if (field.required && !value) {
-        return { isValid: false, message: `Поле ${field.placeholder || field.name} обязательно` };
+        return { isValid: false, message: `Поле ${field.placeholder || field.name} обязательно` }
       }
 
       if (field.rules) {
         for (const rule of field.rules) {
           if (rule.validator && !rule.validator(value)) {
-            return { isValid: false, message: rule.message };
+            return { isValid: false, message: rule.message }
           }
         }
       }
 
       if (field.name === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return { isValid: false, message: 'Некорректный email' };
+        return { isValid: false, message: 'Некорректный email' }
       }
 
-      return { isValid: true, message: '' };
+      return { isValid: true, message: '' }
     },
     handleInput(fieldName, event) {
-      this.touched[fieldName] = true;
-      const field = this.fields.find((f) => f.name === fieldName);
-      const validation = this.validateField(field);
+      this.touched[fieldName] = true
+      const field = this.fields.find((f) => f.name === fieldName)
+      const validation = this.validateField(field)
 
       // Для чекбоксов проверяем изменение с false на true
       if (field.type === 'checkbox' && event.target.checked) {
-        this.errors[fieldName] = '';
+        this.errors[fieldName] = ''
       } else {
-        this.errors[fieldName] = validation.message;
+        this.errors[fieldName] = validation.message
       }
     },
     handleBlur(fieldName) {
-      this.touched[fieldName] = true;
-      const field = this.fields.find((f) => f.name === fieldName);
-      const validation = this.validateField(field);
-      this.errors[fieldName] = validation.message;
+      this.touched[fieldName] = true
+      const field = this.fields.find((f) => f.name === fieldName)
+      const validation = this.validateField(field)
+      this.errors[fieldName] = validation.message
     },
     submitForm() {
       Object.keys(this.touched).forEach((key) => {
-        this.touched[key] = true;
-      });
+        this.touched[key] = true
+      })
 
       Object.keys(this.errors).forEach((key) => {
-        this.errors[key] = '';
-      });
+        this.errors[key] = ''
+      })
 
       if (!this.isFormValid) {
         this.fields.forEach((field) => {
-          const validation = this.validateField(field);
-          this.errors[field.name] = validation.message;
-        });
-        return;
+          const validation = this.validateField(field)
+          this.errors[field.name] = validation.message
+        })
+        return
       }
 
-      console.log('Отправка данных:', this.form);
-      this.isSubmitting = true;
-      this.closePopup();
-      this.$emit('submit-success');
+      console.log('Отправка данных:', this.form)
+      this.isSubmitting = true
+      this.$emit('submit-success', this.form)
+      // this.closePopup()
+      this.isSubmitting = false
     },
     resetForm() {
       Object.keys(this.form).forEach((key) => {
-        this.form[key] = this.form[key] === true || this.form[key] === false ? false : '';
-      });
+        this.form[key] = this.form[key] === true || this.form[key] === false ? false : ''
+      })
       Object.keys(this.errors).forEach((key) => {
-        this.errors[key] = '';
-      });
+        this.errors[key] = ''
+      })
       Object.keys(this.touched).forEach((key) => {
-        this.touched[key] = false;
-      });
-      this.isSubmitting = false;
+        this.touched[key] = false
+      })
+      this.isSubmitting = false
     },
   },
   computed: {
     isFormValid() {
       return this.fields.every((field) => {
-        const validation = this.validateField(field);
-        return validation.isValid;
-      });
+        const validation = this.validateField(field)
+        return validation.isValid
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="scss">

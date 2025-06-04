@@ -13,4 +13,12 @@ export default defineConfig({
       '@widgets': fileURLToPath(new URL('./src/widgets', import.meta.url)),
     },
   },
+  server: {
+    mimeTypes: {
+      js: 'application/javascript',
+    },
+    fs: {
+      allow: ['.'],
+    },
+  },
 })

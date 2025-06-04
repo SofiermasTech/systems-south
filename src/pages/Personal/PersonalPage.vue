@@ -1,48 +1,53 @@
 <template>
   <div class="personal container">
     <IntroPages class="personal__intro" />
-    <div class="personal__sidebar">
-      <nav class="personal__nav">
-        <RouterLink
-          :to="{ name: 'PersonalProfile' }"
-          class="personal__nav-item"
-          active-class="personal__nav-item--active"
-        >
-          Профиль
-        </RouterLink>
-        <RouterLink
-          :to="{ name: 'PersonalFavorites' }"
-          class="personal__nav-item"
-          active-class="personal__nav-item--active"
-        >
-          Избранное
-        </RouterLink>
-        <RouterLink
-          :to="{ name: 'PersonalOrders' }"
-          class="personal__nav-item"
-          active-class="personal__nav-item--active"
-        >
-          Заказы
-        </RouterLink>
-      </nav>
-    </div>
+    <PersonalSidebar @logout-request="openLogoutPopup" />
     <div class="personal__content">
       <router-view />
     </div>
   </div>
+  <LogoutPopup
+    :is-visible="isLogoutPopup"
+    @close-popup="closeLogoutPopup"
+    @confirm-logout="confirmLogout"
+  />
 </template>
 
 <script>
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
+import PersonalSidebar from '@/pages/personal/ui/PersonalSidebar.vue'
+import LogoutPopup from '@/widgets/logout-popup/LogoutPopup.vue'
+import HomePage from '../home/HomePage.vue'
+
 export default {
   name: 'PersonalPage',
   components: {
     IntroPages,
+    PersonalSidebar,
+    LogoutPopup,
+  },
+  data() {
+    return {
+      isLogoutPopup: false,
+    }
+  },
+  methods: {
+    openLogoutPopup() {
+      this.isLogoutPopup = true
+    },
+    closeLogoutPopup() {
+      this.isLogoutPopup = false
+    },
+    confirmLogout() {
+      this.authStore.logout()
+      this.router.push({ name: HomePage })
+      this.closeLogoutPopup()
+    },
   },
 }
 </script>
 <style lang="scss">
-@import "@/assets/styles/_utils.scss";
+@import '@/assets/styles/_utils.scss';
 
 .personal {
   margin-bottom: var(--section-offset);
@@ -56,40 +61,6 @@ export default {
 
   &__intro {
     grid-area: intro;
-  }
-
-  &__sidebar {
-    grid-area: sidebar;
-    height: 70vh;
-    padding: 8px;
-    background-color: var(--blue-0);
-    border-radius: var(--br-block);
-  }
-
-  &__nav {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__nav-item {
-    border-radius: var(--br-btn);
-    padding: 24px 12px 24px 32px;
-    font-size: 14px;
-    color: var(--black);
-    text-decoration: none;
-    cursor: pointer;
-
-    &--active {
-      background-color: var(--white);
-      font-weight: 600;
-      color: var(--blue);
-    }
-
-    @include hover {
-      background-color: var(--white);
-      font-weight: 600;
-      color: var(--blue);
-    }
   }
 
   &__content {

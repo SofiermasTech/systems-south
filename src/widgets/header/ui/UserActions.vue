@@ -36,7 +36,7 @@
       </button>
     </template>
     <!-- Кнопки личного кабинета -->
-    <template v-if="isAuth">
+    <template v-if="authStore.isLoggedIn">
       <RouterLink to="/personal" class="user-actions__btn user-actions__btn--personal">
         <span class="user-actions__icon">
           <BaseIcon name="UserIcon" />
@@ -44,7 +44,7 @@
         <span class="user-actions__text">Личный кабинет</span>
       </RouterLink>
     </template>
-    <template v-else>
+    <template v-if="!authStore.isLoggedIn">
       <!-- Если не авторизован, используем button для открытия попапа -->
       <button class="user-actions__btn user-actions__btn--personal" @click="openLoginPopup">
         <span class="user-actions__text">Вход</span>
@@ -53,7 +53,8 @@
   </div>
 </template>
 <script>
-import { useCartStore } from '@/shared/stores/cart'
+import { useCartStore } from '@/shared/stores/cart.js'
+import { useAuthStore } from '@/shared/stores/auth.js'
 
 export default {
   name: 'UserActions',
@@ -66,6 +67,11 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  data() {
+    return {
+      authStore: useAuthStore(),
+    }
   },
   computed: {
     cartItemsCount() {

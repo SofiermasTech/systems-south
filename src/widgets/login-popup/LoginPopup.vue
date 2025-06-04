@@ -12,17 +12,15 @@
       </p>
     </template>
     <template #popup-content>
+      <div v-if="authStore.getError" class="form-error-message">{{ authStore.getError }}</div>
+      <div v-if="isLoading" class="loading">Загрузка...</div>
       <BaseForm
         :fields="currentFields"
         @close-popup="closePopup"
         @submit-success="handleSubmitSuccess"
         :button-text="currentForm === 'login' ? 'Войти' : 'Отправить'"
       />
-      <button
-        class="login-popup__btn-reg"
-        type="button"
-        @click="toggleForm"
-      >
+      <button class="login-popup__btn-reg" type="button" @click="toggleForm">
         {{ currentForm === 'login' ? 'Нет аккаунта?' : 'Уже есть аккаунт?' }}
       </button>
     </template>
@@ -30,6 +28,8 @@
 </template>
 
 <script>
+import { useAuthStore } from '@/shared/stores/auth.js'
+
 export default {
   name: 'LoginPopup',
   props: {
@@ -41,6 +41,8 @@ export default {
   emits: ['close-popup', 'submit-success'],
   data() {
     return {
+      authStore: useAuthStore(),
+      isLoading: false,
       currentForm: 'login',
       loginFields: [
         { name: 'email', type: 'email', placeholder: 'E-mail', required: true },
@@ -69,25 +71,44 @@ export default {
           label: 'Я согласен/на на обработку персональных данных',
         },
       ],
-    };
+    }
   },
   computed: {
     currentFields() {
-      return this.currentForm === 'login' ? this.loginFields : this.registrationFields;
+      return this.currentForm === 'login' ? this.loginFields : this.registrationFields
     },
   },
   methods: {
     closePopup() {
-      this.$emit('close-popup');
+      this.currentForm = 'login'
+      this.authStore.clearError()
+      this.$emit('close-popup')
     },
-    handleSubmitSuccess() {
-      this.$emit('submit-success');
+    async handleSubmitSuccess(formData) {
+      console.log('Form data:', formData);
+      try {
+        this.isLoading = true
+        if (this.currentForm === 'login') {
+          await this.authStore.login(formData)
+        } else {
+          await this.authStore.register(formData)
+        }
+        this.$emit('submit-success')
+        this.closePopup()
+      }
+      // catch () {
+      //   // Ошибки обрабатываются через authStore.getError
+      // }
+      finally {
+        this.isLoading = false
+      }
     },
     toggleForm() {
-      this.currentForm = this.currentForm === 'login' ? 'registration' : 'login';
+      this.authStore.clearError()
+      this.currentForm = this.currentForm === 'login' ? 'registration' : 'login'
     },
   },
-};
+}
 </script>
 
 <style lang="scss">
@@ -125,5 +146,19 @@ export default {
       grid-column: span 2;
     }
   }
+}
+
+.loading {
+  font-size: 14px;
+  color: var(--blue);
+  margin-top: -20px;
+  margin-bottom: 12px;
+}
+
+.form-error-message {
+  font-size: 14px;
+  color: var(--red);
+  margin-top: -20px;
+  margin-bottom: 12px;
 }
 </style>

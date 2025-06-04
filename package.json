@@ -30,5 +30,10 @@
     "vite": "^6.2.1",
     "vite-plugin-svg-sprite": "^0.6.2",
     "vite-plugin-vue-devtools": "^7.7.2"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

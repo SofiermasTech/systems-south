@@ -24,7 +24,7 @@ import HomePopularCat from '@/pages/home/ui/HomePopularCat.vue'
 import ProductSection from '@widgets/product-section/ProductSection.vue'
 import HomeWorkWithUs from '@/pages/home/ui/HomeWorkWithUs.vue'
 import HomeAboutUs from '@/pages/home/ui/HomeAboutUs.vue'
-import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 import HomeNews from '@/pages/home/ui/HomeNews.vue'
 import { useFavoritesStore } from '@/shared/stores/favorites'
 

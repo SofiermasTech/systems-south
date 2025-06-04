@@ -176,9 +176,9 @@ import { useCartStore } from '@/shared/stores/cart'
 import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
 import FavoriteButton from '@/entities/product/FavoriteButton.vue'
 import ProductSection from '@widgets/product-section/ProductSection.vue'
-import CallbackPopup from '@/widgets/callbackPopup/CallbackPopup.vue'
-import SuccessPopup from '@/widgets/successPopup/SuccessPopup.vue'
-import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
+import SuccessPopup from '@/widgets/success-popup/SuccessPopup.vue'
+import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 
 export default {
   data() {

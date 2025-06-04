@@ -1,4 +1,3 @@
-// src/stores/auth.js
 import { defineStore } from 'pinia';
 import api from '@/api';
 
@@ -79,6 +78,7 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = false;
       this.error = null;
       localStorage.removeItem('authToken');
+      // this.router.push({ name: 'Home' });
     },
 
     clearError() {

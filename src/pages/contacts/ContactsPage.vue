@@ -42,7 +42,7 @@
 
 <script>
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
-import CallbackSection from '@/widgets/callbackSection/CallbackSection.vue'
+import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 
 export default {
   name: 'SearchPage',
