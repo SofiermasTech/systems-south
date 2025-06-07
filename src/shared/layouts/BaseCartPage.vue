@@ -33,7 +33,13 @@
     @close-popup="closeCallbackPopup"
     @submit-success="openSuccessPopup"
   />
-  <SuccessPopup :isVisible="showSuccess || successPopupVisible" @close-popup="closeSuccessPopup" />
+  <BaseSuccessPopup
+    :isVisible="showSuccess || successPopupVisible"
+    @close-popup="closeSuccessPopup"
+    :title="'Заявка успешно оформлена!'"
+    :subtitle="'Наш менеджер свяжется с нами'"
+  />
+
   <CallbackSection v-if="cartItems.length > 0" />
 </template>
 
@@ -42,7 +48,7 @@ import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import { useCartStore } from '@/shared/stores/cart'
 import { useCatalogStore } from '@/shared/stores/catalog'
 import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
-import SuccessPopup from '@/widgets/success-popup/SuccessPopup.vue'
+import BaseSuccessPopup from '@/shared/ui/BaseSuccessPopup.vue'
 import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 
 export default {
@@ -50,7 +56,7 @@ export default {
   components: {
     IntroPages,
     CallbackPopup,
-    SuccessPopup,
+    BaseSuccessPopup,
     CallbackSection,
   },
   props: {

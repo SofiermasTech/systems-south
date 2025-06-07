@@ -1,5 +1,8 @@
 <template>
-  <BasePopup :title="'Заказать звонок'" :is-visible="true">
+  <BasePopup :is-visible="true">
+    <template #title>
+      <h2 class="base-popup__title">Заказать звонок</h2>
+    </template>
     <template #popup-content>
       <BaseForm
         :fields="[

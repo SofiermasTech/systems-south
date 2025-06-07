@@ -1,10 +1,14 @@
 <template>
   <BasePopup
-    :title="currentForm === 'login' ? 'Вход в аккаунт' : 'Регистрация'"
     :is-visible="isVisible"
     :custom-class="currentForm === 'login' ? 'login-popup' : 'reg-popup'"
     @close-popup="closePopup"
   >
+    <template #title>
+      <h2 class="base-popup__title">
+        {{ currentForm === 'login' ? 'Вход в аккаунт' : 'Регистрация' }}
+      </h2>
+    </template>
     <template v-if="currentForm === 'registration'" #subtitle>
       <p class="reg-popup__subtitle">
         Для подтверждения почты, вам будет выслана ссылка. Пожалуйста, проверьте свой почтовый адрес
@@ -16,6 +20,8 @@
       <div v-if="isLoading" class="loading">Загрузка...</div>
       <BaseForm
         :fields="currentFields"
+        :key="currentForm"
+        ref="baseForm"
         @close-popup="closePopup"
         @submit-success="handleSubmitSuccess"
         :button-text="currentForm === 'login' ? 'Войти' : 'Отправить'"
@@ -38,7 +44,7 @@ export default {
       default: false,
     },
   },
-  emits: ['close-popup', 'submit-success'],
+  emits: ['close-popup', 'submit-success', 'show-success-popup'],
   data() {
     return {
       authStore: useAuthStore(),
@@ -85,27 +91,28 @@ export default {
       this.$emit('close-popup')
     },
     async handleSubmitSuccess(formData) {
-      console.log('Form data:', formData);
+      console.log('Form data:', formData)
       try {
         this.isLoading = true
         if (this.currentForm === 'login') {
           await this.authStore.login(formData)
+          this.$emit('submit-success')
         } else {
           await this.authStore.register(formData)
+          this.$emit('show-success-popup')
         }
-        this.$emit('submit-success')
         this.closePopup()
-      }
-      // catch () {
-      //   // Ошибки обрабатываются через authStore.getError
-      // }
-      finally {
+      } finally {
         this.isLoading = false
       }
     },
     toggleForm() {
       this.authStore.clearError()
       this.currentForm = this.currentForm === 'login' ? 'registration' : 'login'
+
+      if (this.$refs.baseForm) {
+        this.$refs.baseForm.resetForm()
+      }
     },
   },
 }

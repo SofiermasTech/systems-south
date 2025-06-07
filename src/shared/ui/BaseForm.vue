@@ -8,7 +8,8 @@
       :required="field.required"
       v-model="form[field.name]"
       :error="touched[field.name] ? errors[field.name] : ''"
-      @input="handleInput(field.name, $event)"
+      @input="field.type !== 'checkbox' ? handleInput(field.name, $event) : null"
+      @change="field.type === 'checkbox' ? handleCheckboxChange(field.name, $event) : null"
       @blur="handleBlur(field.name)"
     >
       <template v-if="field.type === 'checkbox'" #label>
@@ -96,18 +97,20 @@ export default {
     },
     handleInput(fieldName, event) {
       this.touched[fieldName] = true
+      this.form[fieldName] = event.target.value
       const field = this.fields.find((f) => f.name === fieldName)
       const validation = this.validateField(field)
-
-      // Для чекбоксов проверяем изменение с false на true
-      if (field.type === 'checkbox' && event.target.checked) {
-        this.errors[fieldName] = ''
-      } else {
-        this.errors[fieldName] = validation.message
-      }
-    },
+      this.errors[fieldName] = validation.message
+      },
     handleBlur(fieldName) {
       this.touched[fieldName] = true
+      const field = this.fields.find((f) => f.name === fieldName)
+      const validation = this.validateField(field)
+      this.errors[fieldName] = validation.message
+    },
+    handleCheckboxChange(fieldName, event) {
+      this.touched[fieldName] = true
+      this.form[fieldName] = event.target.checked
       const field = this.fields.find((f) => f.name === fieldName)
       const validation = this.validateField(field)
       this.errors[fieldName] = validation.message
@@ -132,7 +135,7 @@ export default {
       console.log('Отправка данных:', this.form)
       this.isSubmitting = true
       this.$emit('submit-success', this.form)
-      // this.closePopup()
+      this.closePopup()
       this.isSubmitting = false
     },
     resetForm() {

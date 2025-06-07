@@ -92,9 +92,9 @@ export default {
   }
 
   &__body {
-    max-width: 500px;
+    max-width: 445px;
     width: 100%;
-    max-height: 400px;
+    max-height: 360px;
     height: 100%;
     padding: 40px;
     background-color: var(--white);

@@ -122,19 +122,14 @@
       </fieldset>
     </form>
   </section>
-  <!-- <SuccessPopup :isVisible="successPopupVisible" @close-popup="closeSuccessPopup" /> -->
 </template>
 
 <script>
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
-// import SuccessPopup from '@/widgets/success-popup/SuccessPopup.vue'
 
 export default {
   name: 'OrderForm',
-  // components: {
-  //   SuccessPopup,
-  // },
   data() {
     return {
       form: {
@@ -165,7 +160,6 @@ export default {
       cartStore: null,
       catalogStore: null,
     }
-
   },
   created() {
     this.cartStore = useCartStore()
@@ -237,7 +231,7 @@ export default {
           items: this.getCartItemsData(),
         }
         console.log('Отправка данных:', orderData)
-        this.$emit('submit-success');
+        this.$emit('submit-success')
         this.resetForm()
       }
     },

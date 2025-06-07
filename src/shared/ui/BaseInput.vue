@@ -8,7 +8,13 @@
     ]"
   >
     <input
-      v-if="type === 'text' || type === 'email' || type === 'tel' || type === 'radio' || type === 'password'"
+      v-if="
+        type === 'text' ||
+        type === 'email' ||
+        type === 'tel' ||
+        type === 'radio' ||
+        type === 'password'
+      "
       :class="['base-input', { 'base-input--radio': type === 'radio' }, { error: error }]"
       :type="type"
       :required="required"
@@ -16,7 +22,11 @@
       :value="type === 'radio' ? value : modelValue"
       :checked="type === 'radio' && modelValue === value"
       :name="name"
-      @input="type === 'radio' ? $emit('update:modelValue', value) : $emit('update:modelValue', $event.target.value)"
+      @input="
+        type === 'radio'
+          ? $emit('update:modelValue', value)
+          : $emit('update:modelValue', $event.target.value)
+      "
       @change="type === 'radio' ? $emit('change', value) : null"
     />
     <input
@@ -26,7 +36,7 @@
       :required="required"
       :name="name"
       :checked="modelValue"
-      @change="$emit('update:modelValue', $event.target.checked); $emit('change', $event.target.checked)"
+      @change="$emit('update:modelValue', $event.target.checked); $emit('change', $event)"
       :class="{ error: error }"
     />
     <textarea

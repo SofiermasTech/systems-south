@@ -167,7 +167,12 @@
     @close-popup="closeCallbackPopup"
     @submit-success="openSuccessPopup"
   />
-  <SuccessPopup :isVisible="successPopupVisible" @close-popup="closeSuccessPopup" />
+  <BaseSuccessPopup
+    :isVisible="successPopupVisible"
+    @close-popup="closeSuccessPopup"
+    :title="'Заявка успешно оформлена!'"
+    :subtitle="'Наш менеджер свяжется с нами'"
+  />
   <CallbackSection />
 </template>
 <script>
@@ -177,8 +182,8 @@ import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
 import FavoriteButton from '@/entities/product/FavoriteButton.vue'
 import ProductSection from '@widgets/product-section/ProductSection.vue'
 import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
-import SuccessPopup from '@/widgets/success-popup/SuccessPopup.vue'
 import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
+import BaseSuccessPopup from '@/shared/ui/BaseSuccessPopup.vue'
 
 export default {
   data() {
@@ -192,10 +197,9 @@ export default {
   components: {
     BreadcrumbsList,
     FavoriteButton,
-    // ProductQuantity,
     ProductSection,
     CallbackPopup,
-    SuccessPopup,
+    BaseSuccessPopup,
     CallbackSection,
   },
   computed: {

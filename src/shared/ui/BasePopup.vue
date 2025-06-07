@@ -3,8 +3,9 @@
     <div class="base-popup__overlay" @click="closePopup">
       <div class="base-popup__body" @click.stop :class="customClass">
         <div class="base-popup__content">
-          <BaseButtonClosePopup @click="closePopup" />
-          <h2 class="base-popup__title">{{ title }}</h2>
+          <BaseButtonClosePopup v-if="!isOrderPage" @click="closePopup" />
+          <slot name="title"></slot>
+          <!-- <h2 class="base-popup__title">{{ title }}</h2> -->
           <slot name="subtitle"></slot>
           <slot
             name="popup-content"
@@ -19,17 +20,23 @@
 
 <script>
 import BaseButtonClosePopup from '@/shared/ui/BaseButtonClosePopup.vue'
+import { useCartStore } from '@/shared/stores/cart.js'
 
 export default {
   name: 'BasePopup',
   components: {
     BaseButtonClosePopup,
   },
+  data() {
+    return {
+      cartStore: useCartStore(),
+    }
+  },
   props: {
-    title: {
-      type: String,
-      default: 'Введите данные',
-    },
+    // title: {
+    //   type: String,
+    //   default: 'Введите данные',
+    // },
     isVisible: {
       type: Boolean,
       default: false,
@@ -39,10 +46,15 @@ export default {
       default: '',
     },
   },
-  emits: ['close-popup'],
+  emits: ['close-popup', 'submit-success'],
   methods: {
     closePopup() {
       this.$emit('close-popup')
+
+      if (this.isOrderPage) {
+        this.$router.push('/')
+        this.cartStore.clearCart()
+      }
     },
     handleKeydown(event) {
       if (event.key === 'Escape') {
@@ -51,6 +63,9 @@ export default {
     },
     handleSubmitSuccess() {
       this.$emit('submit-success')
+    },
+    isOrderPage() {
+      return this.$route.path.startsWith('/order')
     },
   },
   mounted() {

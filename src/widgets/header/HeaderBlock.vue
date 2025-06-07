@@ -61,7 +61,8 @@
     </div>
     <CartPopup v-model:isOpen="isCartPopupOpen" />
     <MenuBlock v-model:open="isMenuOpen" />
-    <LoginPopup :is-visible="isLoginPopupOpen" @close-popup="closeLoginPopup" />
+    <LoginPopup :is-visible="isLoginPopupOpen" @close-popup="closeLoginPopup" @show-success-popup="openSuccessPopup" />
+    <BaseSuccessPopup :is-visible="isSuccessPopupVisible" @close-popup="closeSuccessPopup" :title="'Вы успешно зарегистрированы!'" />
   </header>
 </template>
 
@@ -74,6 +75,7 @@ import { useFavoritesStore } from '@/shared/stores/favorites.js'
 import CartPopup from '@/entities/cart/CartPopup.vue'
 import MenuBlock from '@widgets/menu/MenuBlock.vue'
 import LoginPopup from '@widgets/login-popup/LoginPopup.vue'
+import BaseSuccessPopup from '@/shared/ui/BaseSuccessPopup.vue'
 
 export default {
   name: 'HeaderApp',
@@ -85,6 +87,7 @@ export default {
     CartPopup,
     MenuBlock,
     LoginPopup,
+    BaseSuccessPopup,
   },
   data() {
     return {
@@ -92,6 +95,7 @@ export default {
       isCartPopupOpen: false,
       isMenuOpen: false,
       isLoginPopupOpen: false,
+      isSuccessPopupVisible: false,
     }
   },
   created() {
@@ -128,6 +132,12 @@ export default {
     closeLoginPopup() {
       this.isLoginPopupOpen = false
     },
+    openSuccessPopup() {
+      this.isSuccessPopupVisible = true
+    },
+    closeSuccessPopup() {
+      this.isSuccessPopupVisible = false
+    }
   },
 }
 </script>
@@ -141,19 +151,11 @@ export default {
   top: 0;
   left: 0;
   z-index: 101;
-
   display: flex;
   flex-direction: column;
-  // gap: 8px;
 
   &__wrapper {
     width: 100%;
-
-    // background-image: linear-gradient(
-    //   to bottom,
-    //   rgba(255, 255, 255, 1) 95%,
-    //   rgba(255, 255, 255, 0) 96%
-    // );
     position: relative;
     z-index: 101;
   }

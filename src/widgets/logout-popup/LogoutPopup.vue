@@ -1,10 +1,8 @@
 <template>
-  <BasePopup
-    :title="'Вы действительно хотите выйти из аккаунта?'"
-    :is-visible="isVisible"
-    :custom-class="'logout-popup'"
-    @close-popup="closePopup"
-  >
+  <BasePopup :is-visible="isVisible" :custom-class="'logout-popup'" @close-popup="closePopup">
+    <template #title>
+      <h2 class="base-popup__title">Вы действительно хотите выйти из аккаунта?</h2>
+    </template>
     <template #popup-content>
       <div class="logout-popup__content">
         <p class="logout-popup__text">Все данные аккаунта будут сохранены</p>
