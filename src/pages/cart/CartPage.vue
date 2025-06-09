@@ -2,13 +2,13 @@
   <BaseCartPage title="Корзина" theme="default">
     <template #cart-empty>
       <div v-if="cartItems.length === 0" class="cart__empty">
-        <div class="cart__empty-wrapper">
-          <p class="cart__empty-title">В корзине нет добавленных позиций</p>
-          <span class="cart__empty-text">Перейдите в каталог, чтобы добавить товары в корзину</span>
-        </div>
+        <BaseTitleEmptyPage
+          :title="'В корзине нет добавленных позиций'"
+          :subtitle="'Перейдите в каталог, чтобы добавить товары в корзину'"
+        />
         <div class="cart__empty-img">
           <img
-            src="../../assets/images/empty-cart.png"
+            src="@/assets/images/empty-cart.png"
             alt=""
             width="452"
             height="454"
@@ -30,18 +30,18 @@
 </template>
 
 <script>
-
 import CardPopup from '@/entities/cart/CardPopup.vue'
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
-
 import BaseCartPage from '@/shared/layouts/BaseCartPage.vue'
+import BaseTitleEmptyPage from '@/shared/ui/BaseTitleEmptyPage.vue'
 
 export default {
   name: 'CartPage',
   components: {
     BaseCartPage,
     CardPopup,
+    BaseTitleEmptyPage,
   },
   data() {
     return {
@@ -104,6 +104,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

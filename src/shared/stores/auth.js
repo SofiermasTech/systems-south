@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import api from '@/api';
+import { useOrderStore } from './order';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -29,6 +30,8 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await api.get('/user');
         this.user = response.data;
+        const orderStore = useOrderStore();
+        await orderStore.fetchOrders();
       } catch (error) {
         console.error('Failed to fetch user:', error);
         this.logout();
@@ -66,6 +69,8 @@ export const useAuthStore = defineStore('auth', {
         this.user = response.data.user;
         this.isAuthenticated = true;
         localStorage.setItem('authToken', this.token);
+        const orderStore = useOrderStore();
+        await orderStore.fetchOrders();
       } catch (error) {
         this.error = error.response?.data?.message || 'Ошибка при входе';
         throw error;
@@ -78,6 +83,8 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = false;
       this.error = null;
       localStorage.removeItem('authToken');
+      const orderStore = useOrderStore();
+      orderStore.orders = [];
       // this.router.push({ name: 'Home' });
     },
 

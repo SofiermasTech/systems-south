@@ -1,11 +1,10 @@
 <template>
-  <div class="favorites-page">
-    <div v-if="favorites.length === 0" class="favorites-page__empty">
-      <p class="favorites-page__empty-title">В избранном нет добавленных позиций</p>
-      <span class="favorites-page__empty-text"
-        >Перейдите в каталог, чтобы добавить товары в избранное</span
-      >
-    </div>
+  <section class="favorites-page">
+    <BaseTitleEmptyPage
+      v-if="favorites.length === 0"
+      :title="'В избранном нет добавленных позиций'"
+      :subtitle="'Перейдите в каталог, чтобы добавить товары в избранное'"
+    />
     <div v-else class="favorites-page__list">
       <ProductCard
         v-for="product in favorites"
@@ -14,17 +13,19 @@
         @toggle-favorite="handleToggleFavorite"
       />
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
 import ProductCard from '@/entities/product/ProductCard.vue'
 import { useFavoritesStore } from '@/shared/stores/favorites.js'
+import BaseTitleEmptyPage from '@/shared/ui/BaseTitleEmptyPage.vue'
 
 export default {
   name: 'FavoritesPage',
   components: {
     ProductCard,
+    BaseTitleEmptyPage,
   },
   data() {
     return {
@@ -36,15 +37,15 @@ export default {
   },
   computed: {
     favorites() {
-      return this.favoritesStore.favorites;
+      return this.favoritesStore.favorites
     },
   },
   methods: {
     handleToggleFavorite(product) {
       const message = this.favoritesStore.isFavorite(product.id)
         ? 'добавлен в избранное'
-        : 'удалён из избранного';
-      console.log(`Товар ${product.name} ${message}`);
+        : 'удалён из избранного'
+      console.log(`Товар ${product.name} ${message}`)
     },
   },
 }

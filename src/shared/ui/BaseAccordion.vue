@@ -1,13 +1,13 @@
 <template>
-  <div class="accordion" :class="{ opened: isOpen(index) }" v-for="(item, index) in items" :key="index">
-    <div class="accordion__heading" @click="openAnswer(index)">
-      <h2>{{ item.title }}</h2>
-      <button class="base-button-heading" :class="{ opened: isOpen(index) }">
+  <div class="accordion" :class="[customClass, { opened: isOpen }]" :id="`accordion-${id}`">
+    <div class="accordion__heading" @click="toggleItem" :id="`accordion-heading-${id}`">
+      <slot name="titles" :item="item" />
+      <button class="base-button-heading" :class="{ opened: isOpen }">
         <BaseIcon name="SelectArrowIcon" />
       </button>
     </div>
-    <div class="accordion__content" v-if="isOpen(index)">
-      <p>{{ item.content }}</p>
+    <div class="accordion__content" v-if="isOpen" :id="`accordion-content-${id}`">
+      <slot name="content" :item="item" />
     </div>
   </div>
 </template>
@@ -16,23 +16,32 @@
 export default {
   name: 'BaseAccordion',
   props: {
-    items: {
-      type: Array,
+    item: {
+      type: Object,
       required: true,
+    },
+    id: {
+      type: [String, Number],
+      required: true,
+    },
+    customClass: {
+      type: String,
+      default: '',
     },
   },
   components: {},
   data() {
     return {
-      openIndex: null,
+      // openIndex: null,
+      isOpen: false,
     }
   },
   methods: {
-    openAnswer(index) {
-      this.openIndex = this.openIndex === index ? null : index
-    },
-    isOpen(index) {
-      return this.openIndex === index
+    // openAnswer(index) {
+    //   this.openIndex = this.openIndex === index ? null : index
+    // },
+    toggleItem() {
+      this.isOpen = !this.isOpen
     },
   },
 }

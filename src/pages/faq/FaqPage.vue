@@ -3,7 +3,14 @@
     <IntroPages />
 
     <section class="faq__questions">
-      <BaseAccordion :items="accordionItems" />
+      <BaseAccordion v-for="(item, index) in accordionItems" :key="index" :item="item" :id="index">
+        <template #titles >
+          <h2>{{ item.title }}</h2>
+        </template>
+        <template #content >
+          <p>{{ item.content }}</p>
+        </template>
+      </BaseAccordion>
     </section>
   </div>
   <CallbackSection />

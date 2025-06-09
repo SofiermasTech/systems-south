@@ -173,6 +173,12 @@ export default {
         product: this.catalogStore.getProductById(item.id) || {},
       }))
     },
+    totalAmount() {
+      return this.cartItemsWithDetails.reduce(
+        (total, item) => total + (item.product.price || 0) * item.quantity,
+        0,
+      )
+    },
   },
   methods: {
     validateField(fieldName) {
@@ -229,9 +235,10 @@ export default {
         const orderData = {
           customer: this.form,
           items: this.getCartItemsData(),
+          totalAmount: this.totalAmount,
         }
         console.log('Отправка данных:', orderData)
-        this.$emit('submit-success')
+        this.$emit('submit-success', orderData)
         this.resetForm()
       }
     },
