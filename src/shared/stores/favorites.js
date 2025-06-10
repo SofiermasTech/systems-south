@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useAuthStore } from './auth.js'
 
 export const useFavoritesStore = defineStore('favorites', {
   state: () => ({
@@ -15,18 +16,30 @@ export const useFavoritesStore = defineStore('favorites', {
     },
   },
   actions: {
-    // Загружаем избранное из localStorage при инициализации
     loadFavorites() {
-      const savedFavorites = localStorage.getItem('favorites')
-      if (savedFavorites) {
-        this.favorites = JSON.parse(savedFavorites)
+      const authStore = useAuthStore()
+      if (authStore.isLoggedIn) {
+        const savedFavorites = localStorage.getItem('favorites')
+        if (savedFavorites) {
+          const allFavorites = JSON.parse(savedFavorites)
+          this.favorites = allFavorites[`user_${authStore.getUser.id}`] || []
+        }
+      }
+      if (!authStore.isLoggedIn) {
+        this.favorites = []
       }
     },
     // Добавляем товар в избранное
     addToFavorites(product) {
+      const authStore = useAuthStore()
+      if (!authStore.isLoggedIn) {
+        throw new Error('Авторизуйтесь для добавления в избранное')
+      }
       if (!this.isFavorite(product.id)) {
         this.favorites.push(product)
-        localStorage.setItem('favorites', JSON.stringify(this.favorites))
+        const allFavorites = JSON.parse(localStorage.getItem('favorites') || '{}')
+        allFavorites[`user_${authStore.getUser.id}`] = this.favorites
+        localStorage.setItem('favorites', JSON.stringify(allFavorites))
       }
     },
     // Удаляем товар из избранного
@@ -36,6 +49,11 @@ export const useFavoritesStore = defineStore('favorites', {
     },
     // Переключаем состояние избранного
     toggleFavorite(product) {
+      const authStore = useAuthStore()
+      if (!authStore.isLoggedIn) {
+        throw new Error('Авторизуйтесь для добавления в избранное')
+      }
+
       if (this.isFavorite(product.id)) {
         this.removeFromFavorites(product.id)
       } else {

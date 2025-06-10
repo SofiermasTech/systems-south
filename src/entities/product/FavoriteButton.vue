@@ -25,6 +25,7 @@
 
 <script>
 import { useFavoritesStore } from '@/shared/stores/favorites'
+import { useAuthStore } from '@/shared/stores/auth'
 
 export default {
   name: 'FavoriteButton',
@@ -45,6 +46,11 @@ export default {
   },
   methods: {
     toggleFavorite() {
+      const authStore = useAuthStore()
+      if (!authStore.isLoggedIn) {
+        console.log('Auth')
+        return
+      }
       const favoritesStore = useFavoritesStore()
       favoritesStore.toggleFavorite(this.product)
     },

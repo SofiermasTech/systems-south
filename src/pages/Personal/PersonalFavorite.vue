@@ -19,6 +19,7 @@
 <script>
 import ProductCard from '@/entities/product/ProductCard.vue'
 import { useFavoritesStore } from '@/shared/stores/favorites.js'
+import { useAuthStore } from '@/shared/stores/auth.js'
 import BaseTitleEmptyPage from '@/shared/ui/BaseTitleEmptyPage.vue'
 
 export default {
@@ -34,6 +35,10 @@ export default {
   },
   created() {
     this.favoritesStore = useFavoritesStore()
+    const authStore = useAuthStore()
+    if (!authStore.isLoggedIn) {
+      this.$router.push({ name: 'Login' })
+    }
   },
   computed: {
     favorites() {
