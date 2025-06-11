@@ -33,6 +33,7 @@
 import CardPopup from '@/entities/cart/CardPopup.vue'
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { useAuthStore } from '@/shared/stores/auth.js';
 import BaseCartPage from '@/shared/layouts/BaseCartPage.vue'
 import BaseTitleEmptyPage from '@/shared/ui/BaseTitleEmptyPage.vue'
 
@@ -45,25 +46,27 @@ export default {
   },
   data() {
     return {
-      cartStore: null,
-      callbackPopupVisible: false,
-      successPopupVisible: false,
+      cartStore: useCartStore(),
+      catalogStore: useCatalogStore(),
+      authStore: useAuthStore(),
+      // callbackPopupVisible: false,
+      // successPopupVisible: false,
     }
   },
-  created() {
-    this.cartStore = useCartStore()
-  },
+  // created() {
+  //   this.cartStore = useCartStore()
+  // },
   computed: {
     cartItems() {
       return this.cartStore.cartItems
     },
     cartItemsWithDetails() {
-      const cartStore = useCartStore()
-      const catalogStore = useCatalogStore()
-      return cartStore.cartItems.map((item) => ({
+      // const cartStore = useCartStore()
+      // const catalogStore = useCatalogStore()
+      return this.cartStore.cartItems.map((item) => ({
         id: item.id,
         quantity: item.quantity,
-        product: catalogStore.getProductById(item.id) || {},
+        product: this.catalogStore.getProductById(item.id) || {},
       }))
     },
     totalQuantity() {
@@ -81,26 +84,33 @@ export default {
   },
   methods: {
     removeItem(productId) {
-      this.cartStore.cartItems = this.cartStore.cartItems.filter((item) => item.id !== productId)
-      this.cartStore.saveCart()
+      const targetCart = this.authStore.isLoggedIn ? this.cartStore.cartItems : this.cartStore.anonymousCart;
+      const filteredCart = targetCart.filter((item) => item.id !== productId);
+      if (this.authStore.isLoggedIn) {
+        this.cartStore.cartItems = filteredCart;
+      } else {
+        this.cartStore.anonymousCart = filteredCart;
+        this.cartStore.cartItems = filteredCart;
+      }
+      this.cartStore.persistCart();
     },
     declineItems(count) {
       if (count % 10 === 1 && count % 100 !== 11) return 'товар'
       if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) return 'товара'
       return 'товаров'
     },
-    openCallbackPopup() {
-      this.callbackPopupVisible = true
-    },
-    closeCallbackPopup() {
-      this.callbackPopupVisible = false
-    },
-    closeSuccessPopup() {
-      this.successPopupVisible = false
-    },
-    openSuccessPopup() {
-      this.successPopupVisible = true
-    },
+    // openCallbackPopup() {
+    //   this.callbackPopupVisible = true
+    // },
+    // closeCallbackPopup() {
+    //   this.callbackPopupVisible = false
+    // },
+    // closeSuccessPopup() {
+    //   this.successPopupVisible = false
+    // },
+    // openSuccessPopup() {
+    //   this.successPopupVisible = true
+    // },
   },
 }
 </script>

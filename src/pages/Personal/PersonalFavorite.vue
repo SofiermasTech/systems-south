@@ -37,7 +37,7 @@ export default {
     this.favoritesStore = useFavoritesStore()
     const authStore = useAuthStore()
     if (!authStore.isLoggedIn) {
-      this.$router.push({ name: 'Login' })
+      this.$router.push({ name: 'HomePage' })
     }
   },
   computed: {

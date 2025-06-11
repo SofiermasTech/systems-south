@@ -1,14 +1,13 @@
 <template>
   <div class="header__user-actions user-actions">
     <!-- Кнопка избранного -->
-    <RouterLink to="/personal/favorites" class="user-actions__btn user-actions__btn--favorites">
+    <button class="user-actions__btn user-actions__btn--favorites" type="button" @click="clickFavoritesBtn">
       <div class="user-actions__icon">
         <BaseIcon name="FavouriteIcon" />
         <span v-if="favoritesCount > 0" class="user-actions__counter">{{ favoritesCount }}</span>
       </div>
-
       <span class="user-actions__text">Избранное</span>
-    </RouterLink>
+    </button>
     <!-- Кнопки корзины -->
     <template v-if="cartItemsCount === 0 || isCartPage">
       <RouterLink to="/cart" class="user-actions__btn user-actions__btn--cart">
@@ -55,6 +54,7 @@
 <script>
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useAuthStore } from '@/shared/stores/auth.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'UserActions',
@@ -88,6 +88,17 @@ export default {
     },
     openLoginPopup() {
       this.$emit('login-popup')
+    },
+    clickFavoritesBtn() {
+      if (this.authStore.isLoggedIn) {
+        this.$router.push('/personal/favorites')
+      } else {
+        const popupStore = usePopupStore()
+        popupStore.showPopup({
+          component: 'LoginPopup',
+          props: { isVisible: true },
+        })
+      }
     },
   },
 }

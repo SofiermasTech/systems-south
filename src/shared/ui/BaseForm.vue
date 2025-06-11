@@ -41,7 +41,7 @@ export default {
       default: 'Отправить',
     },
   },
-  emits: ['close-popup', 'submit-success'],
+  emits: ['close', 'submit-success'],
   data() {
     const form = {}
     const errors = {}
@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     closePopup() {
-      this.$emit('close-popup')
+      this.$emit('close')
       this.resetForm()
     },
     validateField(field) {
@@ -135,7 +135,8 @@ export default {
       console.log('Отправка данных:', this.form)
       this.isSubmitting = true
       this.$emit('submit-success', this.form)
-      this.closePopup()
+      // console.log('Emitting submit-success:', this.form);
+      // this.closePopup()
       this.isSubmitting = false
     },
     resetForm() {

@@ -24,7 +24,7 @@ const catalogStore = useCatalogStore();
 catalogStore.loadProducts();
 
 const favoritesStore = useFavoritesStore()
-favoritesStore.loadFavorites()
+favoritesStore.fetchFavorites()
 
 const cartStore = useCartStore();
 cartStore.loadCart();

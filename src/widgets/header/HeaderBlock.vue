@@ -61,8 +61,6 @@
     </div>
     <CartPopup v-model:isOpen="isCartPopupOpen" />
     <MenuBlock v-model:open="isMenuOpen" />
-    <LoginPopup :is-visible="isLoginPopupOpen" @close-popup="closeLoginPopup" @show-success-popup="openSuccessPopup" />
-    <BaseSuccessPopup :is-visible="isSuccessPopupVisible" @close-popup="closeSuccessPopup" :title="'Вы успешно зарегистрированы!'" />
   </header>
 </template>
 
@@ -72,10 +70,9 @@ import UserActions from '@widgets/header/ui/UserActions.vue'
 import HeaderSearch from '@widgets/header/ui/HeaderSearch.vue'
 import HeaderContacts from '@widgets/header/ui/HeaderContacts.vue'
 import { useFavoritesStore } from '@/shared/stores/favorites.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 import CartPopup from '@/entities/cart/CartPopup.vue'
 import MenuBlock from '@widgets/menu/MenuBlock.vue'
-import LoginPopup from '@widgets/login-popup/LoginPopup.vue'
-import BaseSuccessPopup from '@/shared/ui/BaseSuccessPopup.vue'
 
 export default {
   name: 'HeaderApp',
@@ -86,16 +83,12 @@ export default {
     HeaderContacts,
     CartPopup,
     MenuBlock,
-    LoginPopup,
-    BaseSuccessPopup,
   },
   data() {
     return {
       favoritesStore: null,
       isCartPopupOpen: false,
       isMenuOpen: false,
-      isLoginPopupOpen: false,
-      isSuccessPopupVisible: false,
     }
   },
   created() {
@@ -125,19 +118,20 @@ export default {
       this.isMenuOpen = false
     },
     openLoginPopup() {
-      this.isLoginPopupOpen = true
+      const popupStore = usePopupStore()
+      popupStore.showPopup({
+        component: 'LoginPopup',
+        props: { isVisible: true },
+      })
       this.isCartPopupOpen = false
       this.isMenuOpen = false
     },
-    closeLoginPopup() {
-      this.isLoginPopupOpen = false
-    },
-    openSuccessPopup() {
-      this.isSuccessPopupVisible = true
-    },
-    closeSuccessPopup() {
-      this.isSuccessPopupVisible = false
-    }
+    // openSuccessPopup() {
+    //   this.isSuccessPopupVisible = true
+    // },
+    // closeSuccessPopup() {
+    //   this.isSuccessPopupVisible = false
+    // },
   },
 }
 </script>

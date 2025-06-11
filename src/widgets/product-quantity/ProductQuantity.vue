@@ -8,6 +8,7 @@
 
 <script>
 import { useCartStore } from '@/shared/stores/cart.js'
+import { useAuthStore } from '@/shared/stores/auth.js'
 
 export default {
   props: {
@@ -23,6 +24,8 @@ export default {
   data() {
     return {
       localQuantity: this.initialQuantity,
+      cartStore: useCartStore(),
+      authStore: useAuthStore(),
     }
   },
   methods: {
@@ -31,20 +34,33 @@ export default {
       this.updateCart()
     },
     decrementQuantity() {
-      this.localQuantity--
-      this.updateCart()
+      if (this.localQuantity > 1) {
+        this.localQuantity--
+        this.updateCart()
+      } else {
+        const targetCart = this.authStore.isLoggedIn
+          ? this.cartStore.cartItems
+          : this.cartStore.anonymousCart
+        this.cartStore.cartItems = targetCart.filter((item) => item.id !== this.productId)
+        if (!this.authStore.isLoggedIn) {
+          this.cartStore.anonymousCart = this.cartStore.cartItems
+        }
+        this.cartStore.persistCart()
+      }
     },
     updateCart() {
-      const cartStore = useCartStore()
-      const item = cartStore.cartItems.find((item) => item.id === this.productId)
-      if (item) {
-        if (this.localQuantity <= 0) {
-          cartStore.cartItems = cartStore.cartItems.filter((item) => item.id !== this.productId)
-        } else {
-          item.quantity = this.localQuantity
-        }
-        cartStore.saveCart()
+      const item = this.cartStore.cartItems.find((item) => item.id === this.productId)
+      const targetCart = this.authStore.isLoggedIn
+        ? this.cartStore.cartItems
+        : this.cartStore.anonymousCart
+      if (item && this.localQuantity > 0) {
+        item.quantity = this.localQuantity
       }
+
+      if (!this.authStore.isLoggedIn) {
+        this.cartStore.anonymousCart = targetCart
+      }
+      this.cartStore.persistCart()
     },
   },
   watch: {

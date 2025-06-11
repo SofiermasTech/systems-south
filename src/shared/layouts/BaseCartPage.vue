@@ -28,35 +28,20 @@
       </div>
     </div>
   </div>
-  <CallbackPopup
-    v-show="callbackPopupVisible"
-    @close-popup="closeCallbackPopup"
-    @submit-success="openSuccessPopup"
-  />
-  <BaseSuccessPopup
-    :isVisible="showSuccess || successPopupVisible"
-    @close-popup="closeSuccessPopup"
-    :title="'Заявка успешно оформлена!'"
-    :subtitle="'Наш менеджер свяжется с нами'"
-  />
-
   <CallbackSection v-if="cartItems.length > 0" />
 </template>
 
 <script>
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
-import { useCartStore } from '@/shared/stores/cart'
-import { useCatalogStore } from '@/shared/stores/catalog'
-import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
-import BaseSuccessPopup from '@/shared/ui/BaseSuccessPopup.vue'
+import { useCartStore } from '@/shared/stores/cart.js'
+import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 
 export default {
   name: 'BaseCartPage',
   components: {
     IntroPages,
-    CallbackPopup,
-    BaseSuccessPopup,
     CallbackSection,
   },
   props: {
@@ -76,8 +61,7 @@ export default {
   data() {
     return {
       cartStore: null,
-      callbackPopupVisible: false,
-      successPopupVisible: false,
+      // successPopupVisible: false,
     }
   },
   created() {
@@ -119,18 +103,11 @@ export default {
       return 'товаров'
     },
     openCallbackPopup() {
-      this.callbackPopupVisible = true
-    },
-    closeCallbackPopup() {
-      this.callbackPopupVisible = false
-    },
-    closeSuccessPopup() {
-      this.successPopupVisible = false
-      this.$emit('update:show-success', false)
-    },
-    openSuccessPopup() {
-      console.log('BaseCartPage: Открываем SuccessPopup')
-      this.successPopupVisible = true
+      const popupStore = usePopupStore()
+      popupStore.showPopup({
+        component: 'CallbackPopup',
+        props: { isVisible: true, redirectTo: this.$route.path },
+      })
     },
     goToOrder() {
       this.$router.push('/order')

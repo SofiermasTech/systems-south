@@ -33,14 +33,19 @@
 </template>
 
 <script>
-import { useCartStore } from '@/shared/stores/cart'
-import { useCatalogStore } from '@/shared/stores/catalog'
+import { useCartStore } from '@/shared/stores/cart.js'
+import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { useAuthStore } from '@/shared/stores/auth.js'
 import CardPopup from '@/entities/cart/CardPopup.vue'
 
 export default {
-  // data() {
-  //   // return { isOpen: false }
-  // },
+  data() {
+    return {
+      cartStore: useCartStore(),
+      authStore: useAuthStore(),
+      catalogStore: useCatalogStore(),
+    }
+  },
   props: {
     isOpen: {
       type: Boolean,
@@ -52,12 +57,10 @@ export default {
   },
   computed: {
     cartItemsWithDetails() {
-      const cartStore = useCartStore()
-      const catalogStore = useCatalogStore()
-      return cartStore.cartItems.map((item) => ({
+      return this.cartStore.cartItems.map((item) => ({
         id: item.id,
         quantity: item.quantity,
-        product: catalogStore.getProductById(item.id) || {},
+        product: this.catalogStore.getProductById(item.id) || {},
       }))
     },
     totalPrice() {
@@ -71,16 +74,22 @@ export default {
       this.$emit('update:isOpen', false)
     },
     clearCart() {
-      const cartStore = useCartStore()
-      cartStore.clearCart()
+      this.cartStore.clearCart()
       this.closePopup()
     },
     removeItem(productId) {
-      const cartStore = useCartStore()
-      cartStore.cartItems = cartStore.cartItems.filter((item) => item.id !== productId)
-      cartStore.saveCart()
-
-      if (cartStore.cartItemsCount === 0) {
+      const targetCart = this.authStore.isLoggedIn
+        ? this.cartStore.cartItems
+        : this.cartStore.anonymousCart
+      const filteredCart = targetCart.filter((item) => item.id !== productId)
+      if (this.authStore.isLoggedIn) {
+        this.cartStore.cartItems = filteredCart
+      } else {
+        this.cartStore.anonymousCart = filteredCart
+        this.cartStore.cartItems = filteredCart
+      }
+      this.cartStore.persistCart()
+      if (this.cartStore.cartItemsCount === 0) {
         this.closePopup()
       }
     },
@@ -97,24 +106,14 @@ export default {
 
 <style lang="scss">
 .cart-popup {
-  // position: relative;
-  // top: -10%;
-  // left: 0;
-  // z-index: 100;
   width: 100vw;
-  // height: calc(100vh - 120px);
   height: 100%;
   flex-grow: 1;
 
   &__overlay {
-    // position: absolute;
-    // bottom: 0;
-    // left: 0;
     z-index: 100;
     width: 100%;
-    // height: 100%;
     height: calc(100vh - 120px);
-    // margin-top: -15px;
     background-color: var(--grey-300);
     display: flex;
     justify-content: flex-end;

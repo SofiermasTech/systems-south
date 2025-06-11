@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia';
 import api from '@/api';
 import { useOrderStore } from './order';
+import { useCartStore } from './cart';
+import { useFavoritesStore } from './favorites';
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore('authStore', {
   state: () => ({
     user: null,
     token: null,
@@ -31,9 +33,17 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.get('/user');
         this.user = response.data;
         const orderStore = useOrderStore();
-        await orderStore.fetchOrders();
+        const cartStore = useCartStore();
+        const favoritesStore = useFavoritesStore();
+        cartStore.setNewUser(false); // Существующий пользователь
+        await cartStore.loadCart();
+        await cartStore.mergeAnonymousCart();
+        await Promise.all([
+          orderStore.fetchOrders(),
+          favoritesStore.fetchFavorites(),
+        ]);
       } catch (error) {
-        console.error('Failed to fetch user:', error);
+        console.error('Ошибка загрузки пользователя:', error);
         this.logout();
       }
     },
@@ -52,6 +62,16 @@ export const useAuthStore = defineStore('auth', {
         this.user = response.data.user;
         this.isAuthenticated = true;
         localStorage.setItem('authToken', this.token);
+        const orderStore = useOrderStore();
+        const cartStore = useCartStore();
+        const favoritesStore = useFavoritesStore();
+        cartStore.setNewUser(true); // Новый пользователь
+        await cartStore.loadCart();
+        await cartStore.mergeAnonymousCart();
+        await Promise.all([
+          orderStore.fetchOrders(),
+          favoritesStore.fetchFavorites(),
+        ]);
       } catch (error) {
         this.error = error.response?.data?.message || 'Ошибка при регистрации';
         throw error;
@@ -70,7 +90,15 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true;
         localStorage.setItem('authToken', this.token);
         const orderStore = useOrderStore();
-        await orderStore.fetchOrders();
+        const cartStore = useCartStore();
+        const favoritesStore = useFavoritesStore();
+        cartStore.setNewUser(false); // Существующий пользователь
+        await cartStore.loadCart();
+        await cartStore.mergeAnonymousCart();
+        await Promise.all([
+          orderStore.fetchOrders(),
+          favoritesStore.fetchFavorites(),
+        ]);
       } catch (error) {
         this.error = error.response?.data?.message || 'Ошибка при входе';
         throw error;
@@ -84,8 +112,11 @@ export const useAuthStore = defineStore('auth', {
       this.error = null;
       localStorage.removeItem('authToken');
       const orderStore = useOrderStore();
+      const cartStore = useCartStore();
+      const favoritesStore = useFavoritesStore();
       orderStore.orders = [];
-      // this.router.push({ name: 'Home' });
+      cartStore.clearCart();
+      favoritesStore.favorites = [];
     },
 
     clearError() {

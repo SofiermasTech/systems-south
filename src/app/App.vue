@@ -2,6 +2,7 @@
   <HeaderApp ref="headerContacts" @toggle-overlay="updateOverlay" />
   <main class="main">
     <router-view />
+    <PopupManager />
     <div class="overlay-page" v-if="isOverlayVisible" @click="closeOverlay"></div>
   </main>
   <FooterApp />
@@ -10,11 +11,13 @@
 <script>
 import HeaderApp from '@/widgets/header/HeaderBlock.vue'
 import FooterApp from '@/widgets/footer/FooterBlock.vue'
+import PopupManager from '@/shared/ui/PopupManager.vue';
 
 export default {
   components: {
     HeaderApp,
     FooterApp,
+    PopupManager,
   },
   data() {
     return {

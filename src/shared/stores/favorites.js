@@ -1,64 +1,68 @@
-import { defineStore } from 'pinia'
-import { useAuthStore } from './auth.js'
+import { defineStore } from 'pinia';
+import api from '@/api';
+import { useAuthStore } from './auth.js';
 
 export const useFavoritesStore = defineStore('favorites', {
   state: () => ({
-    favorites: [], // Массив избранных товаров
+    favorites: [],
   }),
   getters: {
-    // Проверяем, есть ли товар в избранном
     isFavorite: (state) => (productId) => {
-      return state.favorites.some((product) => product.id === productId)
+      return Array.isArray(state.favorites) && state.favorites.some((product) => product.id === productId);
     },
-    // Количество избранных товаров (для счётчика в хедере)
     favoritesCount: (state) => {
-      return state.favorites.length
+      return Array.isArray(state.favorites) ? state.favorites.length : 0;
     },
   },
   actions: {
-    loadFavorites() {
-      const authStore = useAuthStore()
-      if (authStore.isLoggedIn) {
-        const savedFavorites = localStorage.getItem('favorites')
-        if (savedFavorites) {
-          const allFavorites = JSON.parse(savedFavorites)
-          this.favorites = allFavorites[`user_${authStore.getUser.id}`] || []
-        }
-      }
+    async fetchFavorites() {
+      const authStore = useAuthStore();
       if (!authStore.isLoggedIn) {
-        this.favorites = []
+        this.favorites = [];
+        return;
+      }
+      try {
+        const response = await api.get(`/favorites/${authStore.getUser.id}`);
+        console.log('Favorites response:', response.data); // Логирование
+        this.favorites = Array.isArray(response.data) ? response.data : [];
+      } catch (error) {
+        console.error('Ошибка загрузки избранного:', error);
+        this.favorites = [];
       }
     },
-    // Добавляем товар в избранное
+    async syncFavorites() {
+      const authStore = useAuthStore();
+      if (!authStore.isLoggedIn) return;
+      try {
+        await api.post(`/favorites/${authStore.getUser.id}`, this.favorites);
+      } catch (error) {
+        console.error('Ошибка синхронизации избранного:', error);
+      }
+    },
     addToFavorites(product) {
-      const authStore = useAuthStore()
+      const authStore = useAuthStore();
       if (!authStore.isLoggedIn) {
-        throw new Error('Авторизуйтесь для добавления в избранное')
+        throw new Error('Авторизуйтесь для добавления в избранное');
       }
       if (!this.isFavorite(product.id)) {
-        this.favorites.push(product)
-        const allFavorites = JSON.parse(localStorage.getItem('favorites') || '{}')
-        allFavorites[`user_${authStore.getUser.id}`] = this.favorites
-        localStorage.setItem('favorites', JSON.stringify(allFavorites))
+        this.favorites.push(product);
+        this.syncFavorites();
       }
     },
-    // Удаляем товар из избранного
     removeFromFavorites(productId) {
-      this.favorites = this.favorites.filter((product) => product.id !== productId)
-      localStorage.setItem('favorites', JSON.stringify(this.favorites))
+      this.favorites = this.favorites.filter((product) => product.id !== productId);
+      this.syncFavorites();
     },
-    // Переключаем состояние избранного
     toggleFavorite(product) {
-      const authStore = useAuthStore()
+      const authStore = useAuthStore();
       if (!authStore.isLoggedIn) {
-        throw new Error('Авторизуйтесь для добавления в избранное')
+        throw new Error('Авторизуйтесь для добавления в избранное');
       }
-
       if (this.isFavorite(product.id)) {
-        this.removeFromFavorites(product.id)
+        this.removeFromFavorites(product.id);
       } else {
-        this.addToFavorites(product)
+        this.addToFavorites(product);
       }
     },
   },
-})
+});

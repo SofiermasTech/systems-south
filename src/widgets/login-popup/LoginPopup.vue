@@ -2,7 +2,7 @@
   <BasePopup
     :is-visible="isVisible"
     :custom-class="currentForm === 'login' ? 'login-popup' : 'reg-popup'"
-    @close-popup="closePopup"
+    @close="closePopup"
   >
     <template #title>
       <h2 class="base-popup__title">
@@ -22,7 +22,7 @@
         :fields="currentFields"
         :key="currentForm"
         ref="baseForm"
-        @close-popup="closePopup"
+        @close="closePopup"
         @submit-success="handleSubmitSuccess"
         :button-text="currentForm === 'login' ? 'Войти' : 'Отправить'"
       />
@@ -35,6 +35,7 @@
 
 <script>
 import { useAuthStore } from '@/shared/stores/auth.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'LoginPopup',
@@ -43,8 +44,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    // redirectTo: {
+    //   type: String,
+    //   default: '/',
+    // },
   },
-  emits: ['close-popup', 'submit-success', 'show-success-popup'],
+  emits: ['close', 'submit-success', 'show-success-popup'],
   data() {
     return {
       authStore: useAuthStore(),
@@ -88,7 +93,7 @@ export default {
     closePopup() {
       this.currentForm = 'login'
       this.authStore.clearError()
-      this.$emit('close-popup')
+      this.$emit('close')
     },
     async handleSubmitSuccess(formData) {
       console.log('Form data:', formData)
@@ -97,11 +102,19 @@ export default {
         if (this.currentForm === 'login') {
           await this.authStore.login(formData)
           this.$emit('submit-success')
+          this.closePopup()
         } else {
           await this.authStore.register(formData)
           this.$emit('show-success-popup')
+          const popupStore = usePopupStore()
+          popupStore.showPopup({
+            component: 'BaseSuccessPopup',
+            props: {
+              isVisible: true,
+              title: 'Вы успешно зарегистрированы!',
+            },
+          })
         }
-        this.closePopup()
       } finally {
         this.isLoading = false
       }

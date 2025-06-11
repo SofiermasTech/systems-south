@@ -127,6 +127,7 @@
 <script>
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'OrderForm',
@@ -238,8 +239,19 @@ export default {
           totalAmount: this.totalAmount,
         }
         console.log('Отправка данных:', orderData)
+        const popupStore = usePopupStore()
+        popupStore.showPopup({
+          component: 'BaseSuccessPopup',
+          props: {
+            isVisible: true,
+            title: 'Заявка успешно оформлена!',
+            subtitle: 'Наш менеджер свяжется с вами',
+            redirectTo: this.$router.push('/'),
+          },
+        })
         this.$emit('submit-success', orderData)
         this.resetForm()
+        this.cartStore.clearCart()
       }
     },
     resetForm() {

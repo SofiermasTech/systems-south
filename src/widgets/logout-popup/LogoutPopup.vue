@@ -1,5 +1,5 @@
 <template>
-  <BasePopup :is-visible="isVisible" :custom-class="'logout-popup'" @close-popup="closePopup">
+  <BasePopup :is-visible="isVisible" :custom-class="'logout-popup'" @close="closePopup">
     <template #title>
       <h2 class="base-popup__title">Вы действительно хотите выйти из аккаунта?</h2>
     </template>
@@ -21,6 +21,7 @@
 
 <script>
 import { useAuthStore } from '@/shared/stores/auth.js'
+// import { usePopupStore } from '@/shared/stores/popup.js';
 
 export default {
   name: 'LogoutPopup',
@@ -34,11 +35,15 @@ export default {
       type: Boolean,
       required: true,
     },
+    redirectTo: {
+      type: String,
+      default: '/',
+    },
   },
-  emits: ['close-popup'],
+  emits: ['close'],
   methods: {
     closePopup() {
-      this.$emit('close-popup')
+      this.$emit('close')
     },
     logout() {
       this.authStore.logout()

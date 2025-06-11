@@ -24,8 +24,9 @@
 </template>
 
 <script>
-import { useFavoritesStore } from '@/shared/stores/favorites'
-import { useAuthStore } from '@/shared/stores/auth'
+import { useFavoritesStore } from '@/shared/stores/favorites.js'
+import { useAuthStore } from '@/shared/stores/auth.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'FavoriteButton',
@@ -48,7 +49,11 @@ export default {
     toggleFavorite() {
       const authStore = useAuthStore()
       if (!authStore.isLoggedIn) {
-        console.log('Auth')
+        const popupStore = usePopupStore()
+        popupStore.showPopup({
+          component: 'LoginPopup',
+          props: { isVisible: true },
+        })
         return
       }
       const favoritesStore = useFavoritesStore()

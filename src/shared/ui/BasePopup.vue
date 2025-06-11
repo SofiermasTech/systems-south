@@ -3,10 +3,9 @@
     <div class="base-popup__overlay" @click="closePopup">
       <div class="base-popup__body" @click.stop :class="customClass">
         <div class="base-popup__content">
-          <BaseButtonClosePopup v-if="!isOrderPage" @click="closePopup" />
+          <BaseButtonClosePopup @click="closePopup" />
           <slot name="title"></slot>
-          <!-- <h2 class="base-popup__title">{{ title }}</h2> -->
-          <slot name="subtitle"></slot>
+               <slot name="subtitle"></slot>
           <slot
             name="popup-content"
             @close-popup="closePopup"
@@ -46,12 +45,12 @@ export default {
       default: '',
     },
   },
-  emits: ['close-popup', 'submit-success'],
+  emits: ['close', 'submit-success'],
   methods: {
     closePopup() {
-      this.$emit('close-popup')
+      this.$emit('close')
 
-      if (this.isOrderPage) {
+      if (this.$route.path.startsWith('/order')) {
         this.$router.push('/')
         this.cartStore.clearCart()
       }

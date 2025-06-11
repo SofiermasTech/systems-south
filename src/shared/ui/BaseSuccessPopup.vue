@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     handleButtonClick() {
-      this.$emit('close-popup')
+      this.$emit('close')
 
       if (this.isOrderPage) {
         this.$router.push({ name: 'HomePage' })

@@ -162,44 +162,28 @@
     filter-type="recommended"
     @toggle-favorite="handleToggleFavorite"
   />
-  <CallbackPopup
-    v-show="callbackPopupVisible"
-    @close-popup="closeCallbackPopup"
-    @submit-success="openSuccessPopup"
-  />
-  <BaseSuccessPopup
-    :isVisible="successPopupVisible"
-    @close-popup="closeSuccessPopup"
-    :title="'Заявка успешно оформлена!'"
-    :subtitle="'Наш менеджер свяжется с нами'"
-  />
   <CallbackSection />
 </template>
 <script>
-import { useCatalogStore } from '@/shared/stores/catalog'
-import { useCartStore } from '@/shared/stores/cart'
+import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { useCartStore } from '@/shared/stores/cart.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
 import FavoriteButton from '@/entities/product/FavoriteButton.vue'
 import ProductSection from '@widgets/product-section/ProductSection.vue'
-import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
 import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
-import BaseSuccessPopup from '@/shared/ui/BaseSuccessPopup.vue'
 
 export default {
   data() {
     return {
       recProductsTitle: 'Рекомендуем',
       productTab: 't1',
-      callbackPopupVisible: false,
-      successPopupVisible: false,
     }
   },
   components: {
     BreadcrumbsList,
     FavoriteButton,
     ProductSection,
-    CallbackPopup,
-    BaseSuccessPopup,
     CallbackSection,
   },
   computed: {
@@ -227,17 +211,21 @@ export default {
       this.$emit('toggle-favorite', product)
     },
     openCallbackPopup() {
-      this.callbackPopupVisible = true
+      const popupStore = usePopupStore()
+      popupStore.showPopup({
+        component: 'CallbackPopup',
+        props: { isVisible: true, redirectTo: this.$route.path },
+      })
     },
-    closeCallbackPopup() {
-      this.callbackPopupVisible = false
-    },
-    closeSuccessPopup() {
-      this.successPopupVisible = false
-    },
-    openSuccessPopup() {
-      this.successPopupVisible = true
-    },
+    // closeCallbackPopup() {
+    //   this.callbackPopupVisible = false
+    // },
+    // closeSuccessPopup() {
+    //   this.successPopupVisible = false
+    // },
+    // openSuccessPopup() {
+    //   this.successPopupVisible = true
+    // },
   },
 }
 </script>
