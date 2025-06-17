@@ -20,15 +20,16 @@
       :required="required"
       :placeholder="placeholder"
       autocomplete
+      ref="inputRef"
       :value="type === 'radio' ? value : modelValue"
       :checked="type === 'radio' && modelValue === value"
       :name="name"
-      @input="
-        type === 'radio'
-          ? $emit('update:modelValue', value)
-          : $emit('update:modelValue', $event.target.value)
-      "
       @change="type === 'radio' ? $emit('change', value) : null"
+      @input="
+        type === 'radio' ? $emit('update:modelValue', value) : handleInput($event.target.value)
+      "
+      @focus="handleFocus"
+      @blur="handleBlur"
     />
     <input
       v-if="type === 'checkbox'"
@@ -37,7 +38,7 @@
       :required="required"
       :name="name"
       :checked="modelValue"
-      @change="$emit('update:modelValue', $event.target.checked); $emit('change', $event)"
+      @change="($emit('update:modelValue', $event.target.checked), $emit('change', $event))"
       :class="{ error: error }"
     />
     <textarea
@@ -51,6 +52,21 @@
     />
     <slot v-if="type === 'checkbox' || type === 'radio'" name="label"></slot>
     <span v-if="error" class="base-input__error">{{ error }}</span>
+    <!-- Кнопка редактирования/сохранения -->
+    <button
+      v-if="
+        (type === 'text' || type === 'email' || type === 'tel' ) &&
+        isPersonalPage
+      "
+      class="base-input__btn-edit"
+      type="button"
+      @click="handleAction"
+    >
+      <img
+        :src="isFocused && isEdited && isEditing ? '/images/btn-edit-check.svg' : '/images/edit-icon.svg'"
+        alt=""
+      />
+    </button>
   </label>
 </template>
 <script>
@@ -74,6 +90,58 @@ export default {
     value: {
       type: [String, Number],
       default: '',
+    },
+  },
+  data() {
+    return {
+      isFocused: false,
+      isEdited: false,
+      isEditing: false,
+      initialValue: String(this.modelValue ?? ''),
+    }
+  },
+  computed: {
+    isPersonalPage() {
+      return this.$route.path.startsWith('/personal/profile')
+    },
+  },
+  methods: {
+    handleInput(value) {
+      this.$emit('update:modelValue', value)
+      this.isEdited = String(value) !== String(this.initialValue)
+      this.isEditing = true
+    },
+    handleAction() {
+      if (!this.isEditing) {
+
+        this.isEditing = true
+        if (this.$refs.inputRef) {
+          this.$refs.inputRef.focus()
+        }
+      } else if (this.isEdited) {
+
+        this.$emit('save', this.modelValue)
+        this.isEdited = false
+        this.isEditing = false
+        this.initialValue = String(this.modelValue)
+
+        if (this.$refs.inputRef) {
+          this.$refs.inputRef.blur()
+        }
+      }
+    },
+    handleFocus() {
+      console.log('Фокус на input')
+      this.isFocused = true
+    },
+    handleBlur() {
+      console.log('Фокус снят с input')
+      this.isFocused = false
+    },
+  },
+  watch: {
+    modelValue(newValue) {
+      this.isEdited = newValue !== this.initialValue
     },
   },
 }
@@ -161,6 +229,27 @@ export default {
     left: 36px;
     color: var(--red);
     font-size: 10px;
+  }
+
+  &__btn-edit {
+    width: 40px;
+    height: 40px;
+    background-color: var(--blue);
+    border: none;
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+
+    img {
+      width: 15px;
+      height: 15px;
+      object-fit: contain;
+    }
   }
 }
 </style>

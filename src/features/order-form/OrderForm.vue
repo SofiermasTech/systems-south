@@ -128,6 +128,7 @@
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
 import { usePopupStore } from '@/shared/stores/popup.js'
+import { useAuthStore } from '@/shared/stores/auth.js'
 
 export default {
   name: 'OrderForm',
@@ -160,6 +161,7 @@ export default {
       isSubmitting: false,
       cartStore: null,
       catalogStore: null,
+      authStore: useAuthStore(),
     }
   },
   created() {
@@ -180,6 +182,18 @@ export default {
         0,
       )
     },
+  },
+  async mounted() {
+    if (this.authStore.isLoggedIn) {
+      const users = await this.authStore.fetchUsers()
+      const currentUserId = this.authStore.getUser.id
+      const user = users.find((u) => u.id === currentUserId)
+
+      this.form.name = user.name || ''
+      this.form.surname = user.surname || ''
+      this.form.email = user.email || ''
+      this.form.tel = user.phone || ''
+    }
   },
   methods: {
     validateField(fieldName) {

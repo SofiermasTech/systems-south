@@ -49,20 +49,13 @@ export default {
       cartStore: useCartStore(),
       catalogStore: useCatalogStore(),
       authStore: useAuthStore(),
-      // callbackPopupVisible: false,
-      // successPopupVisible: false,
     }
   },
-  // created() {
-  //   this.cartStore = useCartStore()
-  // },
   computed: {
     cartItems() {
       return this.cartStore.cartItems
     },
     cartItemsWithDetails() {
-      // const cartStore = useCartStore()
-      // const catalogStore = useCatalogStore()
       return this.cartStore.cartItems.map((item) => ({
         id: item.id,
         quantity: item.quantity,
@@ -99,18 +92,6 @@ export default {
       if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) return 'товара'
       return 'товаров'
     },
-    // openCallbackPopup() {
-    //   this.callbackPopupVisible = true
-    // },
-    // closeCallbackPopup() {
-    //   this.callbackPopupVisible = false
-    // },
-    // closeSuccessPopup() {
-    //   this.successPopupVisible = false
-    // },
-    // openSuccessPopup() {
-    //   this.successPopupVisible = true
-    // },
   },
 }
 </script>
