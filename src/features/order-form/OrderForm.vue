@@ -159,15 +159,15 @@ export default {
         consent: '',
       },
       isSubmitting: false,
-      cartStore: null,
-      catalogStore: null,
+      cartStore: useCartStore(),
+      catalogStore: useCatalogStore(),
       authStore: useAuthStore(),
     }
   },
-  created() {
-    this.cartStore = useCartStore()
-    this.catalogStore = useCatalogStore()
-  },
+  // created() {
+  //   this.cartStore = useCartStore()
+  //   this.catalogStore = useCatalogStore()
+  // },
   computed: {
     cartItemsWithDetails() {
       return this.cartStore.cartItems.map((item) => ({

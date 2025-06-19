@@ -126,12 +126,6 @@ export default {
       this.isCartPopupOpen = false
       this.isMenuOpen = false
     },
-    // openSuccessPopup() {
-    //   this.isSuccessPopupVisible = true
-    // },
-    // closeSuccessPopup() {
-    //   this.isSuccessPopupVisible = false
-    // },
   },
 }
 </script>
@@ -147,6 +141,7 @@ export default {
   z-index: 101;
   display: flex;
   flex-direction: column;
+  background-color: var(--white);
 
   &__wrapper {
     width: 100%;

@@ -21,47 +21,48 @@ components.forEach((component) => {
 
 async function initializeApp() {
   try {
-    console.log('Starting app initialization');
-    console.log('Environment mode:', import.meta.env.MODE, 'VITE_MODE:', import.meta.env.VITE_MODE);
-    let isMswEnabled = import.meta.env.MODE === 'development' || import.meta.env.VITE_MODE === 'production-poc';
-    console.log('Is MSW enabled:', isMswEnabled);
+    console.log('Starting app initialization')
+    console.log('Environment mode:', import.meta.env.MODE, 'VITE_MODE:', import.meta.env.VITE_MODE)
+    let isMswEnabled =
+      import.meta.env.MODE === 'development' || import.meta.env.VITE_MODE === 'production-poc'
+    console.log('Is MSW enabled:', isMswEnabled)
     if (isMswEnabled) {
       try {
-        console.log('Attempting to start MSW');
-        const { worker } = await import('@/mocks/browser');
-        console.log('MSW module loaded:', worker);
+        console.log('Attempting to start MSW')
+        const { worker } = await import('@/mocks/browser')
+        console.log('MSW module loaded:', worker)
         await worker.start({
           onUnhandledRequest: 'bypass',
-        });
-        console.log('MSW started successfully');
+        })
+        console.log('MSW started successfully')
       } catch (mswError) {
-        console.error('Failed to start MSW:', mswError);
+        console.error('Failed to start MSW:', mswError)
       }
     }
 
     // Инициализация авторизации
-    const authStore = useAuthStore();
-    console.log('Initializing auth store');
-    authStore.initializeAuth();
+    const authStore = useAuthStore()
+    console.log('Initializing auth store')
+    authStore.initializeAuth()
 
     // Инициализация магазинов
-    const catalogStore = useCatalogStore();
-    console.log('Loading catalog');
-    await catalogStore.loadProducts();
+    const catalogStore = useCatalogStore()
+    console.log('Loading catalog')
+    await catalogStore.loadProducts()
 
-    const favoritesStore = useFavoritesStore();
-    console.log('Fetching favorites');
-    await favoritesStore.fetchFavorites();
+    const favoritesStore = useFavoritesStore()
+    console.log('Fetching favorites')
+    await favoritesStore.fetchFavorites()
 
-    const cartStore = useCartStore();
-    console.log('Loading cart');
-    await cartStore.loadCart();
+    const cartStore = useCartStore()
+    console.log('Loading cart')
+    await cartStore.loadCart()
 
     // Монтируем приложение
-    console.log('Mounting app');
-    app.mount('#app');
+    console.log('Mounting app')
+    app.mount('#app')
   } catch (error) {
-    console.error('Failed to initialize app:', error);
+    console.error('Failed to initialize app:', error)
   }
 }
 initializeApp()

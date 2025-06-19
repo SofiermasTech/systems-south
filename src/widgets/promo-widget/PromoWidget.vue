@@ -163,7 +163,7 @@ export default {
 }
 
 .base-slider.promo-widget-slider {
-  max-width: 22vw;
+  // max-width: 22vw;
   width: 100%;
   height: 100%;
 

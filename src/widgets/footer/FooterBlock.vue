@@ -2,10 +2,22 @@
   <footer class="footer">
     <div class="footer__top-line">
       <ul class="footer__benf-list">
-        <li class="footer__benf-list-item">7 лет на рынке</li>
-        <li class="footer__benf-list-item">Дистрибьютор проф. оборудования</li>
-        <li class="footer__benf-list-item">Удобная оплата и доставка по РФ</li>
-        <li class="footer__benf-list-item">Гарантия и собственный сервисный центр</li>
+        <li class="footer__benf-list-item">
+          <p>7 лет на рынке</p>
+          <span></span>
+        </li>
+        <li class="footer__benf-list-item">
+          <p>Дистрибьютор проф. оборудования</p>
+          <span></span>
+        </li>
+        <li class="footer__benf-list-item">
+          <p>Удобная оплата и доставка по РФ</p>
+          <span></span>
+        </li>
+        <li class="footer__benf-list-item">
+          <p>Гарантия и собственный сервисный центр</p>
+          <span></span>
+        </li>
       </ul>
     </div>
     <div class="footer__center">
@@ -14,7 +26,11 @@
           <div class="footer__content-left">
             <div class="footer__office">
               <p class="footer__office-text">Офис продаж</p>
-              <address class="footer__office-address"></address>
+              <address class="footer__office-address">
+                <p>Краснодар, ул. Солнечная, д. 4/Б, пом. 14/1</p>
+                <time datetime="T10:00-18:00">Пн-Пт: 10:00 - 18:00</time>
+                <time datetime="T10:00-16:00">Сб-Вс: 10:00 - 16:00</time>
+              </address>
             </div>
             <div class="footer__contacts">
               <a class="footer__contact-tel" href="tel:+78612125445">+7 (861) 212-54-45</a>
@@ -28,9 +44,34 @@
               <div class="footer__nav-wrapper">
                 <p class="footer__nav-title">Заголовок</p>
                 <ul class="footer__nav-list">
-                  <li class="footer__nav-item"><a href="">Ссылка 1</a></li>
-                  <li class="footer__nav-item"><a href="">Ссылка 1</a></li>
-                  <li class="footer__nav-item"><a href="">Ссылка 1</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 1 Ссылка 1</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 2</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 3</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 4</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 5</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 6</a></li>
+                </ul>
+              </div>
+              <div class="footer__nav-wrapper">
+                <p class="footer__nav-title">Заголовок</p>
+                <ul class="footer__nav-list">
+                  <li class="footer__nav-item"><a href="">Ссылка 1 Ссылка 1</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 2</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 3</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 4</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 5</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 6</a></li>
+                </ul>
+              </div>
+              <div class="footer__nav-wrapper">
+                <p class="footer__nav-title">Заголовок</p>
+                <ul class="footer__nav-list">
+                  <li class="footer__nav-item"><a href="">Ссылка 1 Ссылка 1</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 2</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 3</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 4</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 5</a></li>
+                  <li class="footer__nav-item"><a href="">Ссылка 6</a></li>
                 </ul>
               </div>
             </nav>
@@ -78,12 +119,33 @@
     width: 100%;
     color: var(--white);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 20px;
   }
 
   &__benf-list-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     font-weight: 600;
     font-size: 16px;
+
+    p {
+      margin: 0;
+    }
+
+    span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--white);
+    }
+
+    &:last-child {
+      span {
+        display: none;
+      }
+    }
   }
 
   &__center {
@@ -114,15 +176,37 @@
   }
 
   &__office-text {
+    margin-bottom: 16px;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--grey-200);
   }
 
   &__office-address {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    p {
+      margin: 0;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    time {
+      font-weight: 500;
+      font-size: 16px;
+    }
   }
 
   &__contacts {
     display: flex;
     flex-direction: column;
     gap: 12px;
+
+    a {
+      text-decoration: none;
+    }
   }
 
   &__contact-tel {
@@ -142,9 +226,14 @@
 
   &__content-right {
     padding: 40px;
+    padding-right: 14%;
   }
 
   &__nav {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
   }
 
   &__nav-wrapper {

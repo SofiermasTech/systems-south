@@ -49,7 +49,7 @@
           />
         </div>
         <div class="callback-page__img">
-          <img src="@/assets/images/callback-section-2.png" alt="" loading="lazy" />
+          <img src="@/assets/images/callback-section-1.png" alt="" loading="lazy" />
         </div>
       </div>
     </div>
@@ -106,6 +106,10 @@ export default {
     .base-input {
       background-color: var(--white);
     }
+
+    .base-input__error {
+      left: 16px;
+    }
   }
 
   &__content-title {
@@ -117,11 +121,11 @@ export default {
   }
 
   &__img {
-    max-width: 40%;
+    max-width: 47%;
     width: 100%;
 
     img {
-      width: 56%;
+      width: 47%;
       object-fit: cover;
       position: absolute;
       bottom: 0;

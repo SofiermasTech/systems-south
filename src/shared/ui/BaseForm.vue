@@ -167,7 +167,7 @@ export default {
 .popup-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 
   &__btn-submit {
     margin-top: 12px;

@@ -44,6 +44,9 @@
             </div>
           </div>
         </div>
+        <div class="hero__block-bottom-img">
+          <img src="@/assets/images/hero-block-1.png" alt="" width="273" height="276" />
+        </div>
       </RouterLink>
       <div class="hero__block hero__block--delivery">
         <div class="hero__block-content">
@@ -57,6 +60,9 @@
               <BaseIcon name="ArrowUpRightIcon" />
             </div>
           </div>
+        </div>
+        <div class="hero__block-bottom-img">
+          <img src="@/assets/images/hero-block-1.png" alt="" width="273" height="276" />
         </div>
       </div>
       <RouterLink to="/contacts" class="hero__block hero__block--contacts">
@@ -72,6 +78,9 @@
             </div>
           </div>
         </div>
+        <div class="hero__block-bottom-img">
+          <img src="@/assets/images/hero-block-1.png" alt="" width="273" height="276" />
+        </div>
       </RouterLink>
       <RouterLink to="/faq" class="hero__block hero__block--faq">
         <div class="hero__block-content">
@@ -85,6 +94,9 @@
               <BaseIcon name="ArrowUpRightIcon" />
             </div>
           </div>
+        </div>
+        <div class="hero__block-bottom-img">
+          <img src="@/assets/images/hero-block-1.png" alt="" width="273" height="276" />
         </div>
       </RouterLink>
     </div>
@@ -105,16 +117,17 @@ export default {
 .hero {
   margin-top: 12px;
   margin-bottom: var(--section-offset);
-  height: 95vh;
+  // height: 95vh;
   max-height: 870px;
   // height: 100%;
 
   &__body {
     width: 100%;
+    max-height: 90vh;
     height: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1.4fr 1fr;
+    grid-template-columns: repeat(4, minmax(300px, 400px));
+    grid-template-rows: 1fr 350px;
     gap: 8px;
   }
 
@@ -126,6 +139,7 @@ export default {
     border-radius: var(--br-block);
     text-decoration: none;
     color: inherit;
+    position: relative;
   }
 
   &__block--main {
@@ -219,10 +233,12 @@ export default {
     }
   }
 
-    &__block--delivery,
+  &__block--delivery,
   &__block--contacts,
   &__block--faq,
   &__block--about {
+    overflow: hidden;
+
     .hero__block-content {
       height: 100%;
       display: flex;
@@ -241,6 +257,8 @@ export default {
     .hero__block-bottom {
       display: flex;
       gap: 16px;
+      position: relative;
+      z-index: 3;
     }
 
     .hero__block-text {
@@ -262,6 +280,25 @@ export default {
         width: 10px;
         height: 10px;
         color: var(--blue);
+      }
+    }
+
+    .hero__block-bottom-img {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+
+      img {
+        object-fit: contain;
+        transform: translateY(100%);
+        transition: 0.5s;
+      }
+    }
+
+    &:hover {
+      .hero__block-bottom-img img {
+        transform: translateY(0);
+        transition: 0.5s;
       }
     }
   }

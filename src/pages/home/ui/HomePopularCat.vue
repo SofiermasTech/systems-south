@@ -184,6 +184,9 @@ export default {
   }
 
   &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   &__item {

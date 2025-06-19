@@ -225,10 +225,10 @@ export default {
 
   &__error {
     position: absolute;
-    bottom: -16px;
+    bottom: -13px;
     left: 36px;
     color: var(--red);
-    font-size: 10px;
+    font-size: 9px;
   }
 
   &__btn-edit {

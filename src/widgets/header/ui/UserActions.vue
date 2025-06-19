@@ -165,6 +165,7 @@ export default {
   }
 
   &__btn--personal {
+    border-bottom-right-radius: 0;
   }
 }
 </style>

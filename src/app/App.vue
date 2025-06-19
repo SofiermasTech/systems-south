@@ -39,7 +39,6 @@ export default {
         this.isOverlayVisible = false
         this.$refs.headerContacts.closeAll()
       },
-      // immediate: true,
     },
   },
 }
