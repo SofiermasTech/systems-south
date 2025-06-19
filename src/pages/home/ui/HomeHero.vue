@@ -1,35 +1,7 @@
 <template>
   <section class="hero container">
     <div class="hero__body">
-      <div class="hero__block hero__block--main">
-        <div class="hero__block-wrapper">
-          <div class="hero__block-top">
-            <span class="hero__top-sticker">
-              <BaseIcon name="StickerSaleIcon" />
-            </span>
-            <p class="hero__top-text">ТОП-продаж</p>
-          </div>
-          <h2 class="hero__title">Бленда с сетчатым фильтром и посадочным кольцом</h2>
-          <div class="hero__block-info">
-            <div class="hero__info-item">
-              <span>Модель</span>
-              <p>LGD-NIKA-BDH-R100</p>
-            </div>
-            <div class="hero__info-item">
-              <span>Материал</span>
-              <p>Алюминий</p>
-            </div>
-            <div class="hero__info-item">
-              <span>Цена</span>
-              <p>18 742 ₽</p>
-            </div>
-          </div>
-          <a href="#" class="hero__link base-button">На страницу товара</a>
-        </div>
-        <div class="hero__block-img">
-          <img src="@/assets/images/hero-1.png" alt="" width="535" height="424" />
-        </div>
-      </div>
+      <BaseCardTopSale :data="popularProduct" theme="hero" />
       <PromoWidget />
       <RouterLink to="/about-us" class="hero__block hero__block--about">
         <div class="hero__block-content">
@@ -104,11 +76,22 @@
 </template>
 
 <script>
+import BaseCardTopSale from '@/shared/ui/BaseCardTopSale.vue'
 import PromoWidget from '@/widgets/promo-widget/PromoWidget.vue'
 
 export default {
   components: {
+    BaseCardTopSale,
     PromoWidget,
+  },
+  data() {
+    return {
+      popularProduct: [
+        {
+          productId: 11,
+        },
+      ],
+    }
   },
 }
 </script>
@@ -117,9 +100,7 @@ export default {
 .hero {
   margin-top: 12px;
   margin-bottom: var(--section-offset);
-  // height: 95vh;
   max-height: 870px;
-  // height: 100%;
 
   &__body {
     width: 100%;
@@ -140,97 +121,6 @@ export default {
     text-decoration: none;
     color: inherit;
     position: relative;
-  }
-
-  &__block--main {
-    grid-column: span 3;
-    // max-height: 460px;
-    padding-top: 32px;
-    padding-bottom: 44px;
-    display: flex;
-    gap: 24px;
-    background-image: url('@/assets/images/hero-main-back.png');
-    background-repeat: no-repeat;
-    background-position: -350% center;
-
-    .hero__block-wrapper {
-      max-width: 47%;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .hero__block-top {
-      display: flex;
-    }
-
-    .hero__top-sticker {
-      background-color: var(--black);
-      border-radius: 50%;
-      padding: 10px;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        width: 18px;
-        height: 20px;
-        color: var(--orange);
-      }
-    }
-
-    .hero__top-text {
-      padding: 12px 14px;
-      border-radius: 500px;
-      background-color: var(--white);
-      font-family: var(--font-family);
-      font-weight: 600;
-      font-size: 12px;
-    }
-
-    .hero__title {
-      font-weight: 500;
-      font-size: 40px;
-      line-height: 110%;
-      letter-spacing: -0.04em;
-      color: var(--blue);
-    }
-
-    .hero__block-info {
-      margin-top: auto;
-      display: flex;
-      gap: 24px;
-    }
-
-    .hero__info-item {
-      span {
-        font-weight: 500;
-        font-size: 14px;
-        color: var(--grey-200);
-      }
-
-      p {
-        margin-top: 12px;
-        font-weight: 600;
-        font-size: 16px;
-      }
-    }
-
-    .hero__link {
-      margin-top: 8px;
-      background-color: var(--black);
-      text-decoration: none;
-    }
-
-    .hero__block-img {
-      img {
-        width: 100%;
-        object-fit: cover;
-        object-position: center;
-      }
-    }
   }
 
   &__block--delivery,

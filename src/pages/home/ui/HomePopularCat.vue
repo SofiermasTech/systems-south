@@ -5,24 +5,11 @@
     </div>
     <div class="popular-categories__content">
       <div class="popular-categories__left">
-        <div v-if="activeProduct" class="popular-categories__product-card">
-          <div class="popular-categories__product-info">
-            <h3 class="popular-categories__product-title">{{ activeProduct.name }}</h3>
-            <div class="popular-categories__product-characteristics">
-              <p class="popular-categories__product-model">Модель: {{ activeProduct.model }}</p>
-              <p class="popular-categories__product-price">{{ activeProduct.price }} ₽</p>
-            </div>
-            <RouterLink
-              :to="`/product/${activeProduct.id}`"
-              class="popular-categories__product-button base-button"
-            >
-              Перейти к товару
-            </RouterLink>
-          </div>
-          <div class="popular-categories__product-img">
-            <img :src="activeProduct.images[0]" alt="" />
-          </div>
-        </div>
+        <BaseCardTopSale
+          :data="popularCategory"
+          theme="categories"
+          :active-category="activeCategory"
+        />
       </div>
       <div class="popular-categories__right">
         <ul class="popular-categories__list">
@@ -49,12 +36,16 @@
 
 <script>
 import { useCatalogStore } from '@/shared/stores/catalog'
+import BaseCardTopSale from '@/shared/ui/BaseCardTopSale.vue'
 
 export default {
   name: 'HomePopularCat',
+  components: {
+    BaseCardTopSale,
+  },
   data() {
     return {
-      catalogStore: null,
+      catalogStore: useCatalogStore(),
       activeCategory: 'Кабели',
       popularCategory: [
         {
@@ -90,18 +81,6 @@ export default {
       ],
     }
   },
-  computed: {
-    activeProduct() {
-      if (!this.activeCategory) return null
-      const category = this.popularCategory.find((item) => item.title === this.activeCategory)
-      if (!category || !category.productId) return null
-      return this.catalogStore.getProductById(category.productId)
-    },
-  },
-  async created() {
-    this.catalogStore = useCatalogStore()
-    await this.catalogStore.loadProducts()
-  },
   methods: {
     selectCategory(title) {
       this.activeCategory = title
@@ -119,65 +98,22 @@ export default {
   flex-direction: column;
   gap: 24px;
 
-  &__top {
-  }
-
-  &__top-title {
-  }
-
   &__content {
     width: 100%;
-    height: 52vh;
+    // height: 52vh;
+    height: 550px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
 
-  &__left {
-    background-image: linear-gradient(318deg, #fafcff 0%, #f2f7fd 100%);
-    border-radius: 16px;
-  }
-
-  &__product-card {
-    height: 100%;
-    padding: 32px 24px 40px;
-    display: flex;
-    justify-content: space-between;
-    gap: 24px;
-  }
-
-  &__product-info {
+  .top-sale__wrapper {
     max-width: 60%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-
-    a {
-      text-decoration: none;
-      background-color: var(--black);
-    }
   }
 
-  &__product-title {
-    max-width: 90%;
+  .top-sale__title {
     font-weight: 500;
     font-size: 28px;
-    line-height: 110%;
-    letter-spacing: -0.04em;
-    color: var(--blue);
-  }
-
-  &__product-characteristics {
-    margin-top: auto;
-    display: flex;
-    gap: 24px;
-  }
-
-  &__product-model,
-  &__product-price {
-    font-weight: 600;
-    font-size: 16px;
   }
 
   &__right {
