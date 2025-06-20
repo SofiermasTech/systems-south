@@ -2,7 +2,9 @@
   <HeaderApp ref="headerContacts" @toggle-overlay="updateOverlay" />
   <main class="main">
     <router-view />
-    <PopupManager />
+    <Transition name="base-popup" :duration="{ enter: 700, leave: 300 }">
+      <PopupManager />
+    </Transition>
     <div class="overlay-page" v-if="isOverlayVisible" @click="closeOverlay"></div>
   </main>
   <FooterApp />
@@ -11,7 +13,7 @@
 <script>
 import HeaderApp from '@/widgets/header/HeaderBlock.vue'
 import FooterApp from '@/widgets/footer/FooterBlock.vue'
-import PopupManager from '@/shared/ui/PopupManager.vue';
+import PopupManager from '@/shared/ui/PopupManager.vue'
 
 export default {
   components: {

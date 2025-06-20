@@ -1,4 +1,5 @@
 <template>
+    <transition name="cart" :duration="{ enter: 700, leave: 300 }">
   <section class="cart-popup" v-if="isOpen">
     <div class="cart-popup__overlay" @click="closePopup">
       <div class="cart-popup__body" @click.stop>
@@ -30,6 +31,7 @@
       </div>
     </div>
   </section>
+  </transition>
 </template>
 
 <script>
@@ -200,5 +202,29 @@ export default {
       width: 100%;
     }
   }
+}
+
+.cart-enter-from,
+.cart-leave-to {
+  opacity: 0;
+}
+.cart-enter-active,
+.cart-leave-active {
+  transition: 0.3s ease;
+}
+.cart-enter-to,
+.cart-leave-from {
+  opacity: 1;
+}
+
+.cart-enter-from .cart-popup__body {
+  transform: translateX(100%);
+}
+.cart-enter-active .cart-popup__body,
+.cart-leave-active.cart-popup__body {
+  transition: 0.7s ease;
+}
+.cart-enter-to .cart-popup__body {
+  transform: translateX(0);
 }
 </style>

@@ -1,11 +1,13 @@
 <template>
-  <div class="base-popup" v-if="isVisible">
+  <!-- <Transition :duration="{ enter: 700, leave: 300 }"> -->
+  <div class="base-popup" v-show="isVisible">
     <div class="base-popup__overlay" @click="closePopup">
-      <div class="base-popup__body" @click.stop :class="customClass">
+      <!-- <Transition :duration="{ enter: 700, leave: 300 }"> -->
+      <div v-show="isVisible" class="base-popup__body" @click.stop :class="customClass">
         <div class="base-popup__content">
           <BaseButtonClosePopup @click="closePopup" />
           <slot name="title"></slot>
-               <slot name="subtitle"></slot>
+          <slot name="subtitle"></slot>
           <slot
             name="popup-content"
             @close-popup="closePopup"
@@ -13,13 +15,16 @@
           ></slot>
         </div>
       </div>
+      <!-- </Transition> -->
     </div>
   </div>
+  <!-- </Transition> -->
 </template>
 
 <script>
 import BaseButtonClosePopup from '@/shared/ui/BaseButtonClosePopup.vue'
 import { useCartStore } from '@/shared/stores/cart.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'BasePopup',
@@ -29,14 +34,11 @@ export default {
   data() {
     return {
       cartStore: useCartStore(),
+      popupStore: usePopupStore(),
     }
   },
   props: {
-    // title: {
-    //   type: String,
-    //   default: 'Введите данные',
-    // },
-    isVisible: {
+    modelValue: {
       type: Boolean,
       default: false,
     },
@@ -44,11 +46,27 @@ export default {
       type: String,
       default: '',
     },
+    animationType: {
+      type: String,
+      default: 'y',
+    },
   },
-  emits: ['close', 'submit-success'],
+  emits: ['update:modelValue', 'close', 'submit-success'],
+  computed: {
+    isVisible: {
+      get() {
+        return this.popupStore.isVisible || this.modelValue
+      },
+      set(value) {
+        this.$emit('update:modelValue', value)
+        if (!value) this.popupStore.hidePopup()
+      },
+    },
+  },
   methods: {
     closePopup() {
-      this.$emit('close')
+      // this.$emit('close')
+      this.isVisible = false
 
       if (this.$route.path.startsWith('/order')) {
         this.$router.push('/')
@@ -119,5 +137,29 @@ export default {
 
   &__btn {
   }
+}
+
+.base-popup-enter-from,
+.base-popup-leave-to {
+  opacity: 0;
+}
+.base-popup-enter-active,
+.base-popup-leave-active {
+  transition: 0.3s ease;
+}
+.base-popup-enter-to,
+.base-popup-leave-from {
+  opacity: 1;
+}
+
+.base-popup-enter-from .base-popup__body {
+  transform: translateX(-100%);
+}
+.base-popup-enter-active .base-popup__body,
+.base-popup-leave-active .base-popup__body {
+  transition: 0.7s ease;
+}
+.base-popup-enter-to .base-popup__body {
+  transform: translateX(0);
 }
 </style>

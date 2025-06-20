@@ -7,56 +7,60 @@
       </div>
       <BaseButtonCall :class="{ open: emailVisible }" @click="toggleCallback" />
     </div>
-    <div class="contacts__email" v-if="emailVisible">
-      <span class="contacts__email-title">Электронная почта</span>
-      <a class="contacts__email-link" href="mailto:sales@ingsystemyuga.ru"
-        >sales@ingsystemyuga.ru</a
-      >
-    </div>
-    <div class="contacts__callback-form" v-if="callbackFormVisible">
-      <template v-if="submitSuccess">
-        <div class="callback-page__icon">
-          <img
-            src="@/assets/images/success-popup.png"
-            alt=""
-            width="102"
-            height="96"
-            loading="lazy"
+    <Transition>
+      <div class="contacts__email" v-if="emailVisible">
+        <span class="contacts__email-title">Электронная почта</span>
+        <a class="contacts__email-link" href="mailto:sales@ingsystemyuga.ru"
+          >sales@ingsystemyuga.ru</a
+        >
+      </div>
+    </Transition>
+    <Transition>
+      <div class="contacts__callback-form" v-if="callbackFormVisible">
+        <template v-if="submitSuccess">
+          <div class="callback-page__icon">
+            <img
+              src="@/assets/images/success-popup.png"
+              alt=""
+              width="102"
+              height="96"
+              loading="lazy"
+            />
+          </div>
+          <div class="callback-page__text">
+            <h2 class="callback-page__title">Заявка успешно оформлена!</h2>
+            <p class="callback-page__subtitle">Наш менеджер свяжется с вами</p>
+          </div>
+        </template>
+        <template v-else>
+          <p class="contacts__callback-form-title">Заказать звонок</p>
+          <BaseForm
+            :fields="[
+              { name: 'name', type: 'text', placeholder: 'Имя', required: true },
+              {
+                name: 'phone',
+                type: 'tel',
+                placeholder: 'Телефон',
+                required: true,
+                rules: [
+                  {
+                    validator: (v) => /^\+?\d{10,}$/.test(v),
+                    message: 'Номер должен содержать минимум 10 цифр',
+                  },
+                ],
+              },
+              {
+                name: 'checkbox',
+                type: 'checkbox',
+                required: true,
+                label: 'Я согласен/на на обработку персональных данных',
+              },
+            ]"
+            @submit-success="handleSubmitSuccess"
           />
-        </div>
-        <div class="callback-page__text">
-          <h2 class="callback-page__title">Заявка успешно оформлена!</h2>
-          <p class="callback-page__subtitle">Наш менеджер свяжется с вами</p>
-        </div>
-      </template>
-      <template v-else>
-        <p class="contacts__callback-form-title">Заказать звонок</p>
-        <BaseForm
-          :fields="[
-            { name: 'name', type: 'text', placeholder: 'Имя', required: true },
-            {
-              name: 'phone',
-              type: 'tel',
-              placeholder: 'Телефон',
-              required: true,
-              rules: [
-                {
-                  validator: (v) => /^\+?\d{10,}$/.test(v),
-                  message: 'Номер должен содержать минимум 10 цифр',
-                },
-              ],
-            },
-            {
-              name: 'checkbox',
-              type: 'checkbox',
-              required: true,
-              label: 'Я согласен/на на обработку персональных данных',
-            },
-          ]"
-          @submit-success="handleSubmitSuccess"
-        />
-      </template>
-    </div>
+        </template>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -107,6 +111,7 @@ export default {
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+  transition: 0.3s;
 
   &__tel {
     display: flex;
@@ -204,4 +209,29 @@ export default {
   height: 100%;
   background-color: var(--grey-300);
 }
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+.v-enter-active {
+  transition: 0.3s ease-in-out;
+}
+.v-enter-to,
+.v-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+// .v-enter-from .contacts__email {
+//   transform: translateY(100%);
+// }
+// .v-enter-active .contacts__email,
+// .v-leave-active .contacts__email {
+//   transition: 0.7s ease;
+// }
+// .v-enter-to .contacts__email {
+//   transform: translateY(0);
+// }
 </style>

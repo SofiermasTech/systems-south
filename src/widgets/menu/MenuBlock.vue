@@ -1,48 +1,52 @@
 <template>
-  <section class="menu" v-if="open">
-    <div class="menu__overlay" @click="closePopup">
-      <div class="menu__body" @click.stop>
-        <div class="menu__left">
-          <p class="menu__left-title">Каталог</p>
-          <ul class="menu__left-list">
-            <li
-              class="menu__left-item"
-              v-for="category in categories"
-              :key="category.slug"
-              :class="{ active: activeCategory === category.slug }"
-              @mouseenter="setActiveCategory(category.slug)"
-            >
-              <RouterLink :to="`/catalog/${category.slug}`" @click="closePopup">
-                <p>{{ category.name }}</p>
-                <span>
-                  <BaseIcon name="SelectArrowIcon" />
-                </span>
-              </RouterLink>
-            </li>
-          </ul>
-        </div>
-        <div class="menu__right" v-if="activeCategory">
-          <ul class="menu__right-list">
-            <li
-              class="menu__right-item"
-              v-for="subcategory in subcategories"
-              :key="subcategory.slug"
-            >
-              <RouterLink
-                :to="`/catalog/${activeCategory}/${subcategory.slug}`"
-                @click="closePopup"
+  <Transition name="menu" :duration="{ enter: 700, leave: 300 }">
+    <section class="menu" v-if="open">
+      <div class="menu__overlay" @click="closePopup">
+        <!-- <transition> -->
+        <div class="menu__body" @click.stop>
+          <div class="menu__left">
+            <p class="menu__left-title">Каталог</p>
+            <ul class="menu__left-list">
+              <li
+                class="menu__left-item"
+                v-for="category in categories"
+                :key="category.slug"
+                :class="{ active: activeCategory === category.slug }"
+                @mouseenter="setActiveCategory(category.slug)"
               >
-                <p>{{ subcategory.name }}</p>
-                <span>
-                  <BaseIcon name="SelectArrowIcon" />
-                </span>
-              </RouterLink>
-            </li>
-          </ul>
+                <RouterLink :to="`/catalog/${category.slug}`" @click="closePopup">
+                  <p>{{ category.name }}</p>
+                  <span>
+                    <BaseIcon name="SelectArrowIcon" />
+                  </span>
+                </RouterLink>
+              </li>
+            </ul>
+          </div>
+          <div class="menu__right" v-if="activeCategory">
+            <ul class="menu__right-list">
+              <li
+                class="menu__right-item"
+                v-for="subcategory in subcategories"
+                :key="subcategory.slug"
+              >
+                <RouterLink
+                  :to="`/catalog/${activeCategory}/${subcategory.slug}`"
+                  @click="closePopup"
+                >
+                  <p>{{ subcategory.name }}</p>
+                  <span>
+                    <BaseIcon name="SelectArrowIcon" />
+                  </span>
+                </RouterLink>
+              </li>
+            </ul>
+          </div>
         </div>
+        <!-- </transition> -->
       </div>
-    </div>
-  </section>
+    </section>
+  </Transition>
 </template>
 
 <script>
@@ -117,12 +121,11 @@ export default {
     background-color: var(--white);
     border-radius: 0 10px 10px 0;
     display: flex;
-    // grid-template-columns: 1fr 1fr;
     gap: 32px;
+    transition: width 0.5s;
   }
 
   &__left {
-    // flex: 0 0 23vw;
     width: 23vw;
   }
 
@@ -172,8 +175,8 @@ export default {
 
   &__right {
     width: 25vw;
-    // flex: 0 0 25vw;
     padding-top: 42px;
+    transition: 0.3s;
 
     a {
       text-decoration: none;
@@ -200,5 +203,29 @@ export default {
       transform: rotate(-90deg);
     }
   }
+}
+
+.menu-enter-from,
+.menu-leave-to {
+  opacity: 0;
+}
+.menu-enter-active,
+.menu-leave-active {
+  transition: 0.3s ease;
+}
+.menu-enter-to,
+.menu-leave-from {
+  opacity: 1;
+}
+
+.menu-enter-from .menu__body {
+  transform: translateX(-100%);
+}
+.menu-enter-active .menu__body,
+.menu-leave-active.menu__body {
+  transition: 0.7s ease;
+}
+.menu-enter-to .menu__body {
+  transform: translateX(0);
 }
 </style>
