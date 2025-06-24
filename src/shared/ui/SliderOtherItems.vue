@@ -107,13 +107,18 @@ export default {
   .promo-card {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
       'title img'
       'subtitle img'
       'date img';
     gap: 32px;
+
+    &__date {
+      align-self: flex-end;
+    }
   }
+
 
   .promo-card__img {
     img {

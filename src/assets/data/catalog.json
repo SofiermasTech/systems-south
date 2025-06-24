@@ -80,7 +80,7 @@
     "name": "Название бренда 5",
     "brand": "Бренд 5",
     "description": "Бленда с сетчатым фильтром и посадочным кольцом LGD-NIKA-BDH-R100 (BK) (Arlight, Металл)",
-    "images": ["/images/product-cart-2.png"],
+    "images": ["/images/product-cart-2.png", "/images/product-cart-2.png"],
     "price": 157042,
     "new": false,
     "best": true,

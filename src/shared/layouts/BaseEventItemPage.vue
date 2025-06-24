@@ -16,15 +16,16 @@
         <p>{{ item.description4 }}</p>
       </div>
     </section>
+    <section class="additional">
+      <SubscribeEmail />
+      <SliderOtherItems :items="eventItems" :exclude-id="excludeId" :title="eventTitle">
+        <template #default="{ item }">
+          <slot name="event-card" :item="item"></slot>
+        </template>
+      </SliderOtherItems>
+    </section>
   </div>
-  <section class="additional container">
-    <SubscribeEmail />
-    <SliderOtherItems :items="eventItems" :exclude-id="excludeId" :title="eventTitle">
-      <template #default="{ item }">
-        <slot name="event-card" :item="item"></slot>
-      </template>
-    </SliderOtherItems>
-  </section>
+
   <CallbackSection />
 </template>
 

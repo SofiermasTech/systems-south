@@ -52,7 +52,7 @@ export default {
     grid-column: span 2;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
       'title img'
       'subtitle img'

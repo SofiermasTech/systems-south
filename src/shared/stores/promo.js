@@ -18,21 +18,24 @@ export const usePromoStore = defineStore('promo', {
     getPromo(state) {
       const today = new Date()
       if (state.filter === 'all') {
-        return state.promo.filter((item) => new Date(item.date) >= today)
+        const filteredPromo = state.promo.filter((item) => new Date(item.date) >= today)
+        return filteredPromo.sort((a, b) => new Date(a.date) - new Date(b.date))
       }
       if (state.filter === 'new') {
         const twoDaysAgo = new Date()
-        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2)
-        return state.promo.filter(
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 7)
+        const filteredPromo = state.promo.filter(
           (item) => new Date(item.publication) >= twoDaysAgo && new Date(item.date) >= today,
         )
+        return filteredPromo.sort((a, b) => new Date(a.date) - new Date(b.date))
       }
       if (state.filter === 'soon') {
         const tomorrow = new Date()
-        tomorrow.setDate(tomorrow.getDate() + 1)
-        return state.promo.filter(
+        tomorrow.setDate(tomorrow.getDate() + 7)
+        const filteredPromo = state.promo.filter(
           (item) => new Date(item.date) >= today && new Date(item.date) <= tomorrow,
         )
+        return filteredPromo.sort((a, b) => new Date(a.date) - new Date(b.date))
       }
       return state.promo
     },
@@ -59,7 +62,8 @@ export const usePromoStore = defineStore('promo', {
     },
     getPromoArchive(state) {
       const today = new Date()
-      return state.promo.filter((item) => new Date(item.date) < today)
+      const filteredPromo = state.promo.filter((item) => new Date(item.date) < today)
+      return filteredPromo.sort((a, b) => new Date(b.date) - new Date(a.date))
     },
     getPromoById: (state) => (id) => {
       return state.promo.find((item) => item.id === id)

@@ -20,12 +20,14 @@ export const useNewsStore = defineStore('news', {
       if (state.filter === 'all') {
         const sixMonthsAgo = new Date()
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
-        return state.news.filter((news) => new Date(news.date) >= sixMonthsAgo)
+        const filteredNews = state.news.filter((news) => new Date(news.date) >= sixMonthsAgo)
+        return filteredNews.sort((a, b) => new Date(b.date) - new Date(a.date))
       }
       if (state.filter === 'new') {
         const thirtyDaysAgo = new Date()
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-        return state.news.filter((news) => new Date(news.date) >= thirtyDaysAgo)
+        const filteredNews = state.news.filter((news) => new Date(news.date) >= thirtyDaysAgo)
+        return filteredNews.sort((a, b) => new Date(b.date) - new Date(a.date))
       }
       return state.news
     },

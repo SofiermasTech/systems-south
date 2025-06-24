@@ -24,7 +24,35 @@
         </div>
       </div>
       <div class="product-general__bottom">
-        <div class="product-general__slider"></div>
+        <div class="product-general__slider">
+          <!-- Слайдер миниатюр -->
+          <div class="swiper swiper-thumbs">
+            <div class="swiper-wrapper">
+              <div v-for="(image, index) in product.images" :key="index" class="swiper-slide">
+                <img :src="image" alt="" class="slider-thumb-image" />
+              </div>
+            </div>
+          </div>
+          <!-- Главный слайдер -->
+          <div class="swiper swiper-main">
+            <div class="swiper-wrapper">
+              <div v-for="(image, index) in product.images" :key="index" class="swiper-slide">
+                <img :src="image" alt="" class="slider-main-image" />
+              </div>
+            </div>
+            <div class="swiper-main__bottom">
+              <div class="swiper-main__pagination"></div>
+              <div class="swiper-main__btns">
+                <div class="swiper-main__btn-prev">
+                  <BaseIcon name="SelectArrowIcon" />
+                </div>
+                <div class="swiper-main__btn-next">
+                  <BaseIcon name="SelectArrowIcon" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="product-general__chars">
           <h2 class="product-general__chars-title">Характеристики</h2>
           <dl class="product-general__chars-list">
@@ -172,12 +200,20 @@ import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
 import FavoriteButton from '@/entities/product/FavoriteButton.vue'
 import ProductSection from '@widgets/product-section/ProductSection.vue'
 import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
+import Swiper from 'swiper'
+import { Thumbs, Pagination, Navigation } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/thumbs'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
 
 export default {
   data() {
     return {
       recProductsTitle: 'Рекомендуем',
       productTab: 't1',
+      mainSwiper: null,
+      thumbsSwiper: null,
     }
   },
   components: {
@@ -217,15 +253,56 @@ export default {
         props: { isVisible: true, redirectTo: this.$route.path },
       })
     },
-    // closeCallbackPopup() {
-    //   this.callbackPopupVisible = false
-    // },
-    // closeSuccessPopup() {
-    //   this.successPopupVisible = false
-    // },
-    // openSuccessPopup() {
-    //   this.successPopupVisible = true
-    // },
+    initializeSwiper() {
+      Swiper.use([Thumbs])
+
+      // Инициализация thumbsSwiper
+      this.thumbsSwiper = new Swiper('.swiper-thumbs', {
+        spaceBetween: 10,
+        slidesPerView: 4,
+        direction: 'vertical',
+        watchSlidesProgress: true,
+        touchRatio: 1,
+      })
+
+      // Инициализация mainSwiper
+      this.mainSwiper = new Swiper('.swiper-main', {
+        spaceBetween: 10,
+        slidesPerView: 1,
+        modules: [Pagination, Navigation],
+        thumbs: {
+          swiper: this.thumbsSwiper,
+        },
+        pagination: {
+          el: '.swiper-main__pagination',
+          type: 'fraction',
+        },
+        navigation: {
+          nextEl: '.swiper-main__btn-next',
+          prevEl: '.swiper-main__btn-prev',
+        },
+      })
+    },
+  },
+  mounted() {
+    this.initializeSwiper()
+  },
+  beforeUnmount() {
+    if (this.mainSwiper) this.mainSwiper.destroy()
+    if (this.thumbsSwiper) this.thumbsSwiper.destroy()
+  },
+  watch: {
+    product(newProduct) {
+      if (newProduct && newProduct.images) {
+        // Уничтожаем старые экземпляры, если они существуют
+        if (this.mainSwiper) this.mainSwiper.destroy()
+        if (this.thumbsSwiper) this.thumbsSwiper.destroy()
+        this.mainSwiper = null
+        this.thumbsSwiper = null
+        // Переинициализируем слайдеры
+        this.initializeSwiper()
+      }
+    },
   },
 }
 </script>
@@ -265,6 +342,9 @@ export default {
   }
 
   &__info-article {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--grey-200);
   }
 
   &__info-btn-favorite {
@@ -289,13 +369,56 @@ export default {
   &__bottom {
     height: 45vh;
     max-height: 470px;
+    min-height: 400px;
     display: grid;
     grid-template-columns: 1.5fr 1.2fr 1fr;
     gap: 16px;
   }
 
   &__slider {
-    background-color: var(--blue-100);
+    max-width: 100%;
+    height: 100%;
+    // background-color: var(--blue-100);
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    justify-content: space-between;
+    gap: 16px;
+
+    .swiper-main {
+      border: 1px solid var(--blue-100);
+      border-radius: 16px;
+
+      .swiper-slide {
+        align-items: flex-start;
+
+        img {
+          max-height: 400px;
+          height: 100%;
+          object-fit: contain;
+          object-position: center;
+        }
+      }
+    }
+
+    .swiper-thumbs {
+      .swiper-slide {
+        border: 1px solid var(--blue-100);
+        border-radius: 10px;
+        width: 90px;
+        max-height: 90px;
+
+        img {
+          border-radius: 10px;
+          height: 100%;
+          object-fit: contain;
+          object-position: center;
+        }
+      }
+
+      .swiper-slide-thumb-active {
+        border: 2px solid var(--blue-300);
+      }
+    }
   }
 
   &__chars {
@@ -571,5 +694,109 @@ export default {
 <style lang="scss" scoped>
 .product {
   margin-bottom: var(--section-offset);
+}
+
+/* Кастомные стили для Swiper */
+.swiper-main {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  user-select: none;
+
+  &__bottom {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    min-width: 100%;
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__pagination {
+    border: 1px solid var(--blue-100);
+    border-radius: 500px;
+    padding: 12px 40px;
+
+    &.swiper-pagination-fraction {
+      width: fit-content;
+    }
+  }
+
+  &__btns {
+    display: flex;
+    margin-left: auto;
+  }
+
+  &__btn-prev,
+  &__btn-next {
+    background-color: var(--white);
+    border: 1px solid var(--grey-100);
+    border-radius: 50%;
+    padding: 12px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    svg {
+      width: 8px;
+      height: 7px;
+    }
+
+    &.swiper-button-disabled {
+      background-color: var(--blue-100);
+      cursor: not-allowed;
+
+      svg {
+        color: var(--blue-200);
+      }
+    }
+  }
+
+  &__btn-prev {
+    transform: rotate(90deg);
+  }
+  &__btn-next {
+    transform: rotate(-90deg);
+  }
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-main-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.swiper-thumbs {
+  height: 100%;
+}
+
+.slider-thumb-image {
+  width: 100%;
+  height: auto;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.swiper-slide-thumb-active .slider-thumb-image {
+  opacity: 1;
+}
+
+.swiper-pagination-total,
+.swiper-pagination-current {
+  font-weight: 500;
+  font-size: 14px;
 }
 </style>
