@@ -33,13 +33,6 @@ export default {
       favoritesStore: null,
     }
   },
-  created() {
-    this.favoritesStore = useFavoritesStore()
-    const authStore = useAuthStore()
-    if (!authStore.isLoggedIn) {
-      this.$router.push({ name: 'HomePage' })
-    }
-  },
   computed: {
     favorites() {
       return this.favoritesStore.favorites
@@ -52,6 +45,13 @@ export default {
         : 'удалён из избранного'
       console.log(`Товар ${product.name} ${message}`)
     },
+  },
+  created() {
+    this.favoritesStore = useFavoritesStore()
+    const authStore = useAuthStore()
+    if (!authStore.isLoggedIn) {
+      this.$router.push({ name: 'HomePage' })
+    }
   },
 }
 </script>

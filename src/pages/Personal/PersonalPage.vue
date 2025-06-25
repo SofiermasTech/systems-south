@@ -6,18 +6,11 @@
       <router-view />
     </div>
   </div>
-  <!-- <LogoutPopup
-    :is-visible="isLogoutPopup"
-    @close-popup="closeLogoutPopup"
-    @confirm-logout="confirmLogout"
-  /> -->
 </template>
 
 <script>
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import PersonalSidebar from '@/pages/personal/ui/PersonalSidebar.vue'
-// import LogoutPopup from '@/widgets/logout-popup/LogoutPopup.vue'
-// import HomePage from '../home/HomePage.vue'
 import { useAuthStore } from '@/shared/stores/auth.js'
 import { usePopupStore } from '@/shared/stores/popup.js'
 
@@ -26,19 +19,10 @@ export default {
   components: {
     IntroPages,
     PersonalSidebar,
-    // LogoutPopup,
   },
   data() {
     return {
-      // isLogoutPopup: false,
       authStore: useAuthStore(),
-    }
-  },
-  mounted() {
-    // Перенаправление, если не авторизован
-    if (!this.authStore.isLoggedIn) {
-      this.$router.push({ name: 'HomePage' })
-      return
     }
   },
   methods: {
@@ -48,7 +32,6 @@ export default {
         component: 'LogoutPopup',
         props: { isVisible: true, redirectTo: this.$route.path },
       })
-      // this.isLogoutPopup = true
     },
     closeLogoutPopup() {
       this.isLogoutPopup = false
@@ -58,6 +41,13 @@ export default {
       this.$router.push('/')
       this.closeLogoutPopup()
     },
+  },
+  mounted() {
+    // Перенаправление, если не авторизован
+    if (!this.authStore.isLoggedIn) {
+      this.$router.push({ name: 'HomePage' })
+      return
+    }
   },
 }
 </script>

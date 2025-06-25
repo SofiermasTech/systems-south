@@ -32,7 +32,7 @@
           </template>
           <template #content>
             <div class="orders__accordion-wrapper" v-for="item in order.items" :key="item.id">
-              <div class="orders__accordion-item-wrapper" >
+              <div class="orders__accordion-item-wrapper">
                 <p class="orders__accordion-item">{{ item.name.split(' ')[0] }}</p>
                 <p class="orders__accordion-text">{{ item.name }}</p>
               </div>
@@ -207,9 +207,9 @@ export default {
     color: #333;
   }
 
-   &__accordion-item-wrapper {
+  &__accordion-item-wrapper {
     margin-right: 16px;
-   }
+  }
 
   &__accordion-item {
     font-weight: 600;

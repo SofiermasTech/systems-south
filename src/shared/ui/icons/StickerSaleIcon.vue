@@ -10,7 +10,7 @@
 <script>
 export default {
   name: 'StickerSaleIcon',
-};
+}
 </script>
 
 <style></style>

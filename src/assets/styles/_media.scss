@@ -7,7 +7,6 @@ $laptop: 1440px;
 $laptop-bottom-above: 1281px;
 $laptop-bottom: 1280px;
 
-
 $tablet: 1024px;
 $tablet-above: 1023px;
 
@@ -25,9 +24,9 @@ $mobile-bottom: 460px;
 }
 
 @mixin desktop {
-   @media (max-width: $desktop) {
-      @content;
-   }
+  @media (max-width: $desktop) {
+    @content;
+  }
 }
 
 @mixin laptop-above {
@@ -38,7 +37,7 @@ $mobile-bottom: 460px;
 
 @mixin laptop {
   @media (max-width: $laptop) {
-     @content;
+    @content;
   }
 }
 
@@ -49,9 +48,9 @@ $mobile-bottom: 460px;
 }
 
 @mixin laptop-bottom {
-   @media (max-width: $laptop-bottom) {
-      @content;
-   }
+  @media (max-width: $laptop-bottom) {
+    @content;
+  }
 }
 
 @mixin tablet-above {
@@ -61,15 +60,15 @@ $mobile-bottom: 460px;
 }
 
 @mixin tablet {
-   @media (max-width: $tablet) {
-      @content;
-   }
+  @media (max-width: $tablet) {
+    @content;
+  }
 }
 
 @mixin tablet-bottom {
-   @media (max-width: $tablet-bottom) {
-      @content;
-   }
+  @media (max-width: $tablet-bottom) {
+    @content;
+  }
 }
 
 @mixin tablet-bottom-above {
@@ -80,32 +79,32 @@ $mobile-bottom: 460px;
 
 @mixin mobile-above {
   @media (min-width: $mobile-above) {
-     @content;
+    @content;
   }
 }
 
 @mixin mobile {
-   @media (max-width: $mobile) {
-      @content;
-   }
+  @media (max-width: $mobile) {
+    @content;
+  }
 }
 
 @mixin mobile-bottom {
-   @media (max-width: $mobile-bottom) {
-      @content;
-   }
+  @media (max-width: $mobile-bottom) {
+    @content;
+  }
 }
 
 @mixin hover {
-   @media (hover: hover) {
-      &:hover {
-         @content;
-      }
-   }
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
 
-   @media (hover: none) {
-      &:active {
-         @content;
-      }
-   }
+  @media (hover: none) {
+    &:active {
+      @content;
+    }
+  }
 }

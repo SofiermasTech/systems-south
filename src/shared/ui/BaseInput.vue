@@ -49,21 +49,22 @@
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
       :class="{ error: error }"
-    />
+    ></textarea>
     <slot v-if="type === 'checkbox' || type === 'radio'" name="label"></slot>
     <span v-if="error" class="base-input__error">{{ error }}</span>
     <!-- Кнопка редактирования/сохранения -->
     <button
-      v-if="
-        (type === 'text' || type === 'email' || type === 'tel' ) &&
-        isPersonalPage
-      "
+      v-if="(type === 'text' || type === 'email' || type === 'tel') && isPersonalPage"
       class="base-input__btn-edit"
       type="button"
       @click="handleAction"
     >
       <img
-        :src="isFocused && isEdited && isEditing ? '/images/btn-edit-check.svg' : '/images/edit-icon.svg'"
+        :src="
+          isFocused && isEdited && isEditing
+            ? '/images/btn-edit-check.svg'
+            : '/images/edit-icon.svg'
+        "
         alt=""
       />
     </button>
@@ -105,6 +106,11 @@ export default {
       return this.$route.path.startsWith('/personal/profile')
     },
   },
+  watch: {
+    modelValue(newValue) {
+      this.isEdited = newValue !== this.initialValue
+    },
+  },
   methods: {
     handleInput(value) {
       this.$emit('update:modelValue', value)
@@ -113,13 +119,11 @@ export default {
     },
     handleAction() {
       if (!this.isEditing) {
-
         this.isEditing = true
         if (this.$refs.inputRef) {
           this.$refs.inputRef.focus()
         }
       } else if (this.isEdited) {
-
         this.$emit('save', this.modelValue)
         this.isEdited = false
         this.isEditing = false
@@ -137,11 +141,6 @@ export default {
     handleBlur() {
       console.log('Фокус снят с input')
       this.isFocused = false
-    },
-  },
-  watch: {
-    modelValue(newValue) {
-      this.isEdited = newValue !== this.initialValue
     },
   },
 }

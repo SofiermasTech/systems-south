@@ -45,6 +45,14 @@ export default {
       cartStore: useCartStore(),
     }
   },
+  computed: {
+    isOrderPage() {
+      return this.$route.path.startsWith('/order')
+    },
+    buttonText() {
+      return this.isOrderPage ? 'На главную' : 'ОК'
+    },
+  },
   methods: {
     handleButtonClick() {
       this.$emit('close')
@@ -53,14 +61,6 @@ export default {
         this.$router.push({ name: 'HomePage' })
         this.cartStore.clearCart()
       }
-    },
-  },
-  computed: {
-    isOrderPage() {
-      return this.$route.path.startsWith('/order')
-    },
-    buttonText() {
-      return this.isOrderPage ? 'На главную' : 'ОК'
     },
   },
 }

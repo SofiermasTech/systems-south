@@ -1,7 +1,11 @@
 <template>
   <div class="header__user-actions user-actions">
     <!-- Кнопка избранного -->
-    <button class="user-actions__btn user-actions__btn--favorites" type="button" @click="clickFavoritesBtn">
+    <button
+      class="user-actions__btn user-actions__btn--favorites"
+      type="button"
+      @click="clickFavoritesBtn"
+    >
       <div class="user-actions__icon">
         <BaseIcon name="FavouriteIcon" />
         <span v-if="favoritesCount > 0" class="user-actions__counter">{{ favoritesCount }}</span>
@@ -46,6 +50,9 @@
     <template v-if="!authStore.isLoggedIn">
       <!-- Если не авторизован, используем button для открытия попапа -->
       <button class="user-actions__btn user-actions__btn--personal" @click="openLoginPopup">
+        <span class="user-actions__icon">
+          <BaseIcon name="UserIcon" />
+        </span>
         <span class="user-actions__text">Вход</span>
       </button>
     </template>
@@ -82,10 +89,21 @@ export default {
       return this.$route.path.startsWith('/cart')
     },
   },
+  // watch: {
+  //   isOpen(newVal) {
+  //     if (!newVal) this.toggleCartPopup()
+  //   },
+  // },
   methods: {
     toggleCartPopup() {
       this.$emit('toggle-cart-popup')
     },
+    // closeCartPopup() {
+    //   this.$emit('update:isOpen', false)
+    // },
+    // openCartPopup() {
+    //   this.$emit('update:isOpen', true)
+    // },
     openLoginPopup() {
       this.$emit('login-popup')
     },
@@ -162,10 +180,6 @@ export default {
     &.popup-open {
       background-color: var(--blue-0);
     }
-  }
-
-  &__btn--personal {
-    border-bottom-right-radius: 0;
   }
 }
 </style>

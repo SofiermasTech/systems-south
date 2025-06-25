@@ -6,7 +6,11 @@
     <div class="header-search__popup" v-if="isSearchPopupVisible">
       <div class="header-search__popup-top" v-if="filteredProducts.length > 0">
         <p>Найдено {{ filteredProducts.length }} товара</p>
-        <RouterLink :to="{ path: '/search', query: { query: searchQuery }}" @click="closeSearchPopup">Показать все</RouterLink>
+        <RouterLink
+          :to="{ path: '/search', query: { query: searchQuery } }"
+          @click="closeSearchPopup"
+          >Показать все</RouterLink
+        >
       </div>
       <div class="header-search__popup-result">
         <article class="popup-card" v-for="product in filteredProducts" :key="product.id">
@@ -44,17 +48,6 @@ export default {
       catalogStore: null,
     }
   },
-  created() {
-    this.catalogStore = useCatalogStore()
-    this.catalogStore.loadProducts()
-  },
-  methods: {
-    closeSearchPopup() {
-      this.searchQuery = ''
-      this.isSearchPopupVisible = false
-      this.$emit('toggle-overlay', false)
-    },
-  },
   computed: {
     isOverlayVisible() {
       return this.isSearchPopupVisible
@@ -62,10 +55,8 @@ export default {
     filteredProducts() {
       const query = this.searchQuery.toLowerCase().trim()
       if (!query || !this.catalogStore) return []
-      return this.catalogStore.getProducts.filter(
-        (product) => product.name.toLowerCase().includes(query),
-        // ||
-        // product.description?.toLowerCase().includes(query),
+      return this.catalogStore.getProducts.filter((product) =>
+        product.name.toLowerCase().includes(query),
       )
     },
   },
@@ -74,6 +65,17 @@ export default {
       this.isSearchPopupVisible = newQuery.trim().length > 0
       this.$emit('toggle-overlay', this.isSearchPopupVisible)
     },
+  },
+  methods: {
+    closeSearchPopup() {
+      this.searchQuery = ''
+      this.isSearchPopupVisible = false
+      this.$emit('toggle-overlay', false)
+    },
+  },
+  created() {
+    this.catalogStore = useCatalogStore()
+    this.catalogStore.loadProducts()
   },
 }
 </script>
@@ -88,6 +90,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  border-radius: 10px;
 
   &__input {
     width: 100%;

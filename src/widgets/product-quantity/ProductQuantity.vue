@@ -28,6 +28,11 @@ export default {
       authStore: useAuthStore(),
     }
   },
+  watch: {
+    initialQuantity(newValue) {
+      this.localQuantity = newValue
+    },
+  },
   methods: {
     incrementQuantity() {
       this.localQuantity++
@@ -61,11 +66,6 @@ export default {
         this.cartStore.anonymousCart = targetCart
       }
       this.cartStore.persistCart()
-    },
-  },
-  watch: {
-    initialQuantity(newValue) {
-      this.localQuantity = newValue
     },
   },
 }

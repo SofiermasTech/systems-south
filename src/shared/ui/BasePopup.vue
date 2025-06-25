@@ -31,12 +31,7 @@ export default {
   components: {
     BaseButtonClosePopup,
   },
-  data() {
-    return {
-      cartStore: useCartStore(),
-      popupStore: usePopupStore(),
-    }
-  },
+
   props: {
     modelValue: {
       type: Boolean,
@@ -52,6 +47,12 @@ export default {
     },
   },
   emits: ['update:modelValue', 'close', 'submit-success'],
+  data() {
+    return {
+      cartStore: useCartStore(),
+      popupStore: usePopupStore(),
+    }
+  },
   computed: {
     isVisible: {
       get() {
@@ -65,7 +66,6 @@ export default {
   },
   methods: {
     closePopup() {
-      // this.$emit('close')
       this.isVisible = false
 
       if (this.$route.path.startsWith('/order')) {

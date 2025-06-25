@@ -168,12 +168,6 @@ export default {
       return cartItem ? cartItem.quantity : 0
     },
   },
-  created() {
-    window.addEventListener('resize', this.handleResize)
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.handleResize)
-  },
   watch: {
     shouldLoop(newValue) {
       if (this.swiper) {
@@ -231,6 +225,12 @@ export default {
     goToProduct() {
       this.$router.push({ name: 'ProductPage', params: { id: this.productId } })
     },
+  },
+  created() {
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>

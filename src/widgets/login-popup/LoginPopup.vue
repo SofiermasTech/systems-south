@@ -44,10 +44,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    // redirectTo: {
-    //   type: String,
-    //   default: '/',
-    // },
   },
   emits: ['close', 'submit-success', 'show-success-popup'],
   data() {

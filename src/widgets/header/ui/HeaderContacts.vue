@@ -74,6 +74,11 @@ export default {
       submitSuccess: false,
     }
   },
+  computed: {
+    isOverlayVisible() {
+      return this.emailVisible || this.callbackFormVisible
+    },
+  },
   methods: {
     toggleEmail() {
       this.emailVisible = !this.emailVisible
@@ -90,11 +95,6 @@ export default {
     },
     handleSubmitSuccess() {
       this.submitSuccess = true
-    },
-  },
-  computed: {
-    isOverlayVisible() {
-      return this.emailVisible || this.callbackFormVisible
     },
   },
 }

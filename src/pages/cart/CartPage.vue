@@ -33,7 +33,7 @@
 import CardPopup from '@/entities/cart/CardPopup.vue'
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
-import { useAuthStore } from '@/shared/stores/auth.js';
+import { useAuthStore } from '@/shared/stores/auth.js'
 import BaseCartPage from '@/shared/layouts/BaseCartPage.vue'
 import BaseTitleEmptyPage from '@/shared/ui/BaseTitleEmptyPage.vue'
 
@@ -77,15 +77,17 @@ export default {
   },
   methods: {
     removeItem(productId) {
-      const targetCart = this.authStore.isLoggedIn ? this.cartStore.cartItems : this.cartStore.anonymousCart;
-      const filteredCart = targetCart.filter((item) => item.id !== productId);
+      const targetCart = this.authStore.isLoggedIn
+        ? this.cartStore.cartItems
+        : this.cartStore.anonymousCart
+      const filteredCart = targetCart.filter((item) => item.id !== productId)
       if (this.authStore.isLoggedIn) {
-        this.cartStore.cartItems = filteredCart;
+        this.cartStore.cartItems = filteredCart
       } else {
-        this.cartStore.anonymousCart = filteredCart;
-        this.cartStore.cartItems = filteredCart;
+        this.cartStore.anonymousCart = filteredCart
+        this.cartStore.cartItems = filteredCart
       }
-      this.cartStore.persistCart();
+      this.cartStore.persistCart()
     },
     declineItems(count) {
       if (count % 10 === 1 && count % 100 !== 11) return 'товар'

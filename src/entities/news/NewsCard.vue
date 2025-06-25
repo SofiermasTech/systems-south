@@ -9,7 +9,7 @@
       <RouterLink class="news-card__bottom-link" :to="`/news/${news.id}`">Читать статью</RouterLink>
     </div>
     <div class="news-card__img" v-if="isFirst">
-      <img :src="news.image" alt="" loading="lazy">
+      <img :src="news.image" alt="" loading="lazy" />
     </div>
   </article>
 </template>
@@ -33,7 +33,7 @@ export default {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-      });
+      })
     },
   },
 }
@@ -59,9 +59,9 @@ export default {
       'bottom bottom';
     gap: 32px;
 
-      .news-card__bottom {
-        grid-column: span 2;
-      }
+    .news-card__bottom {
+      grid-column: span 2;
+    }
   }
 
   &__title {

@@ -55,6 +55,24 @@ export default {
       },
     }
   },
+  computed: {
+    isFormValid() {
+      const isEmailValid =
+        this.formSubscribe.email.trim() !== '' && this.emailRegex.test(this.formSubscribe.email)
+      return this.formSubscribe.checkbox && isEmailValid
+    },
+  },
+  watch: {
+    'formSubscribe.email'(newValue) {
+      this.errors.email = ''
+      if (newValue.trim() && !this.emailRegex.test(newValue)) {
+        this.errors.email = this.messages.emailInvalid
+      }
+    },
+    'formSubscribe.checkbox'(newValue) {
+      this.errors.checkbox = newValue ? '' : this.messages.checkboxRequired
+    },
+  },
   methods: {
     submitSubscribeForm() {
       const isEmailValid =
@@ -85,24 +103,6 @@ export default {
       this.formSubscribe = { email: '', checkbox: false }
       this.errors = { email: '', checkbox: '' }
       this.isSubmitting = false
-    },
-  },
-  computed: {
-    isFormValid() {
-      const isEmailValid =
-        this.formSubscribe.email.trim() !== '' && this.emailRegex.test(this.formSubscribe.email)
-      return this.formSubscribe.checkbox && isEmailValid
-    },
-  },
-  watch: {
-    'formSubscribe.email'(newValue) {
-      this.errors.email = ''
-      if (newValue.trim() && !this.emailRegex.test(newValue)) {
-        this.errors.email = this.messages.emailInvalid
-      }
-    },
-    'formSubscribe.checkbox'(newValue) {
-      this.errors.checkbox = newValue ? '' : this.messages.checkboxRequired
     },
   },
 }

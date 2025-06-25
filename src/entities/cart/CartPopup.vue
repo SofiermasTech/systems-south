@@ -1,36 +1,36 @@
 <template>
-    <transition name="cart" :duration="{ enter: 700, leave: 300 }">
-  <section class="cart-popup" v-if="isOpen">
-    <div class="cart-popup__overlay" @click="closePopup">
-      <div class="cart-popup__body" @click.stop>
-        <div class="cart-popup__header">
-          <p class="cart-popup__title">Товары в корзине</p>
-          <button class="cart-popup__btn-clear" @click="clearCart" type="reset">
-            Очистить корзину
-          </button>
-        </div>
-        <div class="cart-popup__content">
-          <CardPopup
-            v-for="item in cartItemsWithDetails"
-            :key="item.id"
-            :item="item"
-            @remove="removeItem"
-          />
-        </div>
-        <div class="cart-popup__bottom">
-          <div class="cart-popup__total">
-            <p class="cart-popup__total-title">Итого к оплате</p>
-            <span class="cart-popup__total-sum">{{ totalPrice.toLocaleString('ru-RU') }} ₽</span>
+  <transition name="cart" :duration="{ enter: 700, leave: 300 }">
+    <section class="cart-popup" v-if="isOpen">
+      <div class="cart-popup__overlay" @click="closePopup">
+        <div class="cart-popup__body" @click.stop>
+          <div class="cart-popup__header">
+            <p class="cart-popup__title">Товары в корзине</p>
+            <button class="cart-popup__btn-clear" @click="clearCart" type="reset">
+              Очистить корзину
+            </button>
           </div>
-          <RouterLink to="/cart" @click="closePopup" class="cart-popup__link">
-            <base-button>
-              <span>Перейти в корзину</span>
-            </base-button>
-          </RouterLink>
+          <div class="cart-popup__content">
+            <CardPopup
+              v-for="item in cartItemsWithDetails"
+              :key="item.id"
+              :item="item"
+              @remove="removeItem"
+            />
+          </div>
+          <div class="cart-popup__bottom">
+            <div class="cart-popup__total">
+              <p class="cart-popup__total-title">Итого к оплате</p>
+              <span class="cart-popup__total-sum">{{ totalPrice.toLocaleString('ru-RU') }} ₽</span>
+            </div>
+            <RouterLink to="/cart" @click="closePopup" class="cart-popup__link">
+              <base-button>
+                <span>Перейти в корзину</span>
+              </base-button>
+            </RouterLink>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
   </transition>
 </template>
 
@@ -41,12 +41,9 @@ import { useAuthStore } from '@/shared/stores/auth.js'
 import CardPopup from '@/entities/cart/CardPopup.vue'
 
 export default {
-  data() {
-    return {
-      cartStore: useCartStore(),
-      authStore: useAuthStore(),
-      catalogStore: useCatalogStore(),
-    }
+  name: 'CartPopup',
+  components: {
+    CardPopup,
   },
   props: {
     isOpen: {
@@ -54,8 +51,12 @@ export default {
       default: false,
     },
   },
-  components: {
-    CardPopup,
+  data() {
+    return {
+      cartStore: useCartStore(),
+      authStore: useAuthStore(),
+      catalogStore: useCatalogStore(),
+    }
   },
   computed: {
     cartItemsWithDetails() {
@@ -69,6 +70,13 @@ export default {
       return this.cartItemsWithDetails.reduce((total, item) => {
         return total + (item.product.price || 0) * item.quantity
       }, 0)
+    },
+  },
+  watch: {
+    cartItemsWithDetails(newValue) {
+      if (newValue.length === 0) {
+        this.closePopup()
+      }
     },
   },
   methods: {
@@ -92,13 +100,6 @@ export default {
       }
       this.cartStore.persistCart()
       if (this.cartStore.cartItemsCount === 0) {
-        this.closePopup()
-      }
-    },
-  },
-  watch: {
-    cartItemsWithDetails(newValue) {
-      if (newValue.length === 0) {
         this.closePopup()
       }
     },

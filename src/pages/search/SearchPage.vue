@@ -9,8 +9,7 @@
     :subcategory="null"
     @toggle-favorite="handleToggleFavorite"
     @apply-filters="handleApplyFilters"
-  >
-  </BaseCatalogPage>
+  />
   <CallbackSection />
 </template>
 
@@ -99,11 +98,17 @@ export default {
       return products
     },
   },
-  async created() {
-    await this.catalogStore.loadProducts()
-    if (this.category) {
-      this.activeCategory = this.category
-    }
+  watch: {
+    $route(to) {
+      this.activeCategory = to.params.category || null
+      if (to.query.query !== this.searchQuery) {
+        this.appliedFilters = {
+          brands: [],
+          subcategories: [],
+          priceRange: [null, null],
+        }
+      }
+    },
   },
   methods: {
     handleToggleFavorite(product) {
@@ -125,17 +130,11 @@ export default {
       }
     },
   },
-  watch: {
-    $route(to) {
-      this.activeCategory = to.params.category || null
-      if (to.query.query !== this.searchQuery) {
-        this.appliedFilters = {
-          brands: [],
-          subcategories: [],
-          priceRange: [null, null],
-        }
-      }
-    },
+  async created() {
+    await this.catalogStore.loadProducts()
+    if (this.category) {
+      this.activeCategory = this.category
+    }
   },
 }
 </script>

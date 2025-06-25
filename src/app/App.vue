@@ -26,6 +26,14 @@ export default {
       isOverlayVisible: false,
     }
   },
+  watch: {
+    '$route.path': {
+      handler() {
+        this.isOverlayVisible = false
+        this.$refs.headerContacts.closeAll()
+      },
+    },
+  },
   methods: {
     updateOverlay(isVisible) {
       this.isOverlayVisible = isVisible
@@ -33,14 +41,6 @@ export default {
     closeOverlay() {
       this.isOverlayVisible = false
       this.$refs.headerContacts.closeAll()
-    },
-  },
-  watch: {
-    '$route.path': {
-      handler() {
-        this.isOverlayVisible = false
-        this.$refs.headerContacts.closeAll()
-      },
     },
   },
 }

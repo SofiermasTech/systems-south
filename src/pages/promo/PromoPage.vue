@@ -11,7 +11,7 @@
     :counts="filterCounts"
   >
     <template #card-item="{ item }">
-      <PromoCard :promo="item" :is-first="false"/>
+      <PromoCard :promo="item" :is-first="false" />
     </template>
     <template #archive-card="{ item }">
       <PromoCard :promo="item" />

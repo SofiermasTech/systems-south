@@ -28,12 +28,12 @@
 </template>
 <script>
 export default {
+  emits: ['sort-change'],
   data() {
     return {
       activeSort: 'cheap-first',
     }
   },
-  emits: ['sort-change'],
   methods: {
     setSort(sortType) {
       this.activeSort = sortType

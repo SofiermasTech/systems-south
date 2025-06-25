@@ -49,9 +49,6 @@ export default {
       cartStore: null,
     }
   },
-  created() {
-    this.cartStore = useCartStore()
-  },
   methods: {
     closePopupSuccess() {
       this.$emit('close-popup')
@@ -68,6 +65,9 @@ export default {
     isOrderPage() {
       return this.$route.path.startsWith('/order')
     },
+  },
+  created() {
+    this.cartStore = useCartStore()
   },
 }
 </script>

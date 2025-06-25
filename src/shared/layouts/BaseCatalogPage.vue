@@ -160,6 +160,20 @@ export default {
       return products
     },
   },
+  watch: {
+    viewMode(newValue) {
+      localStorage.setItem('viewMode', newValue)
+    },
+    $route(to, from) {
+      if (to.path !== from.path) {
+        this.appliedFilters = {
+          brands: [],
+          subcategories: [],
+          priceRange: [null, null],
+        }
+      }
+    },
+  },
   methods: {
     handleSortChange(sortType) {
       this.sortType = sortType
@@ -177,20 +191,6 @@ export default {
     handleViewChange(mode) {
       this.viewMode = mode
       localStorage.setItem('viewMode', mode)
-    },
-  },
-  watch: {
-    viewMode(newValue) {
-      localStorage.setItem('viewMode', newValue)
-    },
-    $route(to, from) {
-      if (to.path !== from.path) {
-        this.appliedFilters = {
-          brands: [],
-          subcategories: [],
-          priceRange: [null, null],
-        }
-      }
     },
   },
 }

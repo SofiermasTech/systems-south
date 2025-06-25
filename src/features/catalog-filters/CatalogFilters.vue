@@ -42,7 +42,11 @@
         </div>
         <div class="aside-filters__item-content" v-show="filterStates.subcategory">
           <ul class="aside-filters__list">
-            <li class="aside-filters__list-item" v-for="subcat in availableSubcategories" :key="subcat.slug">
+            <li
+              class="aside-filters__list-item"
+              v-for="subcat in availableSubcategories"
+              :key="subcat.slug"
+            >
               <label class="aside-filters__list-item-label">
                 <input type="checkbox" :value="subcat.slug" v-model="selectedSubcategories" />
                 <span class="aside-filters__list-item-check">
@@ -119,8 +123,8 @@
 </template>
 
 <script>
-import { useCatalogStore } from '@/shared/stores/catalog';
-import { categoryNames } from '@/shared/config/categoryNames';
+import { useCatalogStore } from '@/shared/stores/catalog'
+import { categoryNames } from '@/shared/config/categoryNames'
 
 export default {
   name: 'CatalogFilters',
@@ -129,106 +133,112 @@ export default {
     subcategory: { type: String, default: null },
     products: { type: Array, default: () => [] },
   },
+  emits: ['apply-filters'],
   data() {
     return {
       catalogStore: useCatalogStore(),
       filterStates: {
         brand: true,
         subcategory: true,
-        price: false,
+        price: true,
       },
       selectedBrands: [],
       selectedSubcategories: [],
       priceFrom: null,
       priceTo: null,
-    };
-  },
-  emits: ['apply-filters'],
-  async created() {
-    await this.catalogStore.loadProducts();
+    }
   },
   computed: {
     availableBrands() {
       if (this.products && this.products.length > 0) {
-        const brands = [...new Set(this.products.map((product) => product.brand))];
-        return brands.filter((brand) => brand && brand.trim() !== '');
+        const brands = [...new Set(this.products.map((product) => product.brand))]
+        return brands.filter((brand) => brand && brand.trim() !== '')
       }
       // Для страницы каталога, если products не переданы
-      let products = this.catalogStore.getProducts;
+      let products = this.catalogStore.getProducts
       if (this.subcategory) {
-        products = this.catalogStore.getProductsByCategoryAndSubcategory(this.category, this.subcategory);
+        products = this.catalogStore.getProductsByCategoryAndSubcategory(
+          this.category,
+          this.subcategory,
+        )
       } else if (this.category) {
-        products = this.catalogStore.getProductsByCategory(this.category);
+        products = this.catalogStore.getProductsByCategory(this.category)
       }
-      const brands = [...new Set(products.map((product) => product.brand))];
-      return brands.filter((brand) => brand && brand.trim() !== '');
+      const brands = [...new Set(products.map((product) => product.brand))]
+      return brands.filter((brand) => brand && brand.trim() !== '')
     },
     availableSubcategories() {
       if (this.products && this.products.length > 0) {
-        const subcats = [...new Set(this.products.map((product) => product.subcategory))];
+        const subcats = [...new Set(this.products.map((product) => product.subcategory))]
         return subcats
           .filter((subcat) => subcat && subcat.trim() !== '')
           .map((subcat) => ({
             slug: subcat,
             name: categoryNames[subcat] || subcat,
-          }));
+          }))
       }
-      
+
       if (!this.category) {
-        const subcats = [...new Set(this.catalogStore.getProducts.map((product) => product.subcategory))];
+        const subcats = [
+          ...new Set(this.catalogStore.getProducts.map((product) => product.subcategory)),
+        ]
         return subcats
           .filter((subcat) => subcat && subcat.trim() !== '')
           .map((subcat) => ({
             slug: subcat,
             name: categoryNames[subcat] || subcat,
-          }));
+          }))
       }
-      const subcats = this.catalogStore.getSubcategoriesByCategory(this.category);
+      const subcats = this.catalogStore.getSubcategoriesByCategory(this.category)
       return subcats.map((subcat) => ({
         slug: subcat,
         name: categoryNames[subcat] || subcat,
-      }));
+      }))
     },
     maxPrice() {
-      const products = this.products && this.products.length > 0 ? this.products : this.catalogStore.getProducts;
+      const products =
+        this.products && this.products.length > 0 ? this.products : this.catalogStore.getProducts
       if (!products || !Array.isArray(products) || products.length === 0) {
-        return null;
+        return null
       }
-      const max = Math.max(...products.map((product) => product.price));
-      return isFinite(max) ? max : null;
+      const max = Math.max(...products.map((product) => product.price))
+      return isFinite(max) ? max : null
     },
   },
   methods: {
     toggleFilter(filterId) {
-      this.filterStates[filterId] = !this.filterStates[filterId];
+      this.filterStates[filterId] = !this.filterStates[filterId]
     },
     applyFilters() {
-      let priceFrom = this.priceFrom !== null ? Number(this.priceFrom) : null;
-      let priceTo = this.priceTo !== null ? Number(this.priceTo) : null;
+      let priceFrom = this.priceFrom !== null ? Number(this.priceFrom) : null
+      let priceTo = this.priceTo !== null ? Number(this.priceTo) : null
 
       if (priceFrom !== null && priceTo !== null && priceFrom > priceTo) {
-        [priceFrom, priceTo] = [priceTo, priceFrom];
+        ;[priceFrom, priceTo] = [priceTo, priceFrom]
       }
 
       this.$emit('apply-filters', {
         brands: [...this.selectedBrands],
         subcategories: [...this.selectedSubcategories],
         priceRange: [priceFrom, priceTo],
-      });
+      })
     },
     resetFilters() {
-      this.selectedBrands = [];
-      this.selectedSubcategories = [];
-      this.priceFrom = null;
-      this.priceTo = null;
+      this.selectedBrands = []
+      this.selectedSubcategories = []
+      this.priceFrom = null
+      this.priceTo = null
       this.$emit('apply-filters', {
         brands: [],
         subcategories: [],
         priceRange: [null, null],
-      });
+      })
     },
   },
-};
+  async created() {
+    await this.catalogStore.loadProducts()
+  },
+}
 </script>
 
 <style lang="scss">
@@ -415,6 +425,8 @@ export default {
     color: var(--black);
   }
 }
-.select-arrow {}
-.filter-input {}
+.select-arrow {
+}
+.filter-input {
+}
 </style>

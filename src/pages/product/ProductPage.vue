@@ -40,7 +40,7 @@
                 <img :src="image" alt="" class="slider-main-image" />
               </div>
             </div>
-            <div class="swiper-main__bottom">
+            <div class="swiper-main__bottom" v-if="product.images.length > 1">
               <div class="swiper-main__pagination"></div>
               <div class="swiper-main__btns">
                 <div class="swiper-main__btn-prev">
@@ -60,15 +60,19 @@
               <dt>Хэшрейт</dt>
               <dd>190 TH/s</dd>
             </div>
+            <div class="product-general__chars-list-item">
+              <dt>Добываемые монеты</dt>
+              <dd>Интегрированный</dd>
+            </div>
+            <div class="product-general__chars-list-item">
+              <dt>Хэшрейт</dt>
+              <dd>190 TH/s</dd>
+            </div>
           </dl>
         </div>
         <div class="product-general__details">
           <div class="product-general__purchase">
             <p class="product-general__price">{{ formattedPrice }} ₽</p>
-            <!-- <ProductQuantity
-              :product-id="Number($route.params.id)"
-              :initial-quantity="cartItemQuantity"
-            /> -->
             <base-button
               class="product-general__btn-cart"
               v-if="cartItemQuantity === 0"
@@ -208,6 +212,12 @@ import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 
 export default {
+  components: {
+    BreadcrumbsList,
+    FavoriteButton,
+    ProductSection,
+    CallbackSection,
+  },
   data() {
     return {
       recProductsTitle: 'Рекомендуем',
@@ -215,12 +225,6 @@ export default {
       mainSwiper: null,
       thumbsSwiper: null,
     }
-  },
-  components: {
-    BreadcrumbsList,
-    FavoriteButton,
-    ProductSection,
-    CallbackSection,
   },
   computed: {
     product() {
@@ -236,6 +240,19 @@ export default {
       const productId = Number(this.$route.params.id)
       const cartItem = cartStore.cartItems.find((item) => item.id === productId)
       return cartItem ? cartItem.quantity : 0
+    },
+  },
+  watch: {
+    product(newProduct) {
+      if (newProduct && newProduct.images) {
+        // Уничтожаем старые экземпляры, если они существуют
+        if (this.mainSwiper) this.mainSwiper.destroy()
+        if (this.thumbsSwiper) this.thumbsSwiper.destroy()
+        this.mainSwiper = null
+        this.thumbsSwiper = null
+        // Переинициализируем слайдеры
+        this.initializeSwiper()
+      }
     },
   },
   methods: {
@@ -291,32 +308,19 @@ export default {
     if (this.mainSwiper) this.mainSwiper.destroy()
     if (this.thumbsSwiper) this.thumbsSwiper.destroy()
   },
-  watch: {
-    product(newProduct) {
-      if (newProduct && newProduct.images) {
-        // Уничтожаем старые экземпляры, если они существуют
-        if (this.mainSwiper) this.mainSwiper.destroy()
-        if (this.thumbsSwiper) this.thumbsSwiper.destroy()
-        this.mainSwiper = null
-        this.thumbsSwiper = null
-        // Переинициализируем слайдеры
-        this.initializeSwiper()
-      }
-    },
-  },
 }
 </script>
 <style lang="scss">
 .product-page {
-  margin-top: 40px;
+  margin-top: clamp(16px, 4vh, 40px);
   margin-bottom: 80px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: clamp(24px, 4vh, 40px);
 }
 
 .product-general {
-  margin-bottom: 80px;
+  margin-bottom: 40px;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -367,9 +371,7 @@ export default {
   }
 
   &__bottom {
-    height: 45vh;
-    max-height: 470px;
-    min-height: 400px;
+    height: clamp(420px, 45vh, 470px);
     display: grid;
     grid-template-columns: 1.5fr 1.2fr 1fr;
     gap: 16px;
@@ -435,6 +437,12 @@ export default {
     color: var(--black);
   }
 
+  &__chars-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
   &__chars-list-item {
     display: flex;
     justify-content: space-between;
@@ -457,9 +465,10 @@ export default {
 
     dd {
       margin: 0;
+      width: 32%;
       font-weight: 500;
       font-size: 16px;
-      text-align: right;
+      // text-align: right;
       color: var(--black);
     }
   }
@@ -654,17 +663,18 @@ export default {
   }
 
   &__other-block {
-    min-height: 236px;
+    // min-height: 236px;
     padding: 32px 24px;
     border: 1px solid var(--blue-100);
     border-radius: 16px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    // justify-content: flex-end;
     gap: 8px;
   }
 
   &__other-img {
+    margin-bottom: 32px;
     border: 1px solid var(--blue-0);
     background-color: var(--grey-100);
     border-radius: 50%;
@@ -673,9 +683,14 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    svg {
+      color: var(--grey-200);
+    }
   }
 
   &__other-title {
+    margin-top: auto;
   }
 
   &__other-text {

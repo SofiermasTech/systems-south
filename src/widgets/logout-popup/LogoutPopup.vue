@@ -21,15 +21,9 @@
 
 <script>
 import { useAuthStore } from '@/shared/stores/auth.js'
-// import { usePopupStore } from '@/shared/stores/popup.js';
 
 export default {
   name: 'LogoutPopup',
-  data() {
-    return {
-      authStore: useAuthStore(),
-    }
-  },
   props: {
     isVisible: {
       type: Boolean,
@@ -41,6 +35,11 @@ export default {
     },
   },
   emits: ['close'],
+  data() {
+    return {
+      authStore: useAuthStore(),
+    }
+  },
   methods: {
     closePopup() {
       this.$emit('close')

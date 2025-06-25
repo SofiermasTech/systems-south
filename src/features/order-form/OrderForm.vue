@@ -104,7 +104,7 @@
           placeholder="Оставьте свой комментарий"
           v-model="form.comments"
           :error="errors.comments"
-        ></base-input>
+        />
         <base-input
           type="checkbox"
           required
@@ -164,10 +164,6 @@ export default {
       authStore: useAuthStore(),
     }
   },
-  // created() {
-  //   this.cartStore = useCartStore()
-  //   this.catalogStore = useCatalogStore()
-  // },
   computed: {
     cartItemsWithDetails() {
       return this.cartStore.cartItems.map((item) => ({
@@ -182,18 +178,6 @@ export default {
         0,
       )
     },
-  },
-  async mounted() {
-    if (this.authStore.isLoggedIn) {
-      const users = await this.authStore.fetchUsers()
-      const currentUserId = this.authStore.getUser.id
-      const user = users.find((u) => u.id === currentUserId)
-
-      this.form.name = user.name || ''
-      this.form.surname = user.surname || ''
-      this.form.email = user.email || ''
-      this.form.tel = user.phone || ''
-    }
   },
   methods: {
     validateField(fieldName) {
@@ -303,6 +287,18 @@ export default {
         price: item.product.price || 0,
       }))
     },
+  },
+  async mounted() {
+    if (this.authStore.isLoggedIn) {
+      const users = await this.authStore.fetchUsers()
+      const currentUserId = this.authStore.getUser.id
+      const user = users.find((u) => u.id === currentUserId)
+
+      this.form.name = user.name || ''
+      this.form.surname = user.surname || ''
+      this.form.email = user.email || ''
+      this.form.tel = user.phone || ''
+    }
   },
 }
 </script>

@@ -17,7 +17,6 @@ import AboutUsDelivery from '@/pages/about-us/ui/AboutUsDelivery.vue'
 import AboutUsReviews from '@/pages/about-us/ui/AboutUsReviews.vue'
 import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 
-
 export default {
   name: 'AboutUsPage',
   components: {

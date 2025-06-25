@@ -11,7 +11,9 @@
     </div>
     <div class="popup-card__info">
       <p class="popup-card__text">{{ item.product.name }}</p>
-      <p class="popup-card__price">{{ (item.product.price * item.quantity).toLocaleString('ru-RU') }} ₽</p>
+      <p class="popup-card__price">
+        {{ (item.product.price * item.quantity).toLocaleString('ru-RU') }} ₽
+      </p>
       <div class="popup-card__btn-wrapper">
         <ProductQuantity
           :class="{ 'popup-card__quantity': !isCartPage }"
@@ -46,23 +48,23 @@
 import ProductQuantity from '@widgets/product-quantity/ProductQuantity.vue'
 
 export default {
+  components: {
+    ProductQuantity,
+  },
   props: {
     item: {
       type: Object,
       required: true,
     },
   },
-  components: {
-    ProductQuantity,
+  computed: {
+    isCartPage() {
+      return this.$route.path.startsWith('/cart')
+    },
   },
   methods: {
     removeItem() {
       this.$emit('remove', this.item.id)
-    },
-  },
-  computed: {
-    isCartPage() {
-      return this.$route.path.startsWith('/cart')
     },
   },
 }

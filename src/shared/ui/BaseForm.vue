@@ -60,6 +60,14 @@ export default {
       isSubmitting: false,
     }
   },
+  computed: {
+    isFormValid() {
+      return this.fields.every((field) => {
+        const validation = this.validateField(field)
+        return validation.isValid
+      })
+    },
+  },
   methods: {
     closePopup() {
       this.$emit('close')
@@ -101,7 +109,7 @@ export default {
       const field = this.fields.find((f) => f.name === fieldName)
       const validation = this.validateField(field)
       this.errors[fieldName] = validation.message
-      },
+    },
     handleBlur(fieldName) {
       this.touched[fieldName] = true
       const field = this.fields.find((f) => f.name === fieldName)
@@ -150,14 +158,6 @@ export default {
         this.touched[key] = false
       })
       this.isSubmitting = false
-    },
-  },
-  computed: {
-    isFormValid() {
-      return this.fields.every((field) => {
-        const validation = this.validateField(field)
-        return validation.isValid
-      })
     },
   },
 }

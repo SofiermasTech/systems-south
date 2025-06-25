@@ -55,18 +55,18 @@ import { categoryNames } from '@/shared/config/categoryNames.js'
 
 export default {
   name: 'MenuBlock',
-  emits: ['update:open'],
-  data() {
-    return {
-      catalogStore: useCatalogStore(),
-      activeCategory: null,
-    }
-  },
   props: {
     open: {
       type: Boolean,
       default: false,
     },
+  },
+  emits: ['update:isOpen'],
+  data() {
+    return {
+      catalogStore: useCatalogStore(),
+      activeCategory: null,
+    }
   },
   computed: {
     categories() {
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     closePopup() {
-      this.$emit('update:open', false)
+      this.$emit('update:isOpen', false)
       this.activeCategory = null
     },
     setActiveCategory(category) {

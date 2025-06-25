@@ -5,5 +5,5 @@ export const categoryNames = {
   cables: 'Кабели',
   'electrical-panels': 'Электрощиты',
   automation: 'Автоматика',
-  'warm-floor': 'Теплый пол'
+  'warm-floor': 'Теплый пол',
 }

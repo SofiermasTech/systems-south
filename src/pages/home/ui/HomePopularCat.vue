@@ -135,6 +135,12 @@ export default {
     cursor: pointer;
     transition: 0.3s;
 
+    .popular-categories__item-info {
+      svg {
+        color: var(--grey-200);
+      }
+    }
+
     @include hover {
       background-color: var(--blue);
 
@@ -143,8 +149,10 @@ export default {
         color: var(--white);
       }
 
-      .popular-categories__item-info div {
-        background-color: var(--white);
+      .popular-categories__item-info {
+        div {
+          background-color: var(--white);
+        }
       }
     }
 

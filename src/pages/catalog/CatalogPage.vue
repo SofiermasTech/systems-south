@@ -23,11 +23,6 @@ export default {
     BaseCatalogPage,
     CallbackSection,
   },
-  data() {
-    return {
-      catalogStore: null,
-    }
-  },
   props: {
     category: {
       type: String,
@@ -37,6 +32,11 @@ export default {
       type: String,
       default: null,
     },
+  },
+  data() {
+    return {
+      catalogStore: null,
+    }
   },
   computed: {
     categories() {
@@ -81,74 +81,6 @@ export default {
       }
       return catalogStore.getProducts
     },
-    // sortedProducts() {
-    //   const products = [...this.products]
-
-    //   if (!this.sortType) {
-    //     return products
-    //   }
-
-    //   if (this.sortType === 'cheap-first') {
-    //     return products.sort((a, b) => a.price - b.price)
-    //   }
-
-    //   if (this.sortType === 'expensive-first') {
-    //     return products.sort((a, b) => b.price - a.price)
-    //   }
-
-    //   if (this.sortType === 'in-stock') {
-    //     return products.sort((a, b) => (a.stock === b.stock ? 0 : a.stock ? -1 : 1))
-    //   }
-
-    //   return products
-    // },
-    // filteredProducts() {
-    //   let products = [...this.sortedProducts]
-    //   if (this.appliedFilters.brands.length > 0) {
-    //     products = products.filter((product) => this.appliedFilters.brands.includes(product.brand))
-    //   }
-
-    //   if (this.appliedFilters.subcategories.length > 0) {
-    //     products = products.filter((product) =>
-    //       this.appliedFilters.subcategories.includes(product.subcategory),
-    //     )
-    //   }
-
-    //   if (
-    //     this.appliedFilters.priceRange &&
-    //     (this.appliedFilters.priceRange[0] !== null || this.appliedFilters.priceRange[1] !== null)
-    //   ) {
-    //     products = products.filter((product) => {
-    //       const price = product.price
-    //       const min = this.appliedFilters.priceRange[0]
-    //       const max = this.appliedFilters.priceRange[1]
-    //       return (min === null || price >= min) && (max === null || price <= max)
-    //     })
-    //   }
-    //   return products
-    // },
-  },
-  mounted() {
-    this.catalogStore = useCatalogStore()
-    this.catalogStore.loadProducts()
-  },
-  methods: {
-    // handleSortChange(sortType) {
-    //   this.sortType = sortType
-    // },
-    // handleApplyFilters(filters) {
-    //   this.appliedFilters = {
-    //     brands: filters.brands || [],
-    //     subcategories: filters.subcategories || [],
-    //     priceRange: filters.priceRange || [null, null],
-    //   }
-    // },
-    handleToggleFavorite(product) {
-      this.$emit('toggle-favorite', product)
-    },
-    // handleViewChange(mode) {
-    //   this.viewMode = mode
-    // },
   },
   watch: {
     viewMode(newValue) {
@@ -164,6 +96,15 @@ export default {
         }
       }
     },
+  },
+  methods: {
+    handleToggleFavorite(product) {
+      this.$emit('toggle-favorite', product)
+    },
+  },
+  mounted() {
+    this.catalogStore = useCatalogStore()
+    this.catalogStore.loadProducts()
   },
 }
 </script>

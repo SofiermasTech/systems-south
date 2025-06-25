@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('authStore', {
           this.token = token
           this.user = JSON.parse(user)
           this.isAuthenticated = true
-    
+
           this.fetchUser().catch((error) => {
             console.error('Failed to fetch user during initialization:', error)
           })

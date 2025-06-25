@@ -1,13 +1,13 @@
 <template>
   <div class="accordion" :class="[customClass, { opened: isOpen }]" :id="`accordion-${id}`">
     <div class="accordion__heading" @click="toggleItem" :id="`accordion-heading-${id}`">
-      <slot name="titles" :item="item" />
+      <slot name="titles" :item="item"></slot>
       <button class="base-button-heading" :class="{ opened: isOpen }">
         <BaseIcon name="SelectArrowIcon" />
       </button>
     </div>
     <div class="accordion__content" v-if="isOpen" :id="`accordion-content-${id}`">
-      <slot name="content" :item="item" />
+      <slot name="content" :item="item"></slot>
     </div>
   </div>
 </template>
@@ -29,17 +29,12 @@ export default {
       default: '',
     },
   },
-  components: {},
   data() {
     return {
-      // openIndex: null,
       isOpen: false,
     }
   },
   methods: {
-    // openAnswer(index) {
-    //   this.openIndex = this.openIndex === index ? null : index
-    // },
     toggleItem() {
       this.isOpen = !this.isOpen
     },

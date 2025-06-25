@@ -193,6 +193,4 @@ export default {
     }
   }
 }
-.container {
-}
 </style>

@@ -4,10 +4,10 @@
 
     <section class="faq__questions">
       <BaseAccordion v-for="(item, index) in accordionItems" :key="index" :item="item" :id="index">
-        <template #titles >
+        <template #titles>
           <h2>{{ item.title }}</h2>
         </template>
-        <template #content >
+        <template #content>
           <p>{{ item.content }}</p>
         </template>
       </BaseAccordion>
@@ -49,7 +49,6 @@ export default {
       ],
     }
   },
-  methods: {},
 }
 </script>
 

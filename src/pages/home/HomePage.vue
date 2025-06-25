@@ -47,9 +47,6 @@ export default {
       favoritesStore: null,
     }
   },
-  created() {
-    this.favoritesStore = useFavoritesStore()
-  },
   methods: {
     handleToggleFavorite(product) {
       const message = this.favoritesStore.isFavorite(product.id)
@@ -57,6 +54,9 @@ export default {
         : 'Товар удалён из избранного'
       console.log(`Товар ${product.name} ${message}`)
     },
+  },
+  created() {
+    this.favoritesStore = useFavoritesStore()
   },
 }
 </script>

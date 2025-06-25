@@ -38,12 +38,6 @@ import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'CallbackPopup',
-  // props: {
-  //   isVisible: {
-  //     type: Boolean,
-  //     default: false,
-  //   },
-  // },
   data() {
     return {
       isVisible: false,
@@ -63,7 +57,6 @@ export default {
           subtitle: 'Наш менеджер свяжется с вами',
         },
       })
-      // this.$emit('submit-success')
     },
   },
   created() {

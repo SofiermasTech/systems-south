@@ -66,10 +66,6 @@ export default {
       },
     }
   },
-  created() {
-    this.catalogStore = useCatalogStore()
-    this.catalogStore.loadProducts()
-  },
   computed: {
     products() {
       return this.catalogStore.getProducts
@@ -91,6 +87,10 @@ export default {
       this.productIsBeginning = isBeginning
       this.productIsEnd = isEnd
     },
+  },
+  created() {
+    this.catalogStore = useCatalogStore()
+    this.catalogStore.loadProducts()
   },
 }
 </script>

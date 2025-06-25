@@ -78,13 +78,13 @@ export default {
   },
   methods: {
     onTeamSwiperReady(swiper) {
-      this.teamSwiper = swiper;
-      this.teamIsBeginning = swiper.isBeginning;
-      this.teamIsEnd = swiper.isEnd;
+      this.teamSwiper = swiper
+      this.teamIsBeginning = swiper.isBeginning
+      this.teamIsEnd = swiper.isEnd
     },
     onTeamNavigationUpdate({ isBeginning, isEnd }) {
-      this.teamIsBeginning = isBeginning;
-      this.teamIsEnd = isEnd;
+      this.teamIsBeginning = isBeginning
+      this.teamIsEnd = isEnd
     },
   },
 }
@@ -92,8 +92,8 @@ export default {
 
 <style lang="scss">
 .team {
-padding-top: clamp(40px, 7.5vh, 70px);
-padding-bottom: clamp(50px, 9vh, 80px);
+  padding-top: clamp(40px, 7.5vh, 70px);
+  padding-bottom: clamp(50px, 9vh, 80px);
 
   &__body {
     display: flex;
@@ -142,5 +142,4 @@ padding-bottom: clamp(50px, 9vh, 80px);
     color: var(--grey-200);
   }
 }
-
 </style>

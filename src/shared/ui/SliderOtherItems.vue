@@ -25,14 +25,12 @@
 <script>
 import BaseSlider from '@/shared/ui/BaseSlider.vue'
 import SliderArrow from '@widgets/slider-arrow/SliderArrow.vue'
-// import NewsCard from '@/entities/news/NewsCard.vue'
 
 export default {
   name: 'SliderOtherItems',
   components: {
     BaseSlider,
     SliderArrow,
-    // NewsCard,
   },
   props: {
     items: {
@@ -118,7 +116,6 @@ export default {
       align-self: flex-end;
     }
   }
-
 
   .promo-card__img {
     img {

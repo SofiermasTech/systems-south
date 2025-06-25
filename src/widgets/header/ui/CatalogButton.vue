@@ -16,13 +16,13 @@
 <script>
 export default {
   name: 'CatalogButton',
-  emits: ['click'],
   props: {
     active: {
       type: Boolean,
       default: false,
     },
   },
+  emits: ['click'],
 }
 </script>
 <style lang="scss">

@@ -120,36 +120,7 @@ export default {
       isSubmitting: false,
     }
   },
-  async mounted() {
-    if (!this.authStore.isLoggedIn) {
-      this.$router.push({ name: 'HomePage' })
-      return
-    }
 
-    try {
-      const users = await this.authStore.fetchUsers()
-      const currentUserId = this.authStore.getUser.id
-      const user = users.find((u) => u.id === currentUserId)
-
-      if (user) {
-        this.form = {
-          name: user.name || '',
-          surname: user.surname || '',
-          email: user.email || '',
-          tel: user.phone || '',
-          currentPassword: '',
-          newPassword: '',
-          confirmNewPassword: '',
-        }
-        // Сохраняем исходные значения
-        this.initialForm = { ...this.form }
-      } else {
-        console.error('Пользователь не найден в списке users[]')
-      }
-    } catch (error) {
-      console.error('Ошибка при загрузке данных пользователя:', error)
-    }
-  },
   computed: {
     hasChanges() {
       return (
@@ -163,10 +134,15 @@ export default {
       )
     },
   },
+  watch: {
+    hasChanges(newValue) {
+      console.log('[watch] hasChanges:', newValue)
+    },
+  },
   methods: {
     validateField(field) {
       const value = this.form[field]
-      this.errors[field] = '' 
+      this.errors[field] = ''
 
       if (this.required && !value) {
         this.errors[field] = 'Поле обязательно для заполнения'
@@ -369,10 +345,35 @@ export default {
       }
     },
   },
-  watch: {
-    hasChanges(newValue) {
-      console.log('[watch] hasChanges:', newValue)
-    },
+  async mounted() {
+    if (!this.authStore.isLoggedIn) {
+      this.$router.push({ name: 'HomePage' })
+      return
+    }
+
+    try {
+      const users = await this.authStore.fetchUsers()
+      const currentUserId = this.authStore.getUser.id
+      const user = users.find((u) => u.id === currentUserId)
+
+      if (user) {
+        this.form = {
+          name: user.name || '',
+          surname: user.surname || '',
+          email: user.email || '',
+          tel: user.phone || '',
+          currentPassword: '',
+          newPassword: '',
+          confirmNewPassword: '',
+        }
+        // Сохраняем исходные значения
+        this.initialForm = { ...this.form }
+      } else {
+        console.error('Пользователь не найден в списке users[]')
+      }
+    } catch (error) {
+      console.error('Ошибка при загрузке данных пользователя:', error)
+    }
   },
 }
 </script>

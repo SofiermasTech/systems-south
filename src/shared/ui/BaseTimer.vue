@@ -23,9 +23,14 @@
 </template>
 
 <script>
-// import { usePromoStore } from '@/shared/stores/promo.js'
 export default {
   name: 'BaseTimer',
+  props: {
+    promo: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       timerDisplay: {
@@ -34,25 +39,9 @@ export default {
         minutes: '00',
         sec: '00',
       },
-      timerInterval: null, // Для setInterval
+      timerInterval: null,
     }
   },
-  props: {
-    promo: {
-      type: Object,
-      required: true,
-    },
-  },
-  // computed: {
-  //   allPromo() {
-  //     return usePromoStore().getPromo
-  //   },
-  //   promo() {
-  //     const promoStore = usePromoStore()
-  //     const promoId = this.$route.params.id
-  //     return promoStore.getPromoById(promoId)
-  //   },
-  // },
   methods: {
     calculateTimeRemaining() {
       const endDate = new Date(this.promo.date)
@@ -69,7 +58,6 @@ export default {
         return
       }
 
-      // Вычисляем дни, часы, минуты, секунды
       const days = Math.floor(diff / (1000 * 60 * 60 * 24))
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
@@ -83,7 +71,6 @@ export default {
       }
     },
     startTimer() {
-      // Вычисляем сразу
       this.calculateTimeRemaining()
       // Запускаем обновление каждую секунду
       this.timerInterval = setInterval(() => {
@@ -97,7 +84,6 @@ export default {
     }
   },
   beforeUnmount() {
-    // Очищаем интервал при уничтожении компонента
     if (this.timerInterval) {
       clearInterval(this.timerInterval)
     }

@@ -45,6 +45,10 @@ import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 
 export default {
   name: 'BaseEventPage',
+  components: {
+    IntroPages,
+    CallbackSection,
+  },
   props: {
     items: {
       type: Array,
@@ -84,10 +88,6 @@ export default {
       type: Object,
       default: () => ({}),
     },
-  },
-  components: {
-    IntroPages,
-    CallbackSection,
   },
   emits: ['set-filter'],
 }

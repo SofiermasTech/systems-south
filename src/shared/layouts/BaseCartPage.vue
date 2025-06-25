@@ -61,11 +61,7 @@ export default {
   data() {
     return {
       cartStore: null,
-      // successPopupVisible: false,
     }
-  },
-  created() {
-    this.cartStore = useCartStore()
   },
   computed: {
     cartItems() {
@@ -112,6 +108,9 @@ export default {
     goToOrder() {
       this.$router.push('/order')
     },
+  },
+  created() {
+    this.cartStore = useCartStore()
   },
 }
 </script>
