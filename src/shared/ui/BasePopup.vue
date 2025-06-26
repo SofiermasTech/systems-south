@@ -45,6 +45,10 @@ export default {
       type: String,
       default: 'y',
     },
+    isVisible: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['update:modelValue', 'close', 'submit-success'],
   data() {
@@ -54,19 +58,19 @@ export default {
     }
   },
   computed: {
-    isVisible: {
-      get() {
-        return this.popupStore.isVisible || this.modelValue
-      },
-      set(value) {
-        this.$emit('update:modelValue', value)
-        if (!value) this.popupStore.hidePopup()
-      },
-    },
+    // isVisible: {
+    //   get() {
+    //     return this.popupStore.isVisible || this.modelValue
+    //   },
+    //   set(value) {
+    //     this.$emit('update:modelValue', value)
+    //     if (!value) this.popupStore.hidePopup()
+    //   },
+    // },
   },
   methods: {
     closePopup() {
-      this.isVisible = false
+      this.popupStore.hidePopup()
 
       if (this.$route.path.startsWith('/order')) {
         this.$router.push('/')

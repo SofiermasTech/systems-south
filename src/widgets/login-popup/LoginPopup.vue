@@ -45,10 +45,11 @@ export default {
       default: false,
     },
   },
-  emits: ['close', 'submit-success', 'show-success-popup'],
+  emits: ['submit-success'],
   data() {
     return {
       authStore: useAuthStore(),
+      popupStore: usePopupStore(),
       isLoading: false,
       currentForm: 'login',
       loginFields: [
@@ -89,7 +90,7 @@ export default {
     closePopup() {
       this.currentForm = 'login'
       this.authStore.clearError()
-      this.$emit('close')
+      this.popupStore.hidePopup()
     },
     async handleSubmitSuccess(formData) {
       console.log('Form data:', formData)
@@ -101,14 +102,11 @@ export default {
           this.closePopup()
         } else {
           await this.authStore.register(formData)
-          this.$emit('show-success-popup')
-          const popupStore = usePopupStore()
-          popupStore.showPopup({
-            component: 'BaseSuccessPopup',
-            props: {
-              isVisible: true,
-              title: 'Вы успешно зарегистрированы!',
-            },
+          // this.$emit('show-success-popup')
+
+          this.popupStore.showPopup('BaseSuccessPopup', {
+            isVisible: true,
+            title: 'Вы успешно зарегистрированы!',
           })
         }
       } finally {

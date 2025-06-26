@@ -3,12 +3,17 @@
     <div class="contacts__tel">
       <div class="contacts__tel-number" @click="toggleEmail">
         <p>+7 (861) 212-54-45</p>
-        <span :class="{ open: emailVisible }"><BaseIcon name="SelectArrowIcon" /></span>
+        <span :class="{ open: this.popupStore.currentPopupName === 'ContactEmail' }">
+          <BaseIcon name="SelectArrowIcon" />
+        </span>
       </div>
-      <BaseButtonCall :class="{ open: emailVisible }" @click="toggleCallback" />
+      <BaseButtonCall
+        :class="{ open: this.popupStore.currentPopupName === 'ContactForm' }"
+        @click="toggleCallback"
+      />
     </div>
     <Transition>
-      <div class="contacts__email" v-if="emailVisible">
+      <div class="contacts__email" v-if="this.popupStore.currentPopupName === 'ContactEmail'">
         <span class="contacts__email-title">Электронная почта</span>
         <a class="contacts__email-link" href="mailto:sales@ingsystemyuga.ru"
           >sales@ingsystemyuga.ru</a
@@ -16,19 +21,13 @@
       </div>
     </Transition>
     <Transition>
-      <div class="contacts__callback-form" v-if="callbackFormVisible">
-        <template v-if="submitSuccess">
-          <div class="callback-page__icon">
-            <img
-              src="@/assets/images/success-popup.png"
-              alt=""
-              width="102"
-              height="96"
-              loading="lazy"
-            />
-          </div>
+      <div
+        class="contacts__callback-form"
+        v-if="this.popupStore.currentPopupName === 'ContactForm'"
+      >
+        <template v-if="popupStore.currentPopupProps.submitSuccess">
           <div class="callback-page__text">
-            <h2 class="callback-page__title">Заявка успешно оформлена!</h2>
+            <h2 class="callback-page__title">Спасибо за вашу заявку!</h2>
             <p class="callback-page__subtitle">Наш менеджер свяжется с вами</p>
           </div>
         </template>
@@ -65,36 +64,33 @@
 </template>
 
 <script>
+import { usePopupStore } from '@/shared/stores/popup.js'
+
 export default {
   name: 'HeaderContacts',
   data() {
     return {
-      emailVisible: false,
-      callbackFormVisible: false,
-      submitSuccess: false,
+      popupStore: usePopupStore(),
     }
   },
-  computed: {
-    isOverlayVisible() {
-      return this.emailVisible || this.callbackFormVisible
-    },
-  },
+  computed: {},
   methods: {
     toggleEmail() {
-      this.emailVisible = !this.emailVisible
-      this.$emit('toggle-overlay', this.isOverlayVisible)
+      if (this.popupStore.currentPopupName === 'ContactEmail') {
+        this.popupStore.hidePopup()
+      } else {
+        this.popupStore.showPopup('ContactEmail', {})
+      }
     },
     toggleCallback() {
-      this.callbackFormVisible = !this.callbackFormVisible
-      this.$emit('toggle-overlay', this.isOverlayVisible)
-    },
-    closeAll() {
-      this.emailVisible = false
-      this.callbackFormVisible = false
-      this.$emit('toggle-overlay', false)
+      if (this.popupStore.currentPopupName === 'ContactForm') {
+        this.popupStore.hidePopup()
+      } else {
+        this.popupStore.showPopup('ContactForm', { submitSuccess: false })
+      }
     },
     handleSubmitSuccess() {
-      this.submitSuccess = true
+      this.popupStore.showPopup('ContactForm', { submitSuccess: true })
     },
   },
 }
@@ -154,6 +150,7 @@ export default {
   }
 
   &__email {
+    margin-top: 24px;
     padding-top: 24px;
     border-top: 1px solid var(--grey-100);
     display: flex;
@@ -175,20 +172,22 @@ export default {
   }
 
   &__callback-form {
-    margin-top: 24px;
+    min-height: 300px;
+    height: 100%;
     padding-top: 24px;
     border-top: 1px solid var(--grey-100);
     margin-bottom: 16px;
-
-    .callback-page__icon {
-      img {
-        margin-inline: auto;
-      }
-    }
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     .callback-page__title {
       font-size: 24px;
       text-align: center;
+    }
+
+    .callback-page__subtitle {
+      opacity: 0.5;
     }
   }
 
@@ -197,18 +196,12 @@ export default {
     font-weight: 700;
     font-size: 16px;
   }
+
+  // .base-input__btn-edit {
+  //   display: none;
+  // }
 }
 
-.overlay-page {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--grey-300);
-}
 
 .v-enter-from,
 .v-leave-to {
@@ -224,14 +217,4 @@ export default {
   transform: translateY(0);
 }
 
-// .v-enter-from .contacts__email {
-//   transform: translateY(100%);
-// }
-// .v-enter-active .contacts__email,
-// .v-leave-active .contacts__email {
-//   transition: 0.7s ease;
-// }
-// .v-enter-to .contacts__email {
-//   transform: translateY(0);
-// }
 </style>

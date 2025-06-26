@@ -54,7 +54,11 @@
     <span v-if="error" class="base-input__error">{{ error }}</span>
     <!-- Кнопка редактирования/сохранения -->
     <button
-      v-if="(type === 'text' || type === 'email' || type === 'tel') && isPersonalPage"
+      v-if="
+        (type === 'text' || type === 'email' || type === 'tel') &&
+        isPersonalPage &&
+        !isCallbackPopup
+      "
       class="base-input__btn-edit"
       type="button"
       @click="handleAction"
@@ -71,6 +75,8 @@
   </label>
 </template>
 <script>
+import { usePopupStore } from '@/shared/stores/popup.js'
+
 export default {
   name: 'BaseInput',
   props: {
@@ -99,11 +105,15 @@ export default {
       isEdited: false,
       isEditing: false,
       initialValue: String(this.modelValue ?? ''),
+      popupStore: usePopupStore(),
     }
   },
   computed: {
     isPersonalPage() {
       return this.$route.path.startsWith('/personal/profile')
+    },
+    isCallbackPopup() {
+      return this.popupStore.currentPopupName === 'ContactForm'
     },
   },
   watch: {
@@ -135,11 +145,10 @@ export default {
       }
     },
     handleFocus() {
-      console.log('Фокус на input')
       this.isFocused = true
     },
+
     handleBlur() {
-      console.log('Фокус снят с input')
       this.isFocused = false
     },
   },

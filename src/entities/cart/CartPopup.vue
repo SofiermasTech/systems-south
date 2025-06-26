@@ -1,35 +1,35 @@
 <template>
   <transition name="cart" :duration="{ enter: 700, leave: 300 }">
     <section class="cart-popup" v-if="isOpen">
-      <div class="cart-popup__overlay" @click="closePopup">
-        <div class="cart-popup__body" @click.stop>
-          <div class="cart-popup__header">
-            <p class="cart-popup__title">Товары в корзине</p>
-            <button class="cart-popup__btn-clear" @click="clearCart" type="reset">
-              Очистить корзину
-            </button>
+      <!-- <div class="cart-popup__overlay" @click="closePopup"> -->
+      <div class="cart-popup__body" @click.stop>
+        <div class="cart-popup__header">
+          <p class="cart-popup__title">Товары в корзине</p>
+          <button class="cart-popup__btn-clear" @click="clearCart" type="reset">
+            Очистить корзину
+          </button>
+        </div>
+        <div class="cart-popup__content">
+          <CardPopup
+            v-for="item in cartItemsWithDetails"
+            :key="item.id"
+            :item="item"
+            @remove="removeItem"
+          />
+        </div>
+        <div class="cart-popup__bottom">
+          <div class="cart-popup__total">
+            <p class="cart-popup__total-title">Итого к оплате</p>
+            <span class="cart-popup__total-sum">{{ totalPrice.toLocaleString('ru-RU') }} ₽</span>
           </div>
-          <div class="cart-popup__content">
-            <CardPopup
-              v-for="item in cartItemsWithDetails"
-              :key="item.id"
-              :item="item"
-              @remove="removeItem"
-            />
-          </div>
-          <div class="cart-popup__bottom">
-            <div class="cart-popup__total">
-              <p class="cart-popup__total-title">Итого к оплате</p>
-              <span class="cart-popup__total-sum">{{ totalPrice.toLocaleString('ru-RU') }} ₽</span>
-            </div>
-            <RouterLink to="/cart" @click="closePopup" class="cart-popup__link">
-              <base-button>
-                <span>Перейти в корзину</span>
-              </base-button>
-            </RouterLink>
-          </div>
+          <RouterLink to="/cart" @click="closePopup" class="cart-popup__link">
+            <base-button>
+              <span>Перейти в корзину</span>
+            </base-button>
+          </RouterLink>
         </div>
       </div>
+      <!-- </div> -->
     </section>
   </transition>
 </template>
@@ -38,6 +38,7 @@
 import { useCartStore } from '@/shared/stores/cart.js'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
 import { useAuthStore } from '@/shared/stores/auth.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 import CardPopup from '@/entities/cart/CardPopup.vue'
 
 export default {
@@ -56,6 +57,7 @@ export default {
       cartStore: useCartStore(),
       authStore: useAuthStore(),
       catalogStore: useCatalogStore(),
+      popupStore: usePopupStore(),
     }
   },
   computed: {
@@ -81,7 +83,7 @@ export default {
   },
   methods: {
     closePopup() {
-      this.$emit('update:isOpen', false)
+      this.popupStore.hidePopup()
     },
     clearCart() {
       this.cartStore.clearCart()
@@ -109,23 +111,18 @@ export default {
 
 <style lang="scss">
 .cart-popup {
-  width: 100vw;
-  height: 100%;
+  margin-left: auto;
+  width: fit-content;
+  height: 100vh;
   flex-grow: 1;
-
-  &__overlay {
-    z-index: 100;
-    width: 100%;
-    height: calc(100vh - 120px);
-    background-color: var(--grey-300);
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-  }
+  position: relative;
+  z-index: 103;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 
   &__body {
     max-width: 30vw;
-    max-height: calc(100vh - 132px);
     width: 100%;
     height: 100%;
     padding: 32px 40px 28px 24px;

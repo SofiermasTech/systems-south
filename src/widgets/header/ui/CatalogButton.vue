@@ -1,9 +1,8 @@
 <template>
-  <!-- <RouterLink to="/catalog"> -->
   <button
     type="button"
     class="header__btn-catalog btn-catalog"
-    @click="$emit('click')"
+    @click="toggleMenu"
     :class="{ active: active }"
   >
     <span class="btn-catalog__icon">
@@ -11,9 +10,10 @@
     </span>
     <p class="btn-catalog__text">Каталог товаров</p>
   </button>
-  <!-- </RouterLink> -->
 </template>
 <script>
+import { usePopupStore } from '@/shared/stores/popup.js'
+
 export default {
   name: 'CatalogButton',
   props: {
@@ -22,7 +22,20 @@ export default {
       default: false,
     },
   },
-  emits: ['click'],
+  data() {
+    return {
+      popupStore: usePopupStore(),
+    }
+  },
+  methods: {
+    toggleMenu() {
+      if (this.popupStore.currentPopupName === 'menu') {
+        this.popupStore.hidePopup()
+      } else {
+        this.popupStore.showPopup('menu', {})
+      }
+    },
+  },
 }
 </script>
 <style lang="scss">

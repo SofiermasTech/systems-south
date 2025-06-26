@@ -17,64 +17,46 @@
           <div class="header__top">
             <nav class="header__nav">
               <ul class="header__nav-list">
-                <li class="header__nav-item">
-                  <RouterLink to="/about-us" class="header__nav-item-link"
-                    ><p>О компании</p></RouterLink
-                  >
-                </li>
-                <li class="header__nav-item">
-                  <RouterLink to="/promo" class="header__nav-item-link">
-                    <span class="header__nav-item-icon">
-                      <BaseIcon name="StickerSaleIcon" />
+                <li v-for="link in navLinks" :key="link.key" class="header__nav-item">
+                  <RouterLink :to="link.path" class="header__nav-item-link">
+                    <span v-if="link.icon" class="header__nav-item-icon">
+                      <BaseIcon :name="link.icon" />
                     </span>
-                    <p>Акции</p>
+                    <p>{{ link.name }}</p>
                   </RouterLink>
-                </li>
-                <li class="header__nav-item">
-                  <RouterLink to="/contacts" class="header__nav-item-link"
-                    ><p>Контакты</p></RouterLink
-                  >
-                </li>
-                <li class="header__nav-item">
-                  <RouterLink to="/faq" class="header__nav-item-link"><p>FAQ</p></RouterLink>
                 </li>
               </ul>
             </nav>
-            <address class="header__adress">
+            <address class="header__address">
+              <span class="header__address-icon">
+                <BaseIcon name="LocationIcon" />
+              </span>
               <p>Краснодар, ул. Солнечная, д. 4/Б, пом. 14/1</p>
+              <time datetime="T10:00-18:00">Ежедневно с 9:00 по 18:00</time>
             </address>
           </div>
           <div class="header__bottom">
             <!-- Кнопка каталога -->
-            <CatalogButton @click="openModal('menu')" :active="activeModal === 'menu'" />
-            <HeaderSearch ref="search" @toggle-overlay="$emit('toggle-overlay', $event)" />
-            <HeaderContacts ref="contacts" @toggle-overlay="$emit('toggle-overlay', $event)" />
+            <CatalogButton :active="this.popupStore.currentPopupName === 'menu'" />
+            <HeaderSearch />
+            <HeaderContacts />
             <UserActions
               :favorites-count="favoritesCount"
-              :isOpen="activeModal === 'CartPopup'"
-              @toggle-cart-popup="openModal('CartPopup')"
-              @login-popup="openLoginPopup"
+              :isOpen="this.popupStore.currentPopupName === 'CartPopup'"
             />
           </div>
         </div>
       </div>
     </div>
-    <CartPopup
-      :isOpen="activeModal === 'CartPopup'"
-      @update:isOpen="
-        (val) => {
-          if (!val) activeModal = null
-        }
-      "
-    />
+    <CartPopup :isOpen="this.popupStore.currentPopupName === 'CartPopup'" />
     <MenuBlock
-      :open="activeModal === 'menu'"
-      @update:isOpen="
-        (val) => {
-          if (!val) activeModal = null
-        }
-      "
+      :open="this.popupStore.currentPopupName === 'menu'"
+      :activeCategory="activeCategory"
+      @update:activeCategory="(val) => (activeCategory = val)"
     />
+    <Transition name="overlay" :duration="{ enter: 500, leave: 300 }">
+      <div class="header__overlay" v-if="isModalOpen" @click="closePopup"></div>
+    </Transition>
   </header>
 </template>
 
@@ -88,6 +70,7 @@ import { usePopupStore } from '@/shared/stores/popup.js'
 import CartPopup from '@/entities/cart/CartPopup.vue'
 import MenuBlock from '@widgets/menu/MenuBlock.vue'
 import { lockScroll, unlockScroll } from '@/shared/config/scrollLock.js'
+import { navLinks } from '@/shared/config/navLinks.js'
 
 export default {
   name: 'HeaderApp',
@@ -102,73 +85,43 @@ export default {
   data() {
     return {
       favoritesStore: null,
-      // isCartPopupOpen: false,
-      // isMenuOpen: false,
-      activeModal: null, // null или 'cart', 'menu', 'search', 'contacts', .
+      popupStore: usePopupStore(),
       isHidden: false,
       lastScrollPosition: 0,
+      activeCategory: null,
     }
   },
-
   computed: {
+    navLinks() {
+      return navLinks
+    },
     favoritesCount() {
       return this.favoritesStore ? this.favoritesStore.favoritesCount : 0
     },
-    isAnyModalOpen() {
+    isModalOpen() {
+      const namePopup = this.popupStore.currentPopupName
       return (
-        this.isCartPopupOpen || this.isMenuOpen
-        // ||
-        // (this.$refs.search && this.$refs.search.isSearchPopupOpen) ||
-        // (this.$refs.contacts && this.$refs.contacts.isContactsPopupOpen)
+        namePopup === 'menu' ||
+        namePopup === 'CartPopup' ||
+        namePopup === 'search' ||
+        namePopup === 'ContactEmail' ||
+        namePopup === 'ContactForm'
       )
     },
   },
   watch: {
-    activeModal(newValue) {
+    isModalOpen(newValue) {
       if (newValue) {
         lockScroll()
       } else {
         unlockScroll()
       }
     },
+    $route() {
+      this.closePopup()
+    },
   },
   methods: {
-    openModal(name) {
-      if (this.activeModal === name) {
-        this.activeModal = null
-      } else {
-        this.activeModal = name
-      }
-    },
-    closeModal() {
-      this.activeModal = null
-    },
-    // toggleCartPopup() {
-    //   this.isCartPopupOpen = !this.isCartPopupOpen
-    // },
-    // toggleMenu() {
-    //   this.isMenuOpen = !this.isMenuOpen
-    //   if (this.isMenuOpen) {
-    //     this.$refs.contacts.closeAll()
-    //     this.$refs.search.closeSearchPopup()
-    //     this.isCartPopupOpen = false
-    //   }
-    // },
-    closeAll() {
-      this.$refs.contacts.closeAll()
-      this.$refs.search.closeSearchPopup()
-      this.isCartPopupOpen = false
-      this.isMenuOpen = false
-    },
-    openLoginPopup() {
-      const popupStore = usePopupStore()
-      popupStore.showPopup({
-        component: 'LoginPopup',
-        props: { isVisible: true },
-      })
-      this.isCartPopupOpen = false
-      this.isMenuOpen = false
-    },
     handleScroll() {
       // Текущая позиция скролла
       const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop
@@ -176,22 +129,26 @@ export default {
         this.isHidden = false
         return
       }
-      // Игнорируем отрицательные значения (на случай резинового скролла)
       if (currentScrollPosition < 0) {
         return
       }
-
       // Проверяем направление скролла
       if (currentScrollPosition > this.lastScrollPosition) {
-        // Скролл вниз — скрываем хедер
         this.isHidden = true
       } else {
-        // Скролл вверх — показываем хедер
         this.isHidden = false
       }
-
       // Обновляем последнюю позицию скролла
       this.lastScrollPosition = currentScrollPosition
+    },
+    closePopup() {
+      this.popupStore.hidePopup()
+      this.activeCategory = null
+    },
+    handleKeydown(event) {
+      if (event.key === 'Escape') {
+        this.closePopup()
+      }
     },
   },
   created() {
@@ -199,10 +156,12 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
+    window.addEventListener('keydown', this.handleKeydown)
   },
   beforeUnmount() {
     window.removeEventListener('scroll', this.handleScroll)
-    if (this.isAnyModalOpen) {
+    window.removeEventListener('keydown', this.handleKeydown)
+    if (this.isModalOpen) {
       unlockScroll()
     }
   },
@@ -227,6 +186,7 @@ export default {
   }
 
   &__wrapper {
+    margin-bottom: 12px;
     width: 100%;
     position: relative;
     z-index: 101;
@@ -287,9 +247,25 @@ export default {
     color: var(--orange);
   }
 
-  &__adress {
+  &__address {
     font-weight: 600;
     font-size: 12px;
+    display: flex;
+    align-items: center;
+
+    p {
+      margin-bottom: 0;
+      margin-right: 20px;
+    }
+  }
+  &__address-icon {
+    width: 20px;
+    height: 20px;
+
+    svg {
+      // width: 13px;
+      // height: 16px;
+    }
   }
 
   &__bottom {
@@ -304,6 +280,18 @@ export default {
 
   &__user-actions {
   }
+
+  &__overlay {
+    position: absolute;
+    z-index: 100;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--grey-300);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    transition: opacity 0.5s;
+  }
 }
 
 .logo {
@@ -316,5 +304,18 @@ export default {
     object-fit: cover;
     object-position: center;
   }
+}
+
+.overlay-enter-from,
+.overlay-leave-to {
+  opacity: 0;
+}
+.overlay-enter-active,
+.overlay-leave-active {
+  transition: 0.5s ease;
+}
+.overlay-enter-to,
+.overlay-leave-from {
+  opacity: 1;
 }
 </style>

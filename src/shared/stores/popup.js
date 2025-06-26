@@ -2,25 +2,22 @@ import { defineStore } from 'pinia'
 
 export const usePopupStore = defineStore('popup', {
   state: () => ({
-    currentPopup: null,
-    isPopupVisible: false,
+    currentPopupName: null, // например, 'search', 'cart' и т.п.
+    currentPopupProps: {}, // пропсы для текущего попапа
   }),
   getters: {
-    getCurrentPopup: (state) => state.currentPopup,
-    isVisible: (state) => state.isPopupVisible,
+    isPopupVisible: (state) => !!state.currentPopupName,
   },
   actions: {
-    showPopup({ component, props = {} }) {
-      console.log('Showing popup:', component, props)
-      this.currentPopup = { component, props }
-      this.isPopupVisible = true
-      document.body.style.overflowY = 'hidden';
+    showPopup(name, props = {}) {
+      console.log('Showing popup:', name, props)
+      this.currentPopupName = name
+      this.currentPopupProps = props
     },
     hidePopup() {
       console.log('Hiding popup')
-      this.currentPopup = null
-      this.isPopupVisible = false
-      document.body.style.overflowY = '';
+      this.currentPopupName = null
+      this.currentPopupProps = {}
     },
   },
 })

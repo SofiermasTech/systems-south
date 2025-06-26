@@ -22,6 +22,8 @@ import ElectroIcon from '@/shared/ui/icons/ElectroIcon.vue'
 import AutomaticaIcon from '@/shared/ui/icons/AutomaticaIcon.vue'
 import LightTechnicIcon from '@/shared/ui/icons/LightTechnicIcon.vue'
 import WarmFloorIcon from '@/shared/ui/icons/WarmFloorIcon.vue'
+import LocationIcon from '@/shared/ui/icons/LocationIcon.vue'
+import SearchIcon from '@/shared/ui/icons/SearchIcon.vue'
 
 export default {
   name: 'BaseIcon',
@@ -45,6 +47,8 @@ export default {
     AutomaticaIcon,
     LightTechnicIcon,
     WarmFloorIcon,
+    LocationIcon,
+    SearchIcon,
   },
   props: {
     name: {
@@ -74,6 +78,8 @@ export default {
         AutomaticaIcon,
         LightTechnicIcon,
         WarmFloorIcon,
+        LocationIcon,
+        SearchIcon,
       }
     },
   },

@@ -1,57 +1,38 @@
 <template>
   <div class="header-search">
-    <div class="header-search__input">
+    <label class="header-search__input">
       <input type="text" placeholder="Поиск" v-model="searchQuery" />
-    </div>
-    <div class="header-search__popup" v-if="isSearchPopupVisible">
-      <div class="header-search__popup-top" v-if="filteredProducts.length > 0">
-        <p>Найдено {{ filteredProducts.length }} товара</p>
-        <RouterLink
-          :to="{ path: '/search', query: { query: searchQuery } }"
-          @click="closeSearchPopup"
-          >Показать все</RouterLink
-        >
-      </div>
-      <div class="header-search__popup-result">
-        <article class="popup-card" v-for="product in filteredProducts" :key="product.id">
-          <div class="popup-card__img">
-            <img
-              :src="product.images[0]"
-              :alt="product.brand"
-              loading="lazy"
-              width="68"
-              height="68"
-            />
-          </div>
-          <div class="popup-card__info">
-            <p class="popup-card__text">{{ product.name }}</p>
-            <p class="popup-card__price">{{ product.price.toLocaleString('ru-RU') }} ₽</p>
-          </div>
-        </article>
-        <p class="header-search__popup-empty" v-if="filteredProducts.length === 0">
-          По запросу ничего не найдено
-        </p>
-      </div>
-    </div>
+      <button class="header-search__input-btn" :class="{ active: this.searchQuery.length > 0 }">
+        <BaseIcon name="SearchIcon" />
+      </button>
+    </label>
+    <SearchPopup
+      v-if="popupStore.currentPopupName === 'search'"
+      :filteredProducts="filteredProducts"
+      :searchQuery="searchQuery"
+      @close="closeSearchPopup"
+    />
   </div>
 </template>
 
 <script>
-import { useCatalogStore } from '@/shared/stores/catalog'
+import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
+import SearchPopup from '@/widgets/search-popup/SearchPopup.vue'
 
 export default {
   name: 'HeaderSearch',
+  components: {
+    SearchPopup,
+  },
   data() {
     return {
       searchQuery: '',
-      isSearchPopupVisible: false,
       catalogStore: null,
+      popupStore: null,
     }
   },
   computed: {
-    isOverlayVisible() {
-      return this.isSearchPopupVisible
-    },
     filteredProducts() {
       const query = this.searchQuery.toLowerCase().trim()
       if (!query || !this.catalogStore) return []
@@ -62,20 +43,30 @@ export default {
   },
   watch: {
     searchQuery(newQuery) {
-      this.isSearchPopupVisible = newQuery.trim().length > 0
-      this.$emit('toggle-overlay', this.isSearchPopupVisible)
+      if (newQuery.trim().length > 0) {
+        // Открываем попап поиска через стор и передаём данные
+        this.popupStore.showPopup('search', {
+          searchQuery: newQuery,
+          filteredProducts: this.filteredProducts,
+        })
+      } else if (this.popupStore.currentPopupName === 'search') {
+        // Закрываем попап если строка поиска пустая
+        this.popupStore.hidePopup()
+      }
     },
   },
   methods: {
     closeSearchPopup() {
       this.searchQuery = ''
-      this.isSearchPopupVisible = false
-      this.$emit('toggle-overlay', false)
+      // this.isSearchPopupVisible = false
+      // this.$emit('toggle-overlay', false)
+      this.popupStore.hidePopup()
     },
   },
   created() {
     this.catalogStore = useCatalogStore()
     this.catalogStore.loadProducts()
+    this.popupStore = usePopupStore()
   },
 }
 </script>
@@ -89,7 +80,7 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 20px;
   border-radius: 10px;
 
   &__input {
@@ -97,12 +88,14 @@ export default {
     padding: 28px 16px;
     border: 1px solid var(--grey-100);
     border-radius: 10px;
+    position: relative;
 
     input {
       width: 100%;
       border: none;
       font-size: 14px;
       outline: none;
+      caret-color: var(--black);
 
       &::placeholder {
         color: var(--grey-200);
@@ -110,64 +103,18 @@ export default {
     }
   }
 
-  &__popup {
-    max-height: 40vh;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: var(--white);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  &__popup-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-
-    p {
-      margin: 0;
-      font-weight: 500;
-      font-size: 14px;
-      color: var(--grey-200);
-    }
-
-    a {
-      font-size: 14px;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-      color: var(--blue);
-    }
-  }
-
-  &__popup-result {
-    max-height: 80%;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .popup-card {
-    max-width: 340px;
-  }
-
-  .popup-card__img {
-    width: 68px;
-    height: 68px;
-    border-radius: 10px;
-
-    img {
-      border-radius: 10px;
-    }
-  }
-
-  &__popup-empty {
-    font-weight: 500;
-    font-size: 14px;
-    text-align: center;
+  &__input-btn {
+    all: unset;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--grey-200);
+    transition: 0.3s;
+
+    &.active {
+      color: var(--black);
+    }
   }
 }
 </style>

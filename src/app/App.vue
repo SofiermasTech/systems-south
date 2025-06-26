@@ -1,11 +1,10 @@
 <template>
-  <HeaderApp ref="headerContacts" @toggle-overlay="updateOverlay" />
+  <HeaderApp ref="headerContacts"  />
   <main class="main">
     <router-view />
     <Transition name="base-popup" :duration="{ enter: 700, leave: 300 }">
       <PopupManager />
     </Transition>
-    <div class="overlay-page" v-if="isOverlayVisible" @click="closeOverlay"></div>
   </main>
   <FooterApp />
 </template>
@@ -23,25 +22,7 @@ export default {
   },
   data() {
     return {
-      isOverlayVisible: false,
     }
-  },
-  watch: {
-    '$route.path': {
-      handler() {
-        this.isOverlayVisible = false
-        this.$refs.headerContacts.closeAll()
-      },
-    },
-  },
-  methods: {
-    updateOverlay(isVisible) {
-      this.isOverlayVisible = isVisible
-    },
-    closeOverlay() {
-      this.isOverlayVisible = false
-      this.$refs.headerContacts.closeAll()
-    },
   },
 }
 </script>

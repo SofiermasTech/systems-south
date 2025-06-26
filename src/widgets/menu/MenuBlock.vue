@@ -1,28 +1,27 @@
 <template>
   <Transition name="menu" :duration="{ enter: 700, leave: 300 }">
     <section class="menu" v-if="open">
-      <div class="menu__overlay" @click="closePopup">
-        <!-- <transition> -->
-        <div class="menu__body" @click.stop>
-          <div class="menu__left">
-            <p class="menu__left-title">Каталог</p>
-            <ul class="menu__left-list">
-              <li
-                class="menu__left-item"
-                v-for="category in categories"
-                :key="category.slug"
-                :class="{ active: activeCategory === category.slug }"
-                @mouseenter="setActiveCategory(category.slug)"
-              >
-                <RouterLink :to="`/catalog/${category.slug}`" @click="closePopup">
-                  <p>{{ category.name }}</p>
-                  <span>
-                    <BaseIcon name="SelectArrowIcon" />
-                  </span>
-                </RouterLink>
-              </li>
-            </ul>
-          </div>
+      <div class="menu__body" @click.stop>
+        <div class="menu__left">
+          <p class="menu__left-title">Каталог</p>
+          <ul class="menu__left-list">
+            <li
+              class="menu__left-item"
+              v-for="category in categories"
+              :key="category.slug"
+              :class="{ active: activeCategory === category.slug }"
+              @mouseenter="setActiveCategory(category.slug)"
+            >
+              <RouterLink :to="`/catalog/${category.slug}`" @click="closePopup">
+                <p>{{ category.name }}</p>
+                <span>
+                  <BaseIcon name="SelectArrowIcon" />
+                </span>
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
+        <Transition name="submenu">
           <div class="menu__right" v-if="activeCategory">
             <ul class="menu__right-list">
               <li
@@ -42,8 +41,7 @@
               </li>
             </ul>
           </div>
-        </div>
-        <!-- </transition> -->
+        </Transition>
       </div>
     </section>
   </Transition>
@@ -51,6 +49,7 @@
 
 <script>
 import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 import { categoryNames } from '@/shared/config/categoryNames.js'
 
 export default {
@@ -60,12 +59,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    activeCategory: {
+      type: String,
+      default: '',
+    },
   },
-  emits: ['update:isOpen'],
   data() {
     return {
       catalogStore: useCatalogStore(),
-      activeCategory: null,
+      popupStore: usePopupStore(),
+      // activeCategory: null,
     }
   },
   computed: {
@@ -86,11 +89,11 @@ export default {
   },
   methods: {
     closePopup() {
-      this.$emit('update:isOpen', false)
-      this.activeCategory = null
+      this.popupStore.hidePopup()
+      this.$emit('update:activeCategory', null)
     },
     setActiveCategory(category) {
-      this.activeCategory = category
+      this.$emit('update:activeCategory', category)
     },
   },
 }
@@ -98,24 +101,17 @@ export default {
 
 <style lang="scss">
 .menu {
-  width: 100vw;
-  height: 100%;
+  width: fit-content;
+  height: 100vh;
   flex-grow: 1;
-
-  &__overlay {
-    z-index: 100;
-    width: 100%;
-    height: calc(100vh - 120px);
-    background-color: var(--grey-300);
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-  }
+  position: relative;
+  z-index: 102;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
 
   &__body {
-    // max-width: 50vw;
     width: auto;
-    max-height: calc(100vh - 132px);
     height: 100%;
     padding: 32px 24px 28px 40px;
     background-color: var(--white);
@@ -227,5 +223,19 @@ export default {
 }
 .menu-enter-to .menu__body {
   transform: translateX(0);
+}
+
+.submenu-enter-from,
+.submenu-leave-to {
+  opacity: 0;
+}
+.submenu-enter-active,
+.submenu-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.submenu-enter-to,
+.submenu-leave-from {
+  opacity: 1;
 }
 </style>

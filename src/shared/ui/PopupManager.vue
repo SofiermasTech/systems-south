@@ -1,14 +1,15 @@
 <template>
   <component
-    v-if="currentPopup"
-    :is="currentPopup.component"
-    v-bind="currentPopup.props"
+    v-if="isPopupVisible"
+    :is="popupComponents[currentPopupName]"
+    v-bind="currentPopupProps"
     @close="hidePopup"
   />
 </template>
 
 <script>
-import { usePopupStore } from '@/shared/stores/popup'
+import { usePopupStore } from '@/shared/stores/popup.js'
+import { lockScroll, unlockScroll } from '@/shared/config/scrollLock.js'
 import LoginPopup from '@/widgets/login-popup/LoginPopup.vue'
 import LogoutPopup from '@/widgets/logout-popup/LogoutPopup.vue'
 import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
@@ -22,15 +23,48 @@ export default {
     CallbackPopup,
     BaseSuccessPopup,
   },
+  data() {
+    return {
+      usePopupStore: usePopupStore(),
+    }
+  },
   computed: {
-    currentPopup() {
-      return usePopupStore().getCurrentPopup
+    currentPopupName() {
+      return this.usePopupStore.currentPopupName
+    },
+    currentPopupProps() {
+      return this.usePopupStore.currentPopupProps
+    },
+    isPopupVisible() {
+      return this.usePopupStore.isPopupVisible
+    },
+    popupComponents() {
+      return {
+        LoginPopup: this.$options.components.LoginPopup,
+        LogoutPopup: this.$options.components.LogoutPopup,
+        CallbackPopup: this.$options.components.CallbackPopup,
+        BaseSuccessPopup: this.$options.components.BaseSuccessPopup,
+      }
+    },
+  },
+  watch: {
+    isPopupVisible(newValue) {
+      if (newValue) {
+        lockScroll()
+      } else {
+        unlockScroll()
+      }
     },
   },
   methods: {
     hidePopup() {
-      usePopupStore().hidePopup()
+      this.usePopupStore.hidePopup()
     },
+  },
+  beforeUnmount() {
+    if (this.isPopupVisible) {
+      unlockScroll()
+    }
   },
 }
 </script>

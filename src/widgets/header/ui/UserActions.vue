@@ -78,6 +78,7 @@ export default {
   data() {
     return {
       authStore: useAuthStore(),
+      popupStore: usePopupStore(),
     }
   },
   computed: {
@@ -89,32 +90,26 @@ export default {
       return this.$route.path.startsWith('/cart')
     },
   },
-  // watch: {
-  //   isOpen(newVal) {
-  //     if (!newVal) this.toggleCartPopup()
-  //   },
-  // },
   methods: {
     toggleCartPopup() {
-      this.$emit('toggle-cart-popup')
+      if (this.popupStore.currentPopupName === 'CartPopup') {
+        this.popupStore.hidePopup()
+      } else {
+        this.popupStore.showPopup('CartPopup', {})
+      }
     },
-    // closeCartPopup() {
-    //   this.$emit('update:isOpen', false)
-    // },
-    // openCartPopup() {
-    //   this.$emit('update:isOpen', true)
-    // },
+
     openLoginPopup() {
-      this.$emit('login-popup')
+      this.popupStore.showPopup('LoginPopup', {
+        isVisible: true,
+      })
     },
     clickFavoritesBtn() {
       if (this.authStore.isLoggedIn) {
         this.$router.push('/personal/favorites')
       } else {
-        const popupStore = usePopupStore()
-        popupStore.showPopup({
-          component: 'LoginPopup',
-          props: { isVisible: true },
+        this.popupStore.showPopup('LoginPopup', {
+          isVisible: true,
         })
       }
     },

@@ -23,18 +23,15 @@ export default {
   data() {
     return {
       authStore: useAuthStore(),
+      popupStore: usePopupStore(),
     }
   },
   methods: {
     openLogoutPopup() {
-      const popupStore = usePopupStore()
-      popupStore.showPopup({
-        component: 'LogoutPopup',
-        props: { isVisible: true, redirectTo: this.$route.path },
-      })
+      this.popupStore.showPopup('LogoutPopup', { isVisible: true, redirectTo: this.$route.path })
     },
     closeLogoutPopup() {
-      this.isLogoutPopup = false
+      this.popupStore.hidePopup()
     },
     confirmLogout() {
       this.authStore.logout()
