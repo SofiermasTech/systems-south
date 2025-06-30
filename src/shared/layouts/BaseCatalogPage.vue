@@ -1,7 +1,7 @@
 <template>
   <div class="catalog container">
     <IntroPages class="catalog__intro" :title="title" />
-    <slot name="categories">
+    <slot name="categories" v-if="filteredProducts.length > 0">
       <div class="catalog__categories" v-if="showCategories">
         <p class="catalog__categories-title">{{ subtitle }}</p>
         <ul class="catalog__categories-list">
@@ -24,6 +24,7 @@
     </slot>
 
     <CatalogFilters
+      v-if="filteredProducts.length > 0"
       class="catalog__filters"
       @apply-filters="handleApplyFilters"
       :products="products"
@@ -31,12 +32,16 @@
       :subcategory="subcategory"
     />
 
-    <div class="catalog__sort">
+    <div class="catalog__sort" v-if="filteredProducts.length > 0">
       <CatalogSortPanel @sort-change="handleSortChange" />
       <CatalogSortView :view-mode="viewMode" @view-change="handleViewChange" />
     </div>
 
-    <div class="catalog__cards" :class="{ horizontal: viewMode === 'horizontal' }">
+    <div
+      class="catalog__cards"
+      :class="{ horizontal: viewMode === 'horizontal' }"
+      v-if="filteredProducts.length > 0"
+    >
       <ProductCard
         v-for="product in filteredProducts"
         :key="product.id"
@@ -44,7 +49,7 @@
         :is-horizontal="viewMode === 'horizontal'"
         @toggle-favorite="handleToggleFavorite"
       />
-      <p v-if="filteredProducts.length === 0">Нет результатов по запросу</p>
+      <!-- <p v-if="filteredProducts.length === 0">Нет результатов по запросу</p> -->
     </div>
   </div>
 </template>
@@ -198,6 +203,7 @@ export default {
 
 <style lang="scss">
 .catalog {
+  min-height: 60vh;
   margin-bottom: var(--section-offset);
   display: grid;
   grid-template-columns: 350px 1fr;

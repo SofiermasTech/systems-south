@@ -97,9 +97,9 @@ export default {
         }
       }
 
-      if (field.name === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-        return { isValid: false, message: 'Некорректный email' }
-      }
+      // if (field.name === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      //   return { isValid: false, message: 'Некорректный email' }
+      // }
 
       return { isValid: true, message: '' }
     },

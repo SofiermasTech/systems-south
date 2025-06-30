@@ -167,6 +167,7 @@ export default {
 
     .base-input__error {
       bottom: -13px;
+      left: 36px;
     }
   }
 
@@ -234,7 +235,7 @@ export default {
   &__error {
     position: absolute;
     bottom: -13px;
-    left: 36px;
+    left: 16px;
     color: var(--red);
     font-size: 9px;
   }

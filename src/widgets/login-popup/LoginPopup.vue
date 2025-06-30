@@ -57,8 +57,34 @@ export default {
         { name: 'password', type: 'password', placeholder: 'Пароль', required: true },
       ],
       registrationFields: [
-        { name: 'name', type: 'text', placeholder: 'Имя', required: true },
-        { name: 'email', type: 'email', placeholder: 'E-mail', required: true },
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: 'Имя',
+          required: true,
+          rules: [
+            {
+              validator: (value) => value.length >= 2,
+              message: 'Имя должно содержать минимум 2 символа',
+            },
+            {
+              validator: (value) => /^[a-zA-Zа-яА-Я]+$/.test(value),
+              message: 'Имя может содержать только буквы',
+            },
+          ],
+        },
+        {
+          name: 'email',
+          type: 'email',
+          placeholder: 'E-mail',
+          required: true,
+          rules: [
+            {
+              validator: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+              message: 'Email введен в неверном формате',
+            },
+          ],
+        },
         {
           name: 'phone',
           type: 'tel',
@@ -71,7 +97,22 @@ export default {
             },
           ],
         },
-        { name: 'password', type: 'password', placeholder: 'Пароль', required: true },
+        {
+          name: 'password',
+          type: 'password',
+          placeholder: 'Пароль',
+          required: true,
+          rules: [
+            {
+              validator: (value) => value.length >= 8,
+              message: 'Пароль должен содержать минимум 8 символов',
+            },
+            {
+              validator: (value) => /[A-ZА-Я]/.test(value) && /[0-9]/.test(value),
+              message: 'Пароль должен содержать хотя бы одну заглавную букву и одну цифру',
+            },
+          ],
+        },
         {
           name: 'checkbox',
           type: 'checkbox',

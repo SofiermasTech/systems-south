@@ -1,8 +1,20 @@
 <template>
   <div class="header-search">
     <label class="header-search__input">
-      <input type="text" placeholder="Поиск" v-model="searchQuery" />
-      <button class="header-search__input-btn" :class="{ active: this.searchQuery.length > 0 }">
+      <input
+        type="text"
+        placeholder="Поиск"
+        v-model="searchQuery"
+        @keyup.enter="handleSearch"
+        aria-label="Поиск товаров"
+      />
+      <button
+        class="header-search__input-btn"
+        :class="{ active: this.searchQuery.length > 0 }"
+        :disabled="this.searchQuery.length === 0"
+        @click="handleSearch"
+        aria-label="Искать по запросу"
+      >
         <BaseIcon name="SearchIcon" />
       </button>
     </label>
@@ -58,9 +70,15 @@ export default {
   methods: {
     closeSearchPopup() {
       this.searchQuery = ''
-      // this.isSearchPopupVisible = false
-      // this.$emit('toggle-overlay', false)
       this.popupStore.hidePopup()
+    },
+    handleSearch() {
+      if (this.searchQuery.trim().length === 0) return
+      this.$router.push({
+        path: '/search',
+        query: { query: encodeURIComponent(this.searchQuery.trim()) },
+      })
+      this.closeSearchPopup()
     },
   },
   created() {
@@ -84,10 +102,14 @@ export default {
   border-radius: 10px;
 
   &__input {
+    flex-shrink: 0;
     width: 100%;
-    padding: 28px 16px;
+    height: 100%;
+    padding: 16px;
     border: 1px solid var(--grey-100);
     border-radius: 10px;
+    display: flex;
+    align-items: center;
     position: relative;
 
     input {

@@ -1,6 +1,6 @@
 <template>
   <BaseCatalogPage
-    title="Результат поиска"
+    :title="filteredSearchProducts.length > 0 ? 'Результат поиска' : 'Нет результатов по запросу'"
     subtitle="Найдено в категориях:"
     :products="filteredSearchProducts"
     :categories="categories"
@@ -10,7 +10,7 @@
     @toggle-favorite="handleToggleFavorite"
     @apply-filters="handleApplyFilters"
   />
-  <CallbackSection />
+  <CallbackSection v-if="filteredSearchProducts.length > 0" />
 </template>
 
 <script>
@@ -25,6 +25,12 @@ export default {
     BaseCatalogPage,
     CallbackSection,
   },
+  props: {
+    category: {
+      type: [String, null],
+      default: null,
+    },
+  },
   data() {
     return {
       catalogStore: useCatalogStore(),
@@ -38,11 +44,11 @@ export default {
   },
   computed: {
     searchQuery() {
-      return this.$route.query.query || ''
+      return decodeURIComponent(this.$route.query.query || '')
     },
-    category() {
-      return this.$route.params.category || null
-    },
+    // category() {
+    //   return this.category || null
+    // },
     searchProducts() {
       const query = this.searchQuery.toLowerCase().trim()
       if (!query) return this.catalogStore?.getProducts || []

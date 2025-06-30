@@ -15,6 +15,7 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 
+
 components.forEach((component) => {
   app.component(component.name, component)
 })
