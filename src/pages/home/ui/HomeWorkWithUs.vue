@@ -124,25 +124,29 @@
   &__content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: clamp(8px, 1vw, 20px);
   }
 
   &__line {
-    max-width: 1520px;
+    max-width: clamp(375px, 100vw, 1920px);
     width: 100%;
-    height: 250px;
+    height: clamp(140px, 15vw, 280px);
     margin-inline: auto;
     // display: flex;
     // gap: 16px;
     // align-items: center;
     position: relative;
     overflow: hidden;
+
+    @include laptop {
+    }
   }
 
   &__logo {
     border: 1px solid var(--blue-100);
-    border-radius: 14px;
-    width: 370px;
+    border-radius: var(--br-block);
+    // width: clamp(165px, 22vw, 420px);
+    width: 420px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -152,7 +156,26 @@
     animation-duration: 40s;
     animation-iteration-count: infinite;
 
+    @include desktop {
+      width: 370px;
+    }
+
+    @include laptop {
+      width: 320px;
+    }
+
+    @include tablet {
+      width: 230px;
+    }
+
+    @include tablet-bottom {
+      width: 200px;
+    }
+
     img {
+      max-width: 65%;
+      width: 100%;
+      object-fit: cover;
       filter: contrast(0) brightness(0);
     }
 
@@ -167,10 +190,10 @@
 
   &__name {
     position: absolute;
-    top: 16px;
-    left: 16px;
+    top: clamp(14px, 1vw, 20px);
+    left: clamp(14px, 1vw, 20px);
     font-weight: 600;
-    font-size: 12px;
+    @include fluid-text(14, 10);
     color: var(--grey-200);
   }
 }
@@ -178,11 +201,28 @@
 .logo-left {
   left: max(calc(315px * 5), 100%);
   animation-name: scrollLeft;
+
+  @include laptop {
+    left: max(calc(260px * 5), 100%);
+  }
+
+  @include tablet {
+    left: max(calc(160px * 5), 100%);
+  }
+
 }
 
 .logo-right {
   right: max(calc(315px * 5), 100%);
   animation-name: scrollRight;
+
+  @include laptop {
+    right: max(calc(260px * 5), 100%);
+  }
+
+  @include tablet {
+    right: max(calc(160px * 5), 100%);
+  }
 }
 
 .item1 {
@@ -216,4 +256,19 @@
     right: -370px;
   }
 }
+
+@include tablet {
+  @keyframes scrollLeft {
+    to {
+      left: -230px;
+    }
+  }
+
+  @keyframes scrollRight {
+    to {
+      right: -230px;
+    }
+  }
+}
+
 </style>

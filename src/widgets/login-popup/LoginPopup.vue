@@ -167,6 +167,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .login-popup {
   &__btn-reg {
     width: 100%;
@@ -174,9 +176,13 @@ export default {
     background-color: transparent;
     border: none;
     font-weight: 600;
-    font-size: 14px;
+    @include fluid-text(16, 12);
     text-align: center;
     color: var(--blue);
+
+    @include tablet {
+      padding-top: 16px;
+    }
   }
 }
 
@@ -190,15 +196,28 @@ export default {
     max-width: 460px;
     font-size: 14px;
     color: var(--grey-200);
+
+    @include tablet {
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
   }
 
   .popup-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
 
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
+
     .base-input-label.base-input-label--checkbox,
     .popup-form__btn-submit.base-button {
       grid-column: span 2;
+
+      @include mobile {
+        grid-column: span 1;
+      }
     }
   }
 }

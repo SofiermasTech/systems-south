@@ -11,6 +11,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .btn-close-popup {
   width: 32px;
   height: 32px;
@@ -24,9 +26,21 @@ export default {
   top: -28px;
   right: -24px;
 
+  @include tablet-bottom {
+    width: 24px;
+    height: 24px;
+    top: -20px;
+    right: -20px;
+  }
+
   svg {
     width: 10px;
     height: 10px;
+
+    @include tablet-bottom {
+      width: 8px;
+      height: 8px;
+    }
   }
 }
 </style>

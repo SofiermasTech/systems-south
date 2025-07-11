@@ -68,15 +68,15 @@ export default {
   }
 }
 
-.additional {
-  margin-bottom: var(--section-offset);
-  margin-top: 32px;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+// .additional {
+//   margin-bottom: var(--section-offset);
+//   margin-top: 32px;
+//   display: flex;
+//   justify-content: space-between;
+//   gap: 20px;
 
-  .other-items {
-    margin-top: 28px;
-  }
-}
+//   .other-items {
+//     margin-top: 28px;
+//   }
+// }
 </style>

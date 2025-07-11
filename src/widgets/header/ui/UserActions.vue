@@ -1,5 +1,5 @@
 <template>
-  <div class="header__user-actions user-actions">
+  <div class="user-actions">
     <!-- Кнопка избранного -->
     <button
       class="user-actions__btn user-actions__btn--favorites"
@@ -117,24 +117,40 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .user-actions {
   flex-shrink: 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1.2fr;
   background-image: linear-gradient(to bottom, #fff 0%, transparent);
 
+  @media screen and (max-width: 720px) {
+    grid-template-columns: repeat(3, 1fr);
+    background-image: none;
+  }
+
   &__btn {
     text-decoration: none;
     background-color: var(--white);
     border: 1px solid var(--grey-100);
     border-radius: var(--br-btn);
-    padding: 14px 17px;
+    padding-inline: 16px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 4px;
+
+    @include tablet {
+      padding: 8px 20px;
+    }
+
+      @include tablet-bottom {
+      padding: 0 clamp(6px, 0.5vw, 10px);
+      gap: 3px;
+    }
   }
 
   &__btn--favorites {
@@ -145,6 +161,16 @@ export default {
     height: 24px;
     color: var(--black);
     position: relative;
+
+    @include laptop-bottom {
+      width: 20px;
+      height: 20px;
+    }
+
+      @include tablet-bottom {
+      width: 18px;
+      height: 18px;
+    }
   }
 
   &__counter {
@@ -163,17 +189,49 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @include laptop-bottom {
+      width: 16px;
+      height: 16px;
+      font-size: 8px;
+      top: -4px;
+    }
   }
 
   &__text {
     font-weight: 500;
-    font-size: 14px;
+    @include fluid-text(14, 10);
     color: var(--grey-200);
+
+    @include laptop-bottom {
+      font-size: 12px;
+    }
+
+    @include tablet {
+      font-size: 10px;
+    }
+
+    @media screen and (max-width: 720px) {
+      display: none;
+    }
   }
 
   &__btn--cart {
     &.popup-open {
       background-color: var(--blue-0);
+
+      @media screen and (max-width: 720px) {
+        background-color: var(--blue);
+
+        .user-actions__icon {
+          color: var(--white);
+        }
+
+        .user-actions__counter {
+          background-color: var(--white);
+          color: var(--blue);
+        }
+      }
     }
   }
 }

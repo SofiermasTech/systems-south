@@ -311,12 +311,14 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .product-page {
   margin-top: clamp(16px, 4vh, 40px);
   margin-bottom: 80px;
   display: flex;
   flex-direction: column;
-  gap: clamp(24px, 4vh, 40px);
+  gap: clamp(24px, 2vw, 40px);
 }
 
 .product-general {
@@ -325,7 +327,14 @@ export default {
   flex-direction: column;
   gap: 40px;
 
+  @include tablet-bottom {
+    gap: 20px;
+  }
+
   &__top {
+    .stock-status p {
+      @include fluid-text(20, 10);
+    }
   }
 
   &__title {
@@ -333,7 +342,7 @@ export default {
     width: 100%;
     margin-bottom: 20px;
     font-weight: 500;
-    font-size: 32px;
+    @include fluid-text(40, 14);
     line-height: 110%;
     letter-spacing: -0.04em;
     color: var(--black);
@@ -342,12 +351,16 @@ export default {
   &__info {
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: clamp(14px, 2vw, 40px);
+
+    @include mobile {
+      flex-wrap: wrap;
+    }
   }
 
   &__info-article {
     font-weight: 500;
-    font-size: 16px;
+    @include fluid-text(20, 10);
     color: var(--grey-200);
   }
 
@@ -355,6 +368,14 @@ export default {
     display: flex;
     align-items: center;
     gap: 8px;
+
+    @include tablet-bottom {
+      gap: 4px;
+    }
+
+    span {
+      @include fluid-text(20, 10);
+    }
   }
 
   &__info-brand {
@@ -362,19 +383,43 @@ export default {
     display: flex;
     align-items: center;
     gap: 16px;
+
+    @include mobile {
+      margin: 0;
+      width: 100%;
+    }
+
+    img {
+      width: clamp(53px, 5vw, 106px);
+    }
   }
 
   &__info-brand-title {
     font-weight: 500;
-    font-size: 16px;
+    @include fluid-text(20, 10);
     color: var(--grey-200);
   }
 
   &__bottom {
-    height: clamp(420px, 45vh, 470px);
+    height: clamp(310px, 28vw, 530px);
     display: grid;
     grid-template-columns: 1.5fr 1.2fr 1fr;
-    gap: 16px;
+    gap: 20px;
+
+    @include laptop {
+      gap: 16px;
+    }
+
+    @include tablet-bottom {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @include mobile {
+      height: auto;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__slider {
@@ -382,13 +427,23 @@ export default {
     height: 100%;
     // background-color: var(--blue-100);
     display: grid;
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: clamp(56px, 6vw, 100px) 1fr;
     justify-content: space-between;
     gap: 16px;
 
+    @include tablet-bottom {
+      grid-row: span 2;
+      gap: 10px;
+    }
+
+    @include mobile {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
     .swiper-main {
       border: 1px solid var(--blue-100);
-      border-radius: 16px;
+      border-radius: var(--br-block);
 
       .swiper-slide {
         align-items: flex-start;
@@ -403,11 +458,28 @@ export default {
     }
 
     .swiper-thumbs {
+      @include mobile {
+        height: 80px !important;
+        display: flex;
+        flex-direction: row;
+
+        &.swiper {
+          margin: 0;
+        }
+      }
+
       .swiper-slide {
         border: 1px solid var(--blue-100);
         border-radius: 10px;
-        width: 90px;
-        max-height: 90px;
+        width: clamp(56px, 6vw, 100px);
+        max-height: clamp(56px, 6vw, 100px);
+
+        @include mobile {
+          align-items: flex-start;
+          max-height: 80px;
+          width: 80px;
+          height: 100% !important;
+        }
 
         img {
           border-radius: 10px;
@@ -424,15 +496,15 @@ export default {
   }
 
   &__chars {
-    padding: 32px;
+    padding: clamp(14px, 1.8vw, 36px);
     border: 1px solid var(--blue-100);
     border-radius: var(--br-block);
   }
 
   &__chars-title {
-    margin-bottom: 28px;
+    margin-bottom: clamp(12px, 1.8vw, 36px);
     font-weight: 600;
-    font-size: 24px;
+    @include fluid-text(28, 14);
     line-height: 110%;
     color: var(--black);
   }
@@ -440,7 +512,7 @@ export default {
   &__chars-list {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: clamp(12px, 1.5vw, 32px);
   }
 
   &__chars-list-item {
@@ -453,7 +525,7 @@ export default {
       position: relative;
       overflow: hidden;
       font-weight: 500;
-      font-size: 16px;
+      @include fluid-text(20, 10);
       color: var(--grey-200);
 
       &::after {
@@ -465,10 +537,9 @@ export default {
 
     dd {
       margin: 0;
-      width: 32%;
+      width: 35%;
       font-weight: 500;
-      font-size: 16px;
-      // text-align: right;
+      @include fluid-text(20, 10);
       color: var(--black);
     }
   }
@@ -476,7 +547,7 @@ export default {
   &__details {
     background-color: var(--blue-0);
     border-radius: var(--br-block);
-    padding: 32px;
+    padding: clamp(14px, 1.8vw, 36px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -484,21 +555,22 @@ export default {
   }
 
   &__purchase {
-    display: grid;
-    grid-template-columns: 125px 1fr;
-    align-items: center;
-    row-gap: 32px;
-    column-gap: 18px;
+    display: flex;
+    flex-direction: column;
+    // grid-template-columns: 125px 1fr;
+    // align-items: center;
+    row-gap: clamp(12px, 1.8vw, 36px);
+    // column-gap: 18px;
 
-    .product-quantity {
-      width: 100%;
-    }
+    // .product-quantity {
+    //   width: 100%;
+    // }
   }
 
   &__price {
     grid-column: span 2;
     font-weight: 500;
-    font-size: 40px;
+    @include fluid-text(48, 24);
     line-height: 110%;
     letter-spacing: -0.04em;
     color: var(--blue);
@@ -525,9 +597,9 @@ export default {
 
 .about-product {
   &__title {
-    margin-bottom: 32px;
+    margin-bottom: clamp(16px, 1.8vw, 36px);
     font-weight: 500;
-    font-size: 32px;
+    @include fluid-text(36, 20);
     line-height: 110%;
     letter-spacing: -0.04em;
     color: var(--blue);
@@ -537,6 +609,21 @@ export default {
     display: grid;
     grid-template-columns: 2fr 1fr 1.2fr;
     gap: 16px;
+
+    @include tablet {
+      grid-template-columns: 1.4fr 1fr 1.1fr;
+      gap: 10px;
+    }
+
+    @include tablet-bottom {
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @include mobile {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__description {
@@ -545,6 +632,12 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 32px;
+
+    @include tablet-bottom {
+      min-height: 400px;
+      height: 100%;
+      max-width: 380px;
+    }
   }
 
   &__tabs {
@@ -552,16 +645,24 @@ export default {
     justify-content: space-between;
     align-items: center;
     gap: 16px;
+
+    @include tablet {
+      gap: 2px;
+    }
   }
 
   &__tab {
     padding: 16px 16px 8px 16px;
     cursor: pointer;
 
+    @include tablet {
+      padding: 12px 12px 8px 12px;
+    }
+
     h3 {
       margin: 0;
       font-weight: 500;
-      font-size: 16px;
+      @include fluid-text(20, 10);
       text-align: center;
       color: var(--grey-200);
     }
@@ -580,6 +681,9 @@ export default {
   }
 
   &__panel {
+    p {
+      @include fluid-text(16, 10);
+    }
   }
 
   &__characteristics {
@@ -595,9 +699,10 @@ export default {
         flex-grow: 1;
         margin: 0;
         font-weight: 500;
-        font-size: 16px;
+        @include fluid-text(20, 12);
         color: var(--grey-200);
         position: relative;
+        overflow: hidden;
 
         &::after {
           content: '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _';
@@ -609,14 +714,14 @@ export default {
       dd {
         margin: 0;
         font-weight: 500;
-        font-size: 16px;
+        @include fluid-text(20, 12);
         text-align: right;
       }
     }
   }
 
   &__doc {
-    padding: 24px;
+    padding: clamp(16px, 1.5vw, 32px);
     border: 1px solid var(--blue-100);
     border-radius: 16px;
   }
@@ -648,11 +753,11 @@ export default {
 
   &__doc-item-title {
     font-weight: 500;
-    font-size: 14px;
+    @include fluid-text(16, 12);
   }
 
   &__doc-item-subtitle {
-    font-size: 12px;
+    @include fluid-text(14, 10);
     color: var(--grey-200);
   }
 
@@ -660,13 +765,23 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 8px;
+
+    @include tablet-bottom {
+      flex-direction: row;
+      grid-column: span 2;
+    }
+
+    @include mobile {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__other-block {
     // min-height: 236px;
-    padding: 32px 24px;
+    padding: clamp(16px, 1.5vw, 32px);
     border: 1px solid var(--blue-100);
-    border-radius: 16px;
+    border-radius: var(--br-block);
     display: flex;
     flex-direction: column;
     // justify-content: flex-end;
@@ -674,7 +789,7 @@ export default {
   }
 
   &__other-img {
-    margin-bottom: 32px;
+    margin-bottom: 36px;
     border: 1px solid var(--blue-0);
     background-color: var(--grey-100);
     border-radius: 50%;
@@ -684,25 +799,50 @@ export default {
     align-items: center;
     justify-content: center;
 
+    @include laptop-bottom {
+      margin-bottom: 32px;
+      width: 50px;
+      height: 50px;
+    }
+
+    @include tablet-bottom {
+      margin-bottom: 24px;
+      width: 32px;
+      height: 32px;
+    }
+
     svg {
       color: var(--grey-200);
+
+      @include laptop-bottom {
+        width: 14px;
+        height: 14px;
+      }
+
+      @include tablet-bottom {
+        width: 12px;
+        height: 12px;
+      }
     }
   }
 
   &__other-title {
     margin-top: auto;
+    @include fluid-text(14, 10);
+    font-weight: 600;
   }
 
   &__other-text {
     opacity: 0.5;
     font-weight: 400;
-    font-size: 14px;
+    @include fluid-text(16, 10);
     color: #000;
+
+    @include mobile {
+      max-width: 70%;
+      width: 100%;
+    }
   }
-}
-.h3-title {
-  font-weight: 600;
-  font-size: 16px;
 }
 </style>
 

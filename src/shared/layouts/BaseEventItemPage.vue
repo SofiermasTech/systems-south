@@ -1,28 +1,30 @@
 <template>
-  <div class="event-item-page container" :class="`event-item-page--${theme}`">
-    <BaseTimer v-if="isPromoItemPage" :promo="item" />
-    <IntroPages :title="item.title" />
-    <section class="event-item-page__content">
-      <div class="event-item-page__img">
-        <img :src="item.image" alt="" />
+  <div class="event-item-page" :class="`event-item-page--${theme}`">
+    <!-- <BaseTimer v-if="isPromoItemPage" :promo="item" /> -->
+    <IntroPages :title="item.title" :item="item" />
+    <section class="event-item-page__body container">
+      <div class="event-item-page__content">
+        <div class="event-item-page__img">
+          <img :src="item.image" alt="" />
+        </div>
+        <SubscribeEmail />
       </div>
-      <div class="event-item-page__text">
-        <p class="event-item-page__text-accent" v-if="isPromoItemPage">
-          Акция действует до {{ formatDate(item.date) }}
-        </p>
-        <p>{{ item.description1 }}</p>
-        <p>{{ item.description2 }}</p>
-        <p>{{ item.description3 }}</p>
-        <p>{{ item.description4 }}</p>
+      <div class="additional">
+        <div class="event-item-page__text">
+          <p class="event-item-page__text-accent" v-if="isPromoItemPage">
+            Акция действует до {{ formatDate(item.date) }}
+          </p>
+          <p>{{ item.description1 }}</p>
+          <p>{{ item.description2 }}</p>
+          <p>{{ item.description3 }}</p>
+          <p>{{ item.description4 }}</p>
+        </div>
+        <SliderOtherItems :items="eventItems" :exclude-id="excludeId" :title="eventTitle">
+          <template #default="{ item }">
+            <slot name="event-card" :item="item"></slot>
+          </template>
+        </SliderOtherItems>
       </div>
-    </section>
-    <section class="additional">
-      <SubscribeEmail />
-      <SliderOtherItems :items="eventItems" :exclude-id="excludeId" :title="eventTitle">
-        <template #default="{ item }">
-          <slot name="event-card" :item="item"></slot>
-        </template>
-      </SliderOtherItems>
     </section>
   </div>
 
@@ -34,7 +36,7 @@ import IntroPages from '@widgets/intro-pages/IntroPages.vue'
 import SliderOtherItems from '@/shared/ui/SliderOtherItems.vue'
 import SubscribeEmail from '@/widgets/subscribe-email/SubscribeEmail.vue'
 import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
-import BaseTimer from '@/shared/ui/BaseTimer.vue'
+// import BaseTimer from '@/shared/ui/BaseTimer.vue'
 
 export default {
   name: 'BaseEventItemPage',
@@ -43,7 +45,7 @@ export default {
     SliderOtherItems,
     SubscribeEmail,
     CallbackSection,
-    BaseTimer,
+    // BaseTimer,
   },
   props: {
     item: {
@@ -90,52 +92,99 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .event-item-page {
   position: relative;
+  &__body {
+    margin-top: clamp(30px, 3.5vw, 70px);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'img'
+        'text'
+        'email'
+        'slider';
+    }
+    gap: 30px;
+  }
 
   &__content {
-    margin-top: 60px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 20px;
+    padding-right: clamp(56px, 10vw, 200px);
+
+    @include mobile {
+      display: contents;
+    }
   }
 
   &__img {
-    max-width: 550px;
+    border-radius: var(--br-block);
     width: 100%;
 
+    @include mobile {
+      grid-area: img;
+    }
+
     img {
+      max-height: clamp(200px, 25vw, 475px);
       width: 100%;
       object-fit: cover;
       object-position: center;
+      border-radius: var(--br-block);
     }
   }
 
   &__text {
-    max-width: 50%;
-    font-size: 14px;
+    @include fluid-text(14, 10);
+
+    p {
+      margin-bottom: clamp(12px, 1vw, 20px);
+    }
+
+    @include mobile {
+      font-size: 12px;
+      grid-area: text;
+    }
   }
 
   &__text-accent {
-    margin-bottom: 20px;
     font-weight: 600;
+  }
+
+  .subscribe {
+    @include mobile {
+      grid-area: email;
+    }
   }
 }
 
 .additional {
   margin-bottom: var(--section-offset);
-  margin-top: 32px;
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  flex-direction: column;
+  gap: clamp(45px, 6vw, 120px);
 
-  .other-items {
-    margin-top: 28px;
+  @include mobile {
+    display: contents;
   }
 
   a {
     text-decoration: none;
     color: inherit;
+  }
+
+  .other-items {
+    @include mobile {
+      margin-bottom: 60px;
+      margin-top: 60px;
+      grid-area: slider;
+    }
   }
 }
 </style>

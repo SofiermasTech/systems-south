@@ -242,6 +242,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .aside-filters {
   &__wrapper {
     height: min-content;
@@ -252,7 +254,7 @@ export default {
   }
 
   &__item {
-    padding: 24px;
+    padding: clamp(16px, 1.2vw, 28px);
     border: 1px solid var(--blue-100);
     border-radius: var(--br-block);
   }
@@ -267,7 +269,7 @@ export default {
 
   &__item-title {
     font-weight: 700;
-    font-size: 16px;
+    @include fluid-text(20, 12);
     color: var(--black);
   }
 
@@ -303,7 +305,7 @@ export default {
   }
 
   &__list-item {
-    font-size: 14px;
+    @include fluid-text(16, 10);
     color: var(--grey-200);
   }
 
@@ -363,10 +365,11 @@ export default {
   }
 
   &__label-price {
-    max-width: 142px;
+    width: clamp(112px, 8.5vw, 162px);
   }
 
   &__price {
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 2px;
@@ -374,14 +377,17 @@ export default {
     border: 1px solid var(--blue-200);
     border-radius: 10px;
 
+    @include laptop {
+      padding-inline: 12px;
+    }
+
     span {
-      font-weight: 500;
+        font-weight: 500;
       font-size: 16px;
       color: var(--blue-200);
     }
 
     input {
-      flex-shrink: 1;
       border: none;
       outline: none;
       max-width: 70px;
@@ -393,6 +399,11 @@ export default {
         color: var(--blue-200);
       }
     }
+  }
+
+  &__price-coin {
+    // position: absolute;
+    // right: 0;
   }
 
   &__btn-wrapper {

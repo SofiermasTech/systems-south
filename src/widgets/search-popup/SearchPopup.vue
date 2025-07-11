@@ -3,7 +3,9 @@
     <div class="search-popup" v-if="searchQuery.length > 0">
       <div class="search-popup__top" v-if="filteredProducts.length > 0">
         <p>Найдено {{ filteredProducts.length }} товара</p>
-        <RouterLink :to="{ path: '/search', query: { query: searchQuery } }" @click="closeSearchPopup"
+        <RouterLink
+          :to="{ path: '/search', query: { query: searchQuery } }"
+          @click="closeSearchPopup"
           >Показать все</RouterLink
         >
       </div>
@@ -52,6 +54,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .search-popup {
   max-height: 40vh;
   padding: 20px;
@@ -60,6 +64,12 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @include tablet {
+    margin-top: 28px;
+    width: clamp(330px, 40vw, 400px);
+    margin-left: var(--container-padding-y);
+  }
 
   &__top {
     display: flex;
@@ -91,7 +101,7 @@ export default {
   }
 
   .popup-card {
-    max-width: 340px;
+    max-width: clamp(310px, 35vw, 530px);
   }
 
   .popup-card__img {
@@ -114,7 +124,6 @@ export default {
 
 .v-enter-from,
 .v-leave-to {
-
   transform: translateY(-50px);
 }
 .v-enter-active {
@@ -122,7 +131,6 @@ export default {
 }
 .v-enter-to,
 .v-leave-from {
-
   transform: translateY(0);
 }
 </style>

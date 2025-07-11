@@ -92,27 +92,44 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/_utils.scss';
+
 .timer {
   background-color: var(--blue-100);
   border-radius: 10px;
   padding: 16px;
   position: absolute;
   top: 32px;
-  right: 32px;
+  right: clamp(20px, 2.2vw, 44px);
+  z-index: 99;
   display: flex;
   gap: 16px;
   align-items: center;
+
+  @include laptop-bottom {
+    top: 20px;
+    right: 20px;
+    padding: 12px;
+  }
 
   &__item {
     display: flex;
     flex-direction: column;
     gap: 4px;
     align-items: center;
+
+    @include tablet-bottom {
+      gap: 2px;
+    }
   }
 
   &__value {
     font-weight: 600;
-    font-size: 16px;
+    @include fluid-text(20, 12);
+
+    @include tablet-bottom {
+      font-weight: 700;
+    }
   }
 
   &__dot {
@@ -122,7 +139,7 @@ export default {
   }
 
   &__text {
-    font-size: 10px;
+    @include fluid-text(12, 8);
     line-height: 110%;
     text-align: center;
     opacity: 0.5;

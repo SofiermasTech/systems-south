@@ -236,28 +236,40 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .product-card {
-  max-width: 374px;
-  height: 405px;
+  //  max-width: 374px;
+  max-width: clamp(214px, 22.5vw, 423px);
+  // height: 405px;
+  height: 100%;
   width: 100%;
-  padding-bottom: 16px;
+  padding-bottom: clamp(14px, 1vw, 20px);
   background-color: var(--white);
   border: 1px solid var(--blue-100);
   border-radius: var(--br-block);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   position: relative;
   transition: all 0.3s ease;
+
+  @include mobile {
+    padding-bottom: 20px;
+  }
 
   &__top {
     // max-width: 344px;
     width: 100%;
-    padding: 16px;
+    padding: clamp(14px, 1vw, 20px);
     display: flex;
     justify-content: space-between;
     position: absolute;
     z-index: 11;
+
+    @include mobile {
+      padding: 20px;
+    }
   }
 
   &__top-info {
@@ -281,6 +293,8 @@ export default {
   }
 
   &__images {
+    margin-top: auto;
+    margin-bottom: 12px;
     // position: absolute;
     // top: 0;
     // left: 0;
@@ -317,12 +331,19 @@ export default {
   }
 
   &__img {
-    max-height: 240px;
+    max-height: clamp(144px, 14vw, 280px);
     height: 100%;
+    display: flex;
+    align-items: center;
+
+    @include mobile {
+      max-height: 200px;
+    }
 
     img {
-      max-height: 240px;
+      max-height: 100%;
       height: 100%;
+      width: 100%;
       object-fit: contain;
       object-position: center;
       border-radius: 10px;
@@ -334,7 +355,8 @@ export default {
     gap: 4px;
     align-items: center;
     position: absolute;
-    bottom: 20px;
+    // bottom: 20px;
+    bottom: -20px;
     left: 50%;
     z-index: 11;
   }
@@ -352,8 +374,8 @@ export default {
   }
 
   &__text {
-    margin-top: auto;
-    padding: 0 16px;
+    // margin-top: auto;
+    padding: 0 clamp(14px, 1vw, 20px);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -364,35 +386,61 @@ export default {
     h3 {
       margin: 0;
       font-weight: 600;
-      font-size: 16px;
+      @include fluid-text(16, 12);
+
+      @include mobile {
+        font-size: 14px;
+      }
     }
     p {
       margin: 0;
       max-width: 95%;
       width: 100%;
       font-weight: 400;
-      font-size: 14px;
+      @include fluid-text(14, 10);
+
+      @include mobile {
+        font-size: 12px;
+      }
     }
   }
 
   &__bottom {
     // margin-top: 10px;
-    padding: 0 16px;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
     .product-quantity {
-      max-width: 165px;
+      max-width: max(140px, 45%);
       width: 100%;
+    }
+
+    .base-button {
+      max-width: max(140px, 55%);
+    }
+
+    @media screen and (max-width: 1150px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    @include mobile {
+      flex-direction: row;
     }
   }
 
   &__price {
     font-weight: 600;
-    font-size: 24px;
     line-height: 110%;
     color: var(--blue);
+    @include fluid-text(24, 16);
+
+    @include mobile {
+      font-size: 20px;
+    }
   }
 
   &__btn-card {
@@ -452,7 +500,7 @@ export default {
 
 .article-number {
   font-weight: 600;
-  font-size: 12px;
+  @include fluid-text(14, 10);
   color: var(--grey-200);
 }
 </style>

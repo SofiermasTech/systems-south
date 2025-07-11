@@ -155,6 +155,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .base-input-label {
   width: 100%;
   position: relative;
@@ -178,6 +180,11 @@ export default {
     position: absolute;
     top: 8px;
     right: 20px;
+
+    @include tablet {
+      font-size: 12px;
+      right: 16px;
+    }
   }
 
   &.base-input-label--checkbox::after,
@@ -188,7 +195,7 @@ export default {
 
   p {
     margin: 0;
-    font-size: 12px;
+    @include fluid-text(16, 12);
     color: var(--grey-200);
   }
 }
@@ -202,9 +209,24 @@ export default {
   font-size: 14px;
   color: var(--black);
 
+  @include tablet {
+    font-size: 12px;
+    padding-block: 12px;
+  }
+
+  @include tablet-bottom {
+    font-size: 10px;
+    padding-block: 10px;
+  }
+
   &--checkbox {
     width: 20px;
     height: 20px;
+
+    @include tablet {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   &--radio {
@@ -213,19 +235,28 @@ export default {
     align-self: flex-start;
     width: 24px;
     height: 24px;
+
+    @include tablet {
+      width: 20px;
+      height: 20px;
+    }
   }
 
   &--textarea {
-    border-radius: 16px;
+    border-radius: var(--br-block);
     border: none;
     resize: none;
-    height: 180px;
+    height: clamp(90px, 9vw, 180px);
     color: var(--blue-300);
   }
 
   &::placeholder {
     font-size: 14px;
     color: var(--blue-300);
+
+    @include tablet {
+      font-size: 10px;
+    }
   }
 
   &.error {
@@ -238,6 +269,11 @@ export default {
     left: 16px;
     color: var(--red);
     font-size: 9px;
+
+    @include tablet {
+      font-size: 8px;
+      bottom: -10px;
+    }
   }
 
   &__btn-edit {
@@ -254,10 +290,30 @@ export default {
     justify-content: center;
     z-index: 10;
 
+    @include laptop-bottom {
+      width: 32px;
+      height: 32px;
+    }
+
+    @include mobile {
+      width: 24px;
+      height: 24px;
+    }
+
     img {
       width: 15px;
       height: 15px;
       object-fit: contain;
+
+      @include laptop-bottom {
+        width: 12px;
+        height: 12px;
+      }
+
+      @include mobile {
+        width: 10px;
+        height: 10px;
+      }
     }
   }
 }

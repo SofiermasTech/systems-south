@@ -43,6 +43,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .sort-panel {
   display: flex;
   align-items: center;
@@ -50,7 +52,7 @@ export default {
 
   &__title {
     font-weight: 500;
-    font-size: 16px;
+    @include fluid-text(16, 10);
     color: var(--grey-200);
   }
 
@@ -58,6 +60,14 @@ export default {
     display: flex;
     align-items: center;
     gap: 20px;
+
+    @include laptop {
+      gap: 16px;
+    }
+
+     @include tablet {
+      gap: 12px;
+    }
   }
 
   &__item {
@@ -65,14 +75,14 @@ export default {
       background-color: transparent;
       border: none;
       font-weight: 500;
-      font-size: 16px;
+      @include fluid-text(16, 10);
       color: var(--grey-200);
     }
 
     &.active {
       button {
-        font-weight: 500;
-        font-size: 16px;
+        // font-weight: 500;
+        // font-size: 16px;
         color: var(--black);
       }
     }

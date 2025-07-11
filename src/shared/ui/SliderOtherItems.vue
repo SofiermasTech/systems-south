@@ -80,11 +80,13 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .other-items {
-  max-width: 50%;
+  max-width: 100%;
 
   &__top {
-    margin-bottom: 40px;
+    margin-bottom: clamp(28px, 2vw, 40px);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -93,10 +95,14 @@ export default {
 
   &__title {
     font-weight: 500;
-    font-size: 48px;
+    @include fluid-text(56, 24);
     line-height: 110%;
     letter-spacing: -0.04em;
     color: var(--blue);
+
+    @include mobile {
+      font-size: 32px;
+    }
   }
 
   &__content {
@@ -110,7 +116,17 @@ export default {
       'title img'
       'subtitle img'
       'date img';
-    gap: 32px;
+    gap: clamp(14px, 2.5vw, 32px);
+
+    @include tablet-bottom {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr auto 100px;
+      grid-template-areas:
+        'title'
+        'subtitle'
+        'date'
+        'img';
+    }
 
     &__date {
       align-self: flex-end;
@@ -118,9 +134,18 @@ export default {
   }
 
   .promo-card__img {
+    height: 100%;
+
+    @include tablet-bottom {
+      grid-row: span 1;
+    }
     img {
-      max-height: 300px;
-      height: 300px;
+      max-height: clamp(200px, 16vw, 320px);
+      height: 100%;
+
+      @include tablet-bottom {
+        max-height: 100px;
+      }
     }
   }
 }

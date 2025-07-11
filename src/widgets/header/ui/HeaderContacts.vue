@@ -1,9 +1,12 @@
 <template>
-  <div class="contacts">
+  <div class="contacts" :class="{ open: this.popupStore.currentPopupName !== null }">
     <div class="contacts__tel">
       <div class="contacts__tel-number" @click="toggleEmail">
         <p>+7 (861) 212-54-45</p>
-        <span :class="{ open: this.popupStore.currentPopupName === 'ContactEmail' }">
+        <span
+          class="contacts__tel-arrow"
+          :class="{ open: this.popupStore.currentPopupName === 'ContactEmail' }"
+        >
           <BaseIcon name="SelectArrowIcon" />
         </span>
       </div>
@@ -23,7 +26,7 @@
     <Transition>
       <div
         class="contacts__callback-form"
-        v-if="this.popupStore.currentPopupName === 'ContactForm'"
+        v-if="this.popupStore.currentPopupName === 'ContactForm' && this.windowWidth > 1280"
       >
         <template v-if="popupStore.currentPopupProps.submitSuccess">
           <div class="callback-page__text">
@@ -68,9 +71,16 @@ import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'HeaderContacts',
+  props: {
+    isMobOpen: {
+      type: Boolean,
+      default: false,
+    }
+  },
   data() {
     return {
       popupStore: usePopupStore(),
+      windowWidth: window.innerWidth,
     }
   },
   computed: {},
@@ -83,36 +93,77 @@ export default {
       }
     },
     toggleCallback() {
-      if (this.popupStore.currentPopupName === 'ContactForm') {
-        this.popupStore.hidePopup()
+      if (this.windowWidth > 1280) {
+        if (this.popupStore.currentPopupName === 'ContactForm') {
+          this.popupStore.hidePopup()
+        } else {
+          this.popupStore.showPopup('ContactForm', { submitSuccess: false })
+        }
       } else {
-        this.popupStore.showPopup('ContactForm', { submitSuccess: false })
+        this.popupStore.showPopup('CallbackPopup', { isVisible: true })
       }
     },
     handleSubmitSuccess() {
       this.popupStore.showPopup('ContactForm', { submitSuccess: true })
     },
+    updateWindowWidth() {
+      this.windowWidth = window.innerWidth
+    },
+  },
+  mounted() {
+    window.addEventListener('resize', this.updateWindowWidth)
+    this.updateWindowWidth()
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateWindowWidth)
   },
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/utils.scss';
+
 .contacts {
-  max-width: 29.5%;
+  min-width: fit-content;
+  max-width: clamp(140px, 17vw, 390px);
   width: 100%;
-  height: fit-content;
-  padding: 15px 24px;
+  padding: 12px;
   background-color: var(--white);
   border: 1px solid var(--grey-100);
-  border-radius: 10px;
+  border-radius: var(--br-btn);
   display: flex;
   flex-direction: column;
   transition: 0.3s;
+
+  &.open {
+    height: fit-content;
+  }
+
+  @include tablet {
+    max-width: 100%;
+  }
+
+  @include tablet-bottom {
+    padding: 6px 10px;
+  }
+
+  @media screen and (max-width: 720px) {
+    max-width: 100%;
+    width: 165px;
+  }
 
   &__tel {
     display: flex;
     flex-direction: column;
     gap: 7px;
+
+    @include laptop-bottom {
+      gap: 4px;
+    }
+
+    @include tablet-bottom {
+      gap: 2px;
+    }
   }
 
   &__tel-number {
@@ -121,32 +172,51 @@ export default {
     align-items: center;
     cursor: pointer;
 
-    p {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 700;
+    @include laptop-bottom {
+      gap: 4px;
     }
 
-    span {
-      width: 20px;
-      height: 20px;
+    p {
+      margin: 0;
+      @include fluid-text(16, 12);
+      font-weight: 700;
+    }
+  }
 
-      svg {
-        margin-bottom: 4px;
-        width: 10px;
-        height: 8px;
+  &__tel-arrow {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include tablet {
+      width: 16px;
+      height: 16px;
+    }
+
+    svg {
+      margin-bottom: 4px;
+      width: 10px;
+      height: 8px;
+
+      @include tablet {
+        width: 6px;
+        height: 5px;
       }
+    }
 
-      &.open {
-        svg {
-          transform: rotate(180deg);
-        }
+    &.open {
+      svg {
+        transform: rotate(180deg);
       }
     }
   }
 
   .base-button-call.open {
-    margin-bottom: 24px;
+    @include laptop-bottom-above {
+      margin-bottom: 24px;
+    }
   }
 
   &__email {
@@ -156,17 +226,23 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 8px;
+
+    @include tablet {
+      margin-top: 14px;
+      padding-top: 14px;
+      gap: 4px;
+    }
   }
 
   &__email-title {
     font-weight: 600;
-    font-size: 12px;
+    @include fluid-text(12, 9);
     color: var(--grey-200);
   }
 
   &__email-link {
     font-weight: 700;
-    font-size: 16px;
+    @include fluid-text(16, 9);
     color: var(--black);
     text-decoration: none;
   }
@@ -202,7 +278,6 @@ export default {
   // }
 }
 
-
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
@@ -216,5 +291,4 @@ export default {
   opacity: 1;
   transform: translateY(0);
 }
-
 </style>

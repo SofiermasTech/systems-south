@@ -14,6 +14,7 @@ import LoginPopup from '@/widgets/login-popup/LoginPopup.vue'
 import LogoutPopup from '@/widgets/logout-popup/LogoutPopup.vue'
 import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
 import BaseSuccessPopup from '@/shared/ui/BaseSuccessPopup.vue'
+// import MenuNavMobile from '@/widgets/mobile-nav-menu/MenuNavMobile.vue'
 
 export default {
   name: 'PopupManager',
@@ -22,6 +23,7 @@ export default {
     LogoutPopup,
     CallbackPopup,
     BaseSuccessPopup,
+    // MenuNavMobile,
   },
   data() {
     return {

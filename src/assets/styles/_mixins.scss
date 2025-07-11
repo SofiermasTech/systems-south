@@ -1,8 +1,8 @@
 @use 'sass:math';
 
 @mixin fluid-text($max: 48, $min: 16) {
-  $maxViewportWidth: 1600;
-  $minViewportWidth: 360;
+  $maxViewportWidth: 1920;
+  $minViewportWidth: 800;
 
   $maxSize: math.div($max, 16);
   $minSize: math.div($min, 16);

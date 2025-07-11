@@ -43,14 +43,20 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .accordion {
   width: 100%;
   border: 1px solid var(--blue-200);
-  border-radius: 16px;
-  padding: 32px 24px;
+  border-radius: var(--br-block);
+  padding: clamp(16px, 2vw, 36px) clamp(12px, 1.5vw, 28px);
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  @include tablet {
+    gap: 14px;
+  }
 
   &.opened {
     background-color: var(--blue-0);
@@ -66,7 +72,7 @@ export default {
     h2 {
       margin: 0;
       font-weight: 500;
-      font-size: 32px;
+      @include fluid-text(36, 16);
       line-height: 110%;
       letter-spacing: -0.04em;
       color: var(--blue);
@@ -86,6 +92,15 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @include tablet {
+    width: 32px;
+    height: 32px;
+  }
+
+  @include mobile {
+    display: none;
+  }
 
   &.opened {
     transform: rotate(180deg);

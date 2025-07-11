@@ -64,20 +64,42 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .favorite-button {
   border: 1px solid var(--grey-100);
   background-color: transparent;
   border-radius: 50%;
-  padding: 12px;
+  // padding: 12px;
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
 
+  @include tablet {
+    width: 36px;
+    height: 36px;
+  }
+
+  @include tablet-bottom {
+    width: 32px;
+    height: 32px;
+  }
+
   svg {
     width: 20px;
     height: 18px;
+
+    @include tablet {
+      width: 16px;
+      height: 16px;
+    }
+
+      @include tablet-bottom {
+      width: 12px;
+      height: 12px;
+    }
   }
 
   &.favorite-page {

@@ -65,15 +65,42 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .promo-widget {
   width: 100%;
   height: 100%;
   padding: 20px 24px 52px 24px;
-  border-radius: 16px;
+  border-radius: var(--br-block);
   display: flex;
   flex-direction: column;
   gap: 24px;
   position: relative;
+
+  @include laptop-bottom {
+    padding: 16px;
+    padding-bottom: 50px;
+  }
+
+  @include tablet {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  @media screen and (max-width: 992px) {
+    padding: 14px;
+    padding-left: 10%;
+  }
+
+  @media screen and (max-width: 720px) {
+    min-height: 150px;
+  }
+
+  @include mobile {
+    padding: 20px;
+    padding-bottom: 50px;
+    min-height: 270px;
+  }
 
   &__img {
     position: absolute;
@@ -106,6 +133,20 @@ export default {
   &__top {
     display: flex;
     justify-content: space-between;
+
+    @media screen and (max-width: 992px) {
+      width: calc(100% - 28px);
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    @include mobile {
+      position: static;
+      width: 100%;
+      transform: translateX(0);
+    }
   }
 
   &__top-sticker {
@@ -117,8 +158,20 @@ export default {
     align-items: center;
     justify-content: center;
 
+    @include laptop-bottom {
+      width: 30px;
+      height: 30px;
+    }
+
     svg {
       color: var(--orange);
+      width: 20px;
+      height: 20px;
+
+      @include laptop-bottom {
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 
@@ -129,11 +182,20 @@ export default {
     gap: 8px;
     position: static;
 
+    @include laptop-bottom {
+      padding: 8px;
+      gap: 6px;
+    }
+
     &__value {
       font-weight: 600;
       font-size: 16px;
       text-align: right;
       // color: var(--white);
+
+      @include laptop-bottom {
+        font-size: 12px;
+      }
     }
 
     &__text {
@@ -142,15 +204,26 @@ export default {
 
   &__title {
     margin-top: auto;
+    max-width: 80%;
     font-weight: 600;
-    font-size: 20px;
+    @include fluid-text(24, 14);
     line-height: 110%;
     color: var(--white);
+
+    @media screen and (max-width: 992px) {
+      margin-top: 0;
+      max-width: 50%;
+    }
+
+    @include mobile {
+      margin-top: auto;
+      max-width: 80%;
+    }
   }
 
   &__link {
     &.base-button {
-      width: 130px;
+      width: clamp(96px, 6.5vw, 130px);
       background-color: var(--white);
       font-weight: 500;
       font-size: 12px;
@@ -158,6 +231,10 @@ export default {
       text-decoration: none;
       text-align: center;
       display: inline;
+
+      @include tablet {
+        font-size: 10px;
+      }
     }
   }
 }
@@ -166,6 +243,10 @@ export default {
   // max-width: 22vw;
   width: 100%;
   height: 100%;
+
+  // @include tablet-bottom {
+  //   grid-column: span 4;
+  // }
 
   .swiper.swiper-initialized {
     height: 100%;
@@ -180,6 +261,18 @@ export default {
     z-index: 5;
     display: flex;
     gap: 8px;
+
+    @media screen and (max-width: 992px) {
+      width: calc(90% - 14px);
+      left: 10%;
+      transform: translateX(0);
+    }
+
+    @include mobile {
+      width: 90%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 
   .swiper-pagination-bullet {

@@ -110,6 +110,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .cart-popup {
   margin-left: auto;
   width: fit-content;
@@ -121,9 +123,16 @@ export default {
   justify-content: flex-end;
   align-items: flex-end;
 
+  @media screen and (max-width: 720px) {
+    height: calc(100vh - 70px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 200;
+  }
+
   &__body {
-    max-width: 30vw;
-    width: 100%;
+    width: 35vw;
     height: 100%;
     padding: 32px 40px 28px 24px;
     background-color: var(--white);
@@ -131,6 +140,19 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 20px;
+
+    @include laptop-bottom {
+      width: 45vw;
+    }
+
+    @include tablet-bottom {
+      width: 60vw;
+    }
+
+    @media screen and (max-width: 720px) {
+      width: 100vw;
+      border-radius: 0;
+    }
   }
 
   &__header {

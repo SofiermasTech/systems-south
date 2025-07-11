@@ -1,5 +1,5 @@
 <template>
-  <BasePopup v-model="isVisible">
+  <BasePopup :is-visible="isVisible">
     <template #title>
       <h2 class="base-popup__title">Заказать звонок</h2>
     </template>
@@ -49,20 +49,12 @@ export default {
       this.popupStore.hidePopup()
     },
     handleSubmitSuccess() {
-      this.popupStore.showPopup({
-        component: 'BaseSuccessPopup',
-        props: {
-          isVisible: true,
-          title: 'Заявка успешно оформлена!',
-          subtitle: 'Наш менеджер свяжется с вами',
-        },
+      this.popupStore.showPopup('BaseSuccessPopup', {
+        isVisible: true,
+        title: 'Заявка успешно оформлена!',
+        subtitle: 'Наш менеджер свяжется с вами',
       })
     },
-  },
-  created() {
-    if (this.popupStore.getCurrentPopup?.component === 'CallbackPopup') {
-      this.isVisible = true
-    }
   },
 }
 </script>

@@ -33,10 +33,10 @@ export default {
   },
 
   props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
+    // modelValue: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     customClass: {
       type: String,
       default: '',
@@ -96,6 +96,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .base-popup {
   width: 100vw;
   height: 100vh;
@@ -107,7 +109,7 @@ export default {
   z-index: 111;
 
   &__overlay {
-    width: 100%;
+    width: 100vw;
     height: 100%;
     background-color: var(--grey-300);
     display: flex;
@@ -116,27 +118,39 @@ export default {
   }
 
   &__body {
-    max-width: 500px;
+    max-width: clamp(335px, 27vw, 520px);
     width: 100%;
     max-height: 470px;
     height: auto;
-    padding: 40px;
+    padding: clamp(20px, 2vw, 40px);
     background-color: var(--white);
-    border-radius: 16px;
+    border-radius: var(--br-block);
     position: relative;
 
+    @include mobile {
+      max-width: 85%;
+    }
+
     &.reg-popup {
-      max-width: 810px;
+      max-width: clamp(470px, 45vw, 820px);
+
+      @include mobile {
+        max-width: 85%;
+      }
     }
   }
 
   &__title {
     margin-bottom: 36px;
     font-weight: 500;
-    font-size: 40px;
+    @include fluid-text(48, 24);
     line-height: 110%;
     letter-spacing: -0.04em;
     color: var(--blue);
+
+    @include laptop-bottom {
+      margin-bottom: 24px;
+    }
   }
 
   &__btn {

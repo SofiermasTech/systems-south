@@ -3,17 +3,7 @@
     <div class="header__wrapper">
       <div class="container">
         <div class="header__body">
-          <RouterLink to="/" class="header__logo">
-            <div class="logo">
-              <img
-                class="logo__img"
-                src="@/assets/images/logo-app.svg"
-                alt=""
-                width="147"
-                height="56"
-              />
-            </div>
-          </RouterLink>
+          <BaseLogo />
           <div class="header__top">
             <nav class="header__nav">
               <ul class="header__nav-list">
@@ -27,20 +17,19 @@
                 </li>
               </ul>
             </nav>
-            <address class="header__address">
-              <span class="header__address-icon">
-                <BaseIcon name="LocationIcon" />
-              </span>
-              <p>Краснодар, ул. Солнечная, д. 4/Б, пом. 14/1</p>
-              <time datetime="T10:00-18:00">Ежедневно с 9:00 по 18:00</time>
-            </address>
+            <BaseAddressText />
           </div>
           <div class="header__bottom">
             <!-- Кнопка каталога -->
-            <CatalogButton :active="this.popupStore.currentPopupName === 'menu'" />
-            <HeaderSearch />
+            <CatalogButton
+              class="header__btn-catalog"
+              :active="this.popupStore.currentPopupName === 'menu'"
+            />
+            <HeaderSearch v-if="windowWidth >= 720" />
+            <!-- <BaseButtonSearch /> -->
             <HeaderContacts />
             <UserActions
+              class="header__user-actions"
               :favorites-count="favoritesCount"
               :isOpen="this.popupStore.currentPopupName === 'CartPopup'"
             />
@@ -54,6 +43,7 @@
       :activeCategory="activeCategory"
       @update:activeCategory="(val) => (activeCategory = val)"
     />
+    <MenuNavMobile :isVisible="this.popupStore.currentPopupName === 'MenuNavMobile'" />
     <Transition name="overlay" :duration="{ enter: 500, leave: 300 }">
       <div class="header__overlay" v-if="isModalOpen" @click="closePopup"></div>
     </Transition>
@@ -71,6 +61,10 @@ import CartPopup from '@/entities/cart/CartPopup.vue'
 import MenuBlock from '@widgets/menu/MenuBlock.vue'
 import { lockScroll, unlockScroll } from '@/shared/config/scrollLock.js'
 import { navLinks } from '@/shared/config/navLinks.js'
+import BaseAddressText from '@/shared/ui/BaseAddressText.vue'
+import BaseLogo from '@/shared/ui/BaseLogo.vue'
+import MenuNavMobile from '../mobile-nav-menu/MenuNavMobile.vue'
+// import BaseButtonSearch from '@/shared/ui/BaseButtonSearch.vue'
 
 export default {
   name: 'HeaderApp',
@@ -81,6 +75,10 @@ export default {
     HeaderContacts,
     CartPopup,
     MenuBlock,
+    BaseAddressText,
+    BaseLogo,
+    MenuNavMobile,
+    // BaseButtonSearch,
   },
   data() {
     return {
@@ -89,6 +87,7 @@ export default {
       isHidden: false,
       lastScrollPosition: 0,
       activeCategory: null,
+      windowWidth: window.innerWidth,
     }
   },
   computed: {
@@ -105,7 +104,9 @@ export default {
         namePopup === 'CartPopup' ||
         namePopup === 'search' ||
         namePopup === 'ContactEmail' ||
-        namePopup === 'ContactForm'
+        namePopup === 'ContactForm' ||
+        namePopup === 'MenuNavMobile' ||
+        namePopup === 'searchMob'
       )
     },
   },
@@ -150,6 +151,9 @@ export default {
         this.closePopup()
       }
     },
+    updateWindowWidth() {
+      this.windowWidth = window.innerWidth
+    },
   },
   created() {
     this.favoritesStore = useFavoritesStore()
@@ -157,10 +161,13 @@ export default {
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
     window.addEventListener('keydown', this.handleKeydown)
+    window.addEventListener('resize', this.updateWindowWidth)
+    this.updateWindowWidth()
   },
   beforeUnmount() {
     window.removeEventListener('scroll', this.handleScroll)
     window.removeEventListener('keydown', this.handleKeydown)
+    window.removeEventListener('resize', this.updateWindowWidth)
     if (this.isModalOpen) {
       unlockScroll()
     }
@@ -169,6 +176,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .header {
   width: 100vw;
   max-height: 100vh;
@@ -181,6 +190,10 @@ export default {
   flex-direction: column;
   transition: transform 0.3s ease-in-out;
 
+  @media screen and (max-width: 720px) {
+    background-color: var(--white);
+  }
+
   &.header-hidden {
     transform: translateY(-100%);
   }
@@ -192,20 +205,41 @@ export default {
     z-index: 101;
     background-color: #fff;
     padding-bottom: 8px;
+
+    @media screen and (max-width: 720px) {
+      padding-bottom: 8px;
+      margin-bottom: 0;
+      background-color: transparent;
+    }
   }
 
   &__body {
     width: 100%;
     display: grid;
     grid-template-columns: 180px 1fr;
-    grid-template-rows: 44px 77px;
-  }
+    grid-template-rows: 45px 77px;
+    grid-template-areas: none;
 
-  &__logo {
-    background-color: var(--white);
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    grid-row: span 2;
+    @include laptop-bottom {
+      grid-template-columns: 130px 1fr;
+      grid-template-rows: 32px 60px;
+    }
+
+    @include tablet-bottom {
+      grid-template-columns: 110px 1fr;
+      grid-template-rows: 32px 50px;
+      grid-template-areas:
+        'top top'
+        'logo btns';
+    }
+
+    @media screen and (max-width: 720px) {
+      padding-top: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 69px;
+    }
   }
 
   &__top {
@@ -216,6 +250,19 @@ export default {
     display: flex;
     justify-content: space-between;
     line-height: 0.9;
+
+    @include laptop-bottom {
+      padding-block: 7px 8px;
+      padding-left: 8px;
+    }
+
+    @include tablet-bottom {
+      grid-area: top;
+    }
+
+    @media screen and (max-width: 720px) {
+      display: none;
+    }
   }
 
   &__nav {
@@ -224,7 +271,7 @@ export default {
   &__nav-list {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: clamp(10px, 1vw, 24px);
   }
 
   &__nav-item {
@@ -239,6 +286,10 @@ export default {
     font-size: 12px;
     color: var(--black);
     text-decoration: none;
+
+    @include laptop-bottom {
+      font-size: 10px;
+    }
   }
 
   &__nav-item-icon {
@@ -247,38 +298,39 @@ export default {
     color: var(--orange);
   }
 
-  &__address {
-    font-weight: 600;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-
-    p {
-      margin-bottom: 0;
-      margin-right: 20px;
-    }
-  }
-  &__address-icon {
-    width: 20px;
-    height: 20px;
-
-    svg {
-      // width: 13px;
-      // height: 16px;
-    }
-  }
-
   &__bottom {
     background-image: linear-gradient(to bottom, #fff 50%, transparent);
     width: 100%;
     display: flex;
     justify-content: space-between;
+
+    @include tablet-bottom {
+      grid-area: btns;
+    }
+
+    @media screen and (max-width: 720px) {
+      width: fit-content;
+      height: 100%;
+      border-radius: var(--br-btn);
+    }
   }
 
   &__btn-catalog {
+    @media screen and (max-width: 720px) {
+      display: none;
+    }
   }
 
+  // .header-search {
+  //   @media screen and (max-width: 720px) {
+  //     display: none;
+  //   }
+  // }
+
   &__user-actions {
+    @media screen and (max-width: 720px) {
+      display: none;
+    }
   }
 
   &__overlay {
@@ -291,20 +343,27 @@ export default {
     justify-content: flex-start;
     align-items: flex-end;
     transition: opacity 0.5s;
+
+    // @media screen and (max-width: 720px) {
+    //   display: none;
+    // }
   }
 }
 
-.logo {
-  padding: 33px 17px;
-  background-color: var(--black);
-  border-radius: var(--br-btn);
+// .logo {
+//   width: 100%;
+//   background-color: var(--black);
+//   border-radius: var(--br-btn);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
 
-  &__img {
-    width: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-}
+//   &__img {
+//     width: 70%;
+//     object-fit: contain;
+//     object-position: center;
+//   }
+// }
 
 .overlay-enter-from,
 .overlay-leave-to {

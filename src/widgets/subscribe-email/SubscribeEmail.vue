@@ -109,14 +109,16 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .subscribe {
-  max-width: 550px;
+  // max-width: 550px;
   width: 100%;
 
   &__title {
-    margin-bottom: 20px;
+    margin-bottom: clamp(14px, 2.2vw, 24px);
     font-weight: 500;
-    font-size: 28px;
+    @include fluid-text(32, 16);
     line-height: 110%;
     letter-spacing: -0.04em;
     color: var(--blue);
@@ -133,6 +135,10 @@ export default {
       margin-top: 12px;
       flex-grow: 1;
       width: 100%;
+
+      @include tablet-bottom {
+        margin-top: 0;
+      }
     }
 
     &:disabled {

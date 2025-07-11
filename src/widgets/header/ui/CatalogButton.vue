@@ -1,10 +1,5 @@
 <template>
-  <button
-    type="button"
-    class="header__btn-catalog btn-catalog"
-    @click="toggleMenu"
-    :class="{ active: active }"
-  >
+  <button type="button" class="btn-catalog" @click="toggleMenu" :class="{ active: active }">
     <span class="btn-catalog__icon">
       <BaseIcon name="CatalogButtonIcon" />
     </span>
@@ -39,9 +34,11 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .btn-catalog {
   flex-shrink: 0;
-  padding: 28px 20px;
+  padding: 8px clamp(6px, 1vw, 20px);
   background-color: var(--blue);
   border-color: transparent;
   border-radius: var(--br-btn);
@@ -50,6 +47,15 @@ export default {
   justify-content: center;
   gap: 8px;
   color: var(--white);
+
+  @include tablet {
+    gap: 4px;
+  }
+
+  @media screen and (max-width: 720px) {
+    background-color: var(--white);
+    color: var(--black);
+  }
 
   &__icon {
     width: 20px;
@@ -64,12 +70,25 @@ export default {
   &__text {
     font-weight: 500;
     font-size: 12px;
+
+    @include laptop-bottom {
+      font-size: 10px;
+    }
+
+    @media screen and (max-width: 720px) {
+      display: none;
+    }
   }
 
   &.active {
     background-color: var(--white);
     border-color: var(--blue);
     color: var(--blue);
+
+     @media screen and (max-width: 720px) {
+      background-color: var(--blue);
+      color: var(--white);
+    }
   }
 }
 </style>

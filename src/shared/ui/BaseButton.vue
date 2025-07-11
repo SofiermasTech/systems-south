@@ -15,15 +15,25 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .base-button {
   width: fit-content;
   border-radius: 500px;
-  padding: 15px 23px 14px;
+  padding: 14px 20px;
   background-color: var(--blue);
   border: none;
   font-weight: 500;
   font-size: 12px;
   color: var(--white);
   cursor: pointer;
+
+   @include laptop {
+    font-size: 10px;
+  }
+
+  @include laptop-bottom {
+    padding: 12px 16px;
+  }
 }
 </style>

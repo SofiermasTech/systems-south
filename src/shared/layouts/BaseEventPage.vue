@@ -1,7 +1,7 @@
 <template>
-  <div class="event-page container" :class="`event-page--${theme}`">
+  <div class="event-page" :class="`event-page--${theme}`">
     <IntroPages />
-    <section class="event-page__latest">
+    <section class="event-page__latest container">
       <div class="event-page__latest-top">
         <button
           v-for="f in filters"
@@ -24,7 +24,7 @@
         ></slot>
       </div>
     </section>
-    <section class="event-page__archive">
+    <section class="event-page__archive container">
       <h2 class="event-page__archive-title h2">{{ archiveTitle }}</h2>
       <div class="event-page__archive-content">
         <slot
@@ -94,13 +94,19 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .event-page {
   &__latest {
-    margin-top: 60px;
+    margin-top: clamp(30px, 3.5vw, 70px);
     margin-bottom: var(--section-offset);
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 36px;
+
+    @include tablet {
+      gap: 30px;
+    }
   }
 
   &__latest-top {
@@ -112,9 +118,23 @@ export default {
   &__latest-content {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 400px;
-    grid-auto-rows: 400px;
+    grid-template-rows: clamp(240px, 25vw, 450px);
+    grid-auto-rows: clamp(240px, 25vw, 450px);
     gap: 16px;
+
+    @include laptop-bottom {
+      gap: 8px;
+    }
+
+    @include tablet-bottom {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      grid-template-rows: 215px;
+      grid-auto-rows: 215px;
+    }
   }
 
   &__archive {
@@ -128,23 +148,46 @@ export default {
   &__archive-content {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 400px;
-    grid-auto-rows: 400px;
+    grid-template-rows: clamp(240x, 23vw, 450px);
+    grid-auto-rows: clamp(240px, 23vw, 450px);
     gap: 16px;
+
+    @include laptop-bottom {
+      gap: 8px;
+    }
+
+    @include tablet-bottom {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
 
     .news-card {
       grid-column: span 1;
       display: flex;
       flex-direction: column;
       gap: 20px;
+
+      @include mobile {
+        &:first-child {
+          grid-row: span 1;
+        }
+      }
     }
   }
 
   &--promo {
     .event-page__latest-content,
     .event-page__archive-content {
-      grid-template-rows: 490px;
-      grid-auto-rows: 490px;
+      grid-template-rows: clamp(300px, 25vw, 475px);
+      grid-auto-rows: clamp(300px, 25vw, 475px);
+
+      @include mobile {
+        grid-template-rows: 255px;
+        grid-auto-rows: 255px;
+      }
     }
 
     a {
@@ -177,7 +220,7 @@ export default {
 
   &__text {
     font-weight: 500;
-    font-size: 16px;
+    @include fluid-text(16, 10);
   }
 
   &__count {
@@ -188,6 +231,16 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @include laptop-bottom {
+      width: 32px;
+      height: 32px;
+    }
+
+    @include tablet-bottom {
+      width: 24px;
+      height: 24px;
+    }
   }
 }
 </style>

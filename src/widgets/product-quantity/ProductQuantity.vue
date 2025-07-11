@@ -72,6 +72,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .product-quantity {
   width: fit-content;
   background-color: var(--white);
@@ -90,6 +92,11 @@ export default {
     width: 32px;
     height: 32px;
     font-weight: 500;
+
+    @include tablet-bottom {
+      width: 24px;
+      height: 24px;
+    }
   }
 
   &__value {
@@ -98,6 +105,10 @@ export default {
     font-size: 14px;
     text-align: center;
     color: var(--black);
+
+    @include tablet {
+      font-size: 12px;
+    }
   }
 }
 </style>

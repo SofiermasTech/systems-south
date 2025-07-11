@@ -35,30 +35,34 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .promo-card {
-  padding: 32px;
+  padding: clamp(20px, 2vw, 40px);
   background-color: var(--blue-0);
-  border-radius: 14px;
+  border-radius: var(--br-block);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: clamp(12px, 1vw, 20px);
 
   &__title {
     grid-area: title;
     font-weight: 500;
-    font-size: 28px;
+    @include fluid-text(24, 16);
     line-height: 110%;
     letter-spacing: -0.04em;
   }
 
   &__text {
     grid-area: subtitle;
-    font-size: 14px;
+    @include fluid-text(16, 10);
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__date {
     grid-area: date;
-    font-size: 14px;
+    @include fluid-text(16, 10);
     color: var(--grey-200);
   }
 
@@ -67,14 +71,15 @@ export default {
     grid-row: span 3;
     margin-top: auto;
     width: 100%;
+    border-radius: var(--br-block);
 
     img {
-      max-height: 170px;
+      max-height: clamp(96px, 8vw, 170px);
       height: 100%;
       width: 100%;
       object-fit: cover;
       object-position: center;
-      border-radius: 16px;
+      border-radius: var(--br-block);
     }
   }
 }

@@ -63,6 +63,24 @@ export default {
         spaceBetween: 8,
         autoplay: false,
         pagination: false,
+        breakpoints: {
+          320: {
+            slidesPerView: 1.2,
+          },
+          480: {
+            slidesPerView: 1.5,
+          },
+
+          600: {
+            slidesPerView: 2.6,
+          },
+          760: {
+            slidesPerView: 3.2,
+          },
+          995: {
+            slidesPerView: 4,
+          },
+        },
       },
     }
   },
@@ -96,9 +114,16 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
 .product {
   padding-block: 70px 80px;
   background-color: var(--blue-0);
+
+  .container {
+    @include mobile {
+      padding-right: 0;
+    }
+  }
 
   &__body {
     display: flex;
@@ -109,6 +134,10 @@ export default {
   &__body-top {
     display: flex;
     justify-content: space-between;
+
+    @include mobile {
+      padding-right: 16px;
+    }
   }
 
   &__title {
@@ -117,6 +146,13 @@ export default {
   &__body-content {
     width: 100%;
     overflow: hidden;
+
+    .product-card {
+      @media screen and (max-width: 995px) {
+        max-width: max(420px, 80%);
+        // width: 280px;
+      }
+    }
   }
 
   &__cards {

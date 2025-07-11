@@ -1,30 +1,43 @@
 <template>
-  <div class="intro-pages" :class="{ 'catalog-intro': isCatalogPage }">
-    <BreadcrumbsList />
-    <div class="intro-pages__text">
-      <h2 class="intro-pages__title">{{ title || currentRouteTitle }}</h2>
-      <p v-if="isCatalogPage" class="intro-pages__subtitle">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-      </p>
-    </div>
-    <div v-if="isCatalogPage" class="intro-pages__img">
-      <img src="../../assets/images/hero-1.png" alt="" />
+  <div class="container">
+    <div
+      class="intro-pages"
+      :class="{ 'catalog-intro': isCatalogPage, 'promo-intro': isPromoItemPage }"
+    >
+      <BreadcrumbsList />
+      <BaseTimer v-if="isPromoItemPage" :promo="item" />
+      <div class="intro-pages__text">
+        <h2 class="intro-pages__title">{{ title || currentRouteTitle }}</h2>
+        <p v-if="isCatalogPage" class="intro-pages__subtitle">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut
+        </p>
+      </div>
+      <div v-if="isCatalogPage" class="intro-pages__img">
+        <img src="../../assets/images/hero-1.png" alt="" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
+import BaseTimer from '@/shared/ui/BaseTimer.vue'
 
 export default {
   name: 'IntroPages',
   components: {
     BreadcrumbsList,
+    BaseTimer,
   },
   props: {
     title: {
       type: String,
       default: '',
+    },
+    item: {
+      type: Object,
+      default: null,
     },
   },
   data() {
@@ -47,13 +60,18 @@ export default {
     isCatalogPage() {
       return this.$route.path.startsWith('/catalog')
     },
+    isPromoItemPage() {
+      return this.$route.path.startsWith('/promo')
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/utils.scss';
+
 .intro-pages {
-  height: clamp(240px, 27vh, 280px);
+  height: clamp(160px, 19vw, 290px);
   margin-top: 12px;
   background-image: radial-gradient(
     160.58% 121.28% at 84.47% 95.14%,
@@ -61,11 +79,7 @@ export default {
     #fafdff 41.49%,
     #e7f1fb 93.71%
   );
-  // padding: 40px 32px;
   border-radius: var(--br-block);
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: space-between;
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
@@ -73,17 +87,31 @@ export default {
     'text img';
   position: relative;
 
+  &.promo-intro {
+    @include mobile {
+      height: fit-content;
+    }
+  }
+
+  @include mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
   &.catalog-intro {
-    height: clamp(270px, 30vh, 320px);
+    height: clamp(160px, 19vw, 320px);
   }
 
   .breadcrumb {
     grid-area: bread;
-    padding: 40px 32px 8px;
+    padding: clamp(20px, 2.2vw, 44px) clamp(20px, 2vw, 36px) 8px;
   }
 
   &__text {
-    padding: 8px 32px 40px;
+    padding: 8px clamp(20px, 2vw, 36px) clamp(20px, 2.5vw, 50px);
     grid-area: text;
     display: flex;
     flex-direction: column;
@@ -94,15 +122,19 @@ export default {
   &__title {
     max-width: 90%;
     font-weight: 500;
-    font-size: 60px;
+    @include fluid-text(64, 24);
     line-height: 110%;
     letter-spacing: -0.04em;
     color: var(--blue);
+
+    @include mobile {
+      max-width: 100%;
+    }
   }
 
   &__subtitle {
     max-width: 60%;
-    font-size: 14px;
+    @include fluid-text(16, 12);
   }
 
   &__img {
@@ -115,8 +147,21 @@ export default {
     img {
       transform: rotate(-25deg);
       position: absolute;
-      right: -5%;
-      top: 20%;
+      right: -8%;
+      top: 10%;
+      max-width: 110%;
+      width: 105%;
+
+      @include desktop {
+        top: 15%;
+      }
+    }
+  }
+
+  .timer {
+    @include mobile {
+      position: static;
+      margin-left: 20px;
     }
   }
 }

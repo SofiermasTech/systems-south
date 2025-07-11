@@ -57,6 +57,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/_utils.scss';
+
 .favorites-page {
   &__empty {
     display: flex;
@@ -82,6 +84,57 @@ export default {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
+
+    @include tablet-bottom {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include mobile {
+      width: 100%;
+      // overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      // -ms-scroll-chaining: auto;
+      // overscroll-behavior: auto;
+      // -webkit-scroll-snap-type: x mandatory;
+      // -ms-scroll-snap-type: x mandatory;
+      // scroll-snap-type: x mandatory;
+      // overflow-x: scroll;
+      // -ms-overflow-style: none;
+      // scrollbar-width: none;
+
+      .product-card {
+        // flex-shrink: 0;
+        max-width: clamp(280px, calc(100vw - 24px), 335px);
+        width: 100%;
+
+        &__images {
+          height: 200px;
+        }
+      }
+
+      .product-card__images {
+        height: 200px;
+      }
+    }
+    .product-card__images {
+      height: 200px;
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+@import '@/assets/styles/_utils.scss';
+
+.favorites-page {
+  &__list {
+    @include mobile {
+      .product-card__images {
+        height: 200px;
+      }
+    }
   }
 }
 </style>

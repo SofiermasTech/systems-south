@@ -110,6 +110,14 @@ export default {
   justify-content: flex-start;
   align-items: flex-end;
 
+  @media screen and (max-width: 720px) {
+    height: calc(100vh - 70px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 200;
+  }
+
   &__body {
     width: auto;
     height: 100%;
@@ -119,10 +127,19 @@ export default {
     display: flex;
     gap: 32px;
     transition: width 0.5s;
+
+    @media screen and (max-width: 720px) {
+      width: 100vw;
+      border-radius: 0;
+    }
   }
 
   &__left {
     width: 23vw;
+
+    @media screen and (max-width: 720px) {
+      width: 100%;
+    }
   }
 
   &__left-title {

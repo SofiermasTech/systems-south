@@ -116,9 +116,9 @@
             <p>Я согласен/на на обработку персональных данных</p>
           </template>
         </base-input>
-        <base-button type="submit" :disabled="isSubmitting"
-          ><span>Отправить заявку</span></base-button
-        >
+        <base-button type="submit" :disabled="isSubmitting">
+          <span>Отправить заявку</span>
+        </base-button>
       </fieldset>
     </form>
   </section>
@@ -162,6 +162,7 @@ export default {
       cartStore: useCartStore(),
       catalogStore: useCatalogStore(),
       authStore: useAuthStore(),
+      popupStore: usePopupStore(),
     }
   },
   computed: {
@@ -215,7 +216,7 @@ export default {
           break
       }
     },
-    submitForm() {
+    async submitForm() {
       this.validateField('name')
       this.validateField('surname')
       this.validateField('email')
@@ -236,21 +237,25 @@ export default {
           items: this.getCartItemsData(),
           totalAmount: this.totalAmount,
         }
-        console.log('Отправка данных:', orderData)
-        const popupStore = usePopupStore()
-        popupStore.showPopup({
-          component: 'BaseSuccessPopup',
-          props: {
-            isVisible: true,
-            title: 'Заявка успешно оформлена!',
-            subtitle: 'Наш менеджер свяжется с вами',
-            redirectTo: this.$router.push('/'),
-          },
-        })
-        this.$emit('submit-success', orderData)
-        this.resetForm()
-        this.cartStore.clearCart()
+        try {
+          console.log('Отправка данных:', orderData)
+          this.openSuccessPopup()
+          this.resetForm()
+          this.cartStore.clearCart()
+        } catch (error) {
+          console.error('Ошибка при создании заказа:', error)
+        } finally {
+          this.isSubmitting = false
+        }
       }
+    },
+    openSuccessPopup() {
+      this.popupStore.showPopup('BaseSuccessPopup', {
+        isVisible: true,
+        title: 'Заявка успешно оформлена!',
+        subtitle: 'Наш менеджер свяжется с вами',
+        // redirectTo: this.$router.push('/'),
+      })
     },
     resetForm() {
       this.errors = {
@@ -304,11 +309,13 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .order-form {
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    gap: clamp(30px, 2.8vw, 56px);
   }
 
   &__fieldset {
@@ -317,14 +324,27 @@ export default {
   &__title {
     margin-bottom: 24px;
     font-weight: 600;
-    font-size: 20px;
+    @include fluid-text(24, 14);
     line-height: 110%;
+
+    @include tablet-bottom {
+      margin-bottom: 16px;
+    }
   }
 
   &__wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+
+    @include laptop-bottom {
+      gap: 8px;
+    }
+
+    @include mobile {
+      display: flex;
+      flex-direction: column;
+    }
 
     &--delivery {
       display: flex;
@@ -341,9 +361,9 @@ export default {
   }
 
   .base-input-label--radio {
-    max-width: 265px;
+    max-width: clamp(180px, 14vw, 265px);
     width: 100%;
-    padding: 16px;
+    padding: clamp(12px, 1vw, 20px);
     border: 1px solid var(--blue-100);
     border-radius: 4px;
     display: grid;
@@ -352,23 +372,43 @@ export default {
     align-items: center;
     column-gap: 12px;
     row-gap: 4px;
+
+    @include laptop-bottom {
+      column-gap: 8px;
+    }
+
+    @include mobile {
+      max-width: 100%;
+    }
   }
 
   .base-input__radio-name {
     font-weight: 500;
-    font-size: 14px;
+    @include fluid-text(16, 10);
     color: var(--black);
+
+    //   @include tablet-bottom {
+    //   align-self: flex-start;
+    // }
+
+    @include mobile {
+      font-size: 12px;
+    }
   }
 
   .base-input__radio-text {
     font-weight: 400;
-    font-size: 12px;
+    @include fluid-text(16, 10);
     color: var(--grey-200);
   }
 
   .base-button {
     margin-top: 24px;
     width: 100%;
+
+    @include tablet {
+      margin-top: 16px;
+    }
   }
 
   .base-input__error {

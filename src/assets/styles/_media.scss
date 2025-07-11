@@ -5,17 +5,17 @@ $laptop-above: 1441px;
 $laptop: 1440px;
 
 $laptop-bottom-above: 1281px;
-$laptop-bottom: 1280px;
+$laptop-bottom: 1281px;
 
-$tablet: 1024px;
+$tablet: 1030px;
 $tablet-above: 1023px;
 
-$tablet-bottom: 800px;
+$tablet-bottom: 821px;
 $tablet-bottom-above: 760px;
 
 $mobile-above: 601px;
 $mobile: 600px;
-$mobile-bottom: 440px;
+$mobile-bottom: 460px;
 
 @mixin desktop-above {
   @media (min-width: $desktop-above) {

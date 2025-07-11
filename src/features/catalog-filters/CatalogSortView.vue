@@ -40,6 +40,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .sort-view {
   display: flex;
   align-items: center;
@@ -50,12 +52,22 @@ export default {
     border-radius: var(--br-btn);
     background-color: transparent;
     color: var(--blue);
-    padding: 10px;
+    // padding: 10px;
     width: 44px;
     height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @include laptop-bottom {
+      width: 36px;
+      height: 36px;
+    }
+
+    @include tablet-bottom {
+      width: 32px;
+      height: 32px;
+    }
 
     &.active {
       background-color: var(--blue-0);
@@ -70,6 +82,11 @@ export default {
       svg {
         width: 20px;
         height: 20px;
+
+        @include laptop-bottom {
+          width: 14px;
+          height: 14px;
+        }
       }
     }
   }

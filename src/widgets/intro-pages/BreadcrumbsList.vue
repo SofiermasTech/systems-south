@@ -108,9 +108,9 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .breadcrumb {
-  // padding-top: 40px;
-  // padding-bottom: 30px;
 
   &__list {
     list-style: none;
@@ -119,7 +119,7 @@ export default {
   }
 
   &__item {
-    font-size: 14px;
+    @include fluid-text(16, 10);
     color: var(--black);
 
     a {

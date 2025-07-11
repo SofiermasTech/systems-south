@@ -378,9 +378,15 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .profile {
   max-width: 75%;
   width: 100%;
+
+  @include mobile {
+    max-width: 100%;
+  }
 
   .order-form__wrapper-passwords {
     width: 100%;
@@ -388,6 +394,10 @@ export default {
     flex-direction: column;
     gap: 16px;
     align-items: center;
+
+    @include laptop-bottom {
+      gap: 8px;
+    }
   }
 
   .base-input-label::after {

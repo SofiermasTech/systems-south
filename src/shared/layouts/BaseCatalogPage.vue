@@ -1,8 +1,8 @@
 <template>
-  <div class="catalog container">
+  <div class="catalog">
     <IntroPages class="catalog__intro" :title="title" />
     <slot name="categories" v-if="filteredProducts.length > 0">
-      <div class="catalog__categories" v-if="showCategories">
+      <div class="catalog__categories container" v-if="showCategories">
         <p class="catalog__categories-title">{{ subtitle }}</p>
         <ul class="catalog__categories-list">
           <li
@@ -23,33 +23,33 @@
       </div>
     </slot>
 
-    <CatalogFilters
-      v-if="filteredProducts.length > 0"
-      class="catalog__filters"
-      @apply-filters="handleApplyFilters"
-      :products="products"
-      :category="category"
-      :subcategory="subcategory"
-    />
-
-    <div class="catalog__sort" v-if="filteredProducts.length > 0">
-      <CatalogSortPanel @sort-change="handleSortChange" />
-      <CatalogSortView :view-mode="viewMode" @view-change="handleViewChange" />
-    </div>
-
-    <div
-      class="catalog__cards"
-      :class="{ horizontal: viewMode === 'horizontal' }"
-      v-if="filteredProducts.length > 0"
-    >
-      <ProductCard
-        v-for="product in filteredProducts"
-        :key="product.id"
-        :product-id="product.id"
-        :is-horizontal="viewMode === 'horizontal'"
-        @toggle-favorite="handleToggleFavorite"
+    <div class="catalog__content container">
+      <CatalogFilters
+        v-if="filteredProducts.length > 0"
+        class="catalog__filters"
+        @apply-filters="handleApplyFilters"
+        :products="products"
+        :category="category"
+        :subcategory="subcategory"
       />
-      <!-- <p v-if="filteredProducts.length === 0">Нет результатов по запросу</p> -->
+      <div class="catalog__sort" v-if="filteredProducts.length > 0">
+        <CatalogSortPanel @sort-change="handleSortChange" />
+        <CatalogSortView :view-mode="viewMode" @view-change="handleViewChange" />
+      </div>
+      <div
+        class="catalog__cards"
+        :class="{ horizontal: viewMode === 'horizontal' }"
+        v-if="filteredProducts.length > 0"
+      >
+        <ProductCard
+          v-for="product in filteredProducts"
+          :key="product.id"
+          :product-id="product.id"
+          :is-horizontal="viewMode === 'horizontal'"
+          @toggle-favorite="handleToggleFavorite"
+        />
+        <!-- <p v-if="filteredProducts.length === 0">Нет результатов по запросу</p> -->
+      </div>
     </div>
   </div>
 </template>
@@ -202,18 +202,24 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .catalog {
   min-height: 60vh;
   margin-bottom: var(--section-offset);
-  display: grid;
-  grid-template-columns: 350px 1fr;
-  row-gap: 20px;
-  column-gap: 32px;
-  grid-template-areas:
-    'intro intro'
-    'cat cat'
-    'filters sort'
-    'filters cards';
+  // display: grid;
+  // grid-template-columns: clamp(266px, 21vw, 395px) 1fr;
+  // row-gap: 20px;
+  // column-gap: 32px;
+  // grid-template-areas:
+  //   'intro intro'
+  //   'cat cat'
+  //   'filters sort'
+  //   'filters cards';
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 2.5vw, 50px);
 
   &__intro {
     grid-area: intro;
@@ -229,13 +235,13 @@ export default {
 
   &__categories-title {
     font-weight: 500;
-    font-size: 16px;
+    @include fluid-text(16, 12);
     color: var(--grey-200);
   }
 
   &__categories-list {
     display: flex;
-    gap: 16px;
+    gap: clamp(8px, 0.6vw, 16px);
     align-items: center;
   }
 
@@ -254,8 +260,28 @@ export default {
     }
   }
 
+  &__content {
+    display: grid;
+    grid-template-columns: clamp(266px, 21vw, 395px) 1fr;
+    grid-template-rows: auto 1fr;
+    row-gap: clamp(10px, 1.1vw, 24px);
+    column-gap: clamp(20px, 2vw, 36px);
+    grid-template-areas:
+      'filters sort'
+      'filters cards';
+
+    @media screen and (max-width: 1200px) {
+      grid-template-columns: 1fr;
+      grid-template-areas: none;
+    }
+  }
+
   &__filters {
     grid-area: filters;
+
+    @media screen and (max-width: 1200px) {
+      display: none;
+    }
   }
 
   &__sort {
@@ -264,7 +290,7 @@ export default {
     border: 1px solid var(--blue-100);
     border-radius: 12px;
     padding-block: 8px;
-    padding-inline: 24px 16px;
+    padding-inline: 16px clamp(8px, 1.2vw, 24px);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -274,7 +300,32 @@ export default {
   &__cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: clamp(350px, 25vw, 460px);
     gap: 8px;
+
+    @media screen and (max-width: 1200px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media screen and (max-width: 920px) {
+      grid-template-columns: repeat(3, 1fr);
+
+      .card-vertical {
+        max-width: clamp(200px, 30.5vw, 280px);
+      }
+    }
+
+    @include mobile {
+      display: flex;
+      flex-direction: column;
+      // align-items: center;
+
+      .card-vertical {
+        max-width: clamp(260px, calc(100vw - (var(--container-padding-y) * 2)), 500px);
+        width: 100%;
+        margin: 0 auto;
+      }
+    }
 
     &.horizontal {
       grid-template-columns: 1fr;

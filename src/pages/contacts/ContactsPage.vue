@@ -1,7 +1,7 @@
 <template>
-  <section class="contacts-page container">
+  <section class="contacts-page">
     <IntroPages title="Контакты" />
-    <div class="contacts-page__content">
+    <div class="contacts-page__content container">
       <div class="contacts-page__info">
         <div class="contacts-page__text">
           <div class="contacts-page__text-item">
@@ -54,21 +54,31 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .contacts-page {
   margin-bottom: var(--section-offset);
   display: flex;
   flex-direction: column;
-  gap: 60px;
+  gap: clamp(30px, 3.5vw, 70px);
 
   &__content {
     display: flex;
     flex-direction: column;
-    gap: 100px;
+    gap: clamp(50px, 5vw, 100px);
   }
 
   &__info {
     display: flex;
     gap: 16px;
+
+    @include tablet {
+      justify-content: space-between;
+    }
+
+    @include mobile {
+      flex-direction: column;
+    }
   }
 
   &__text {
@@ -76,7 +86,11 @@ export default {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    gap: clamp(24px, 3.5vw, 56px);
+
+    @include mobile {
+      max-width: 100%;
+    }
   }
 
   &__text-item {
@@ -86,14 +100,14 @@ export default {
 
     p {
       margin: 0;
-      font-size: 14px;
+      @include fluid-text(16, 10);
       color: var(--grey-200);
     }
     address,
     a,
     span {
       font-weight: 500;
-      font-size: 32px;
+      @include fluid-text(32, 16);
       line-height: 110%;
       letter-spacing: -0.04em;
       color: var(--blue);
@@ -104,8 +118,8 @@ export default {
 
   &__map {
     width: 100%;
-    max-height: 700px;
-    height: 70vh;
+    margin-bottom: clamp(20px, 4vw, 80px);
+    height: clamp(285px, 40vw, 700px);
     background-color: var(--blue);
     border-radius: 16px;
   }

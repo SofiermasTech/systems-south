@@ -71,6 +71,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .popup-card {
   width: 100%;
   padding: 16px;
@@ -78,6 +80,10 @@ export default {
   border-radius: 12px;
   display: flex;
   gap: 12px;
+
+  @include tablet {
+    padding: 12px;
+  }
 
   &__img {
     flex-shrink: 0;
@@ -110,12 +116,13 @@ export default {
   &__text {
     grid-column: span 2;
     font-weight: 500;
-    font-size: 14px;
+    @include fluid-text(20, 10);
   }
 
   &__price {
     font-weight: 600;
-    font-size: 14px;
+    // @include fluid-text(48, 14);
+     @include fluid-text(20, 12);
     color: var(--blue);
   }
 
@@ -159,7 +166,7 @@ export default {
     }
 
     &--text {
-      font-size: 14px;
+      @include fluid-text(16, 10);
       text-decoration: underline;
       text-underline-offset: 5px;
       text-decoration-skip-ink: none;
@@ -172,23 +179,48 @@ export default {
     gap: 20px;
 
     .popup-card__info {
-      grid-template-columns: 3fr 1fr;
+      grid-template-columns: 2.3fr 1fr;
       align-items: flex-start;
       gap: 16px;
+
+      @include mobile {
+        grid-template-areas:
+          'name del'
+          'count price';
+      }
     }
 
     .popup-card__img {
       width: 110px;
       height: 110px;
+
+      @include laptop {
+        width: 90px;
+        height: 90px;
+      }
+
+      @include mobile {
+        width: 60px;
+        height: 60px;
+      }
     }
 
     .popup-card__text {
       grid-column: span 1;
+
+      @include mobile {
+        grid-area: name;
+      }
     }
 
     .popup-card__price {
       justify-self: flex-end;
-      font-size: 20px;
+      @include fluid-text(24, 14);
+
+      @include mobile {
+        grid-area: price;
+        align-self: center;
+      }
     }
 
     .popup-card__btn-wrapper {
@@ -197,11 +229,27 @@ export default {
       width: 100%;
       justify-content: space-between;
       align-items: flex-end;
+      align-self: flex-end;
+
+      @include mobile {
+        display: contents;
+      }
     }
 
     .product-quantity {
-      max-width: 165px;
+      max-width: clamp(130px, 8vw, 160px);
       width: 100%;
+
+      @include mobile {
+        grid-area: count;
+      }
+    }
+
+    .popup-card__btn-del {
+      @include mobile {
+        grid-area: del;
+        justify-self: end;
+      }
     }
   }
 }

@@ -1,8 +1,8 @@
 <template>
-  <div class="faq container">
+  <div class="faq">
     <IntroPages />
 
-    <section class="faq__questions">
+    <section class="faq__questions container">
       <BaseAccordion v-for="(item, index) in accordionItems" :key="index" :item="item" :id="index">
         <template #titles>
           <h2>{{ item.title }}</h2>
@@ -53,21 +53,27 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .faq {
   display: flex;
   flex-direction: column;
-  gap: 60px;
+  gap: clamp(30px, 3.5vw, 70px);
   margin-bottom: var(--section-offset);
 
   &__questions {
     display: flex;
     flex-direction: column;
     gap: 12px;
+
+    @include tablet {
+      gap: 8px;
+    }
   }
 
   &__item {
     font-weight: 400;
-    font-size: 14px;
+    @include fluid-text(16, 10);
   }
 }
 </style>

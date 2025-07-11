@@ -14,7 +14,7 @@
         <h2 class="success-popup__title">{{ title }}</h2>
         <p class="success-popup__subtitle">{{ subtitle }}</p>
       </div>
-      <base-button @click.prevent="handleButtonClick" class="success-popup__btn" type="button">
+      <base-button  class="success-popup__btn" type="button">
         {{ buttonText }}
       </base-button>
     </template>
@@ -23,6 +23,7 @@
 
 <script>
 import { useCartStore } from '@/shared/stores/cart.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'BaseSuccessPopup',
@@ -43,6 +44,7 @@ export default {
   data() {
     return {
       cartStore: useCartStore(),
+      popupStore: usePopupStore(),
     }
   },
   computed: {
@@ -54,19 +56,33 @@ export default {
     },
   },
   methods: {
-    handleButtonClick() {
-      this.$emit('close')
+    // handleButtonClick() {
+    //   this.$emit('close')
 
-      if (this.isOrderPage) {
-        this.$router.push({ name: 'HomePage' })
-        this.cartStore.clearCart()
-      }
-    },
+    //   if (this.isOrderPage) {
+    //     this.$router.push({ name: 'HomePage' })
+    //     this.cartStore.clearCart()
+    //   }
+    // },
+    // closePopup() {
+    //   console.log('BaseSuccessPopup: Closing popup')
+    //   this.popupStore.hidePopup()
+    //   if (this.isOrderPage) {
+    //     console.log('BaseSuccessPopup: Redirecting to /')
+    //     this.$router.push('/')
+    //     this.cartStore.clearCart()
+    //   }
+    // },
+  },
+  mounted() {
+    console.log('BaseSuccessPopup: Mounted with props', this.$props)
   },
 }
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .success-popup {
   width: 100vw;
   height: 100vh;
@@ -78,8 +94,12 @@ export default {
   z-index: 111;
 
   .base-popup__body {
-    max-width: 445px;
+    max-width: clamp(335px, 24vw, 450px);
     max-height: 360px;
+
+    @include mobile {
+      max-width: 85%;
+    }
   }
 
   .base-popup__content {
@@ -89,10 +109,6 @@ export default {
     align-items: center;
     gap: 24px;
   }
-
-  // .btn-close-popup {
-  //   display: none;
-  // }
 
   &__img {
     width: 102px;
@@ -113,12 +129,12 @@ export default {
 
   &__title {
     font-weight: 500;
-    font-size: 16px;
+    @include fluid-text(20, 14);
     text-align: center;
   }
 
   &__subtitle {
-    font-size: 14px;
+    @include fluid-text(16, 12);
     text-align: center;
     color: var(--grey-200);
   }

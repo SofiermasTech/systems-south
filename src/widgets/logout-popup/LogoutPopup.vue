@@ -54,22 +54,24 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .logout-popup {
   &.base-popup__body {
-    max-width: 450px;
+    max-width: clamp(330px, 25vw, 450px);
   }
   .base-popup__title {
     max-width: 300px;
     margin-bottom: 12px;
     font-weight: 600;
-    font-size: 20px;
+    @include fluid-text(20, 14);
     line-height: 110%;
     color: var(--black);
   }
 
   &__text {
     margin-bottom: 24px;
-    font-size: 14px;
+    @include fluid-text(20, 14);
     line-height: 120%;
     color: var(--grey-200);
   }

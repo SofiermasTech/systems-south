@@ -101,20 +101,79 @@ export default {
   &__content {
     width: 100%;
     // height: 52vh;
-    height: 550px;
+    // height: 550px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+
+    @include mobile {
+      display: flex;
+      flex-direction: column-reverse;
+      height: fit-content;
+    }
   }
 
   .top-sale__wrapper {
     max-width: 60%;
+
+    @include tablet {
+      max-width: 100%;
+      width: 100%;
+      padding: 0;
+    }
   }
 
   .top-sale__title {
     font-weight: 500;
-    font-size: 28px;
+    @include fluid-text(28, 16);
+    line-height: 110%;
+    letter-spacing: -0.04em;
+
+    @include tablet {
+      max-width: 65%;
+    }
+
+    @include mobile {
+      max-width: 100%;
+      font-size: 20px;
+    }
   }
+
+  .top-sale__block-img {
+    @include tablet {
+      position: absolute;
+      right: 0;
+      top: 50px;
+      max-height: 250px;
+      max-width: 185px;
+
+      img {
+        max-height: 250px;
+      }
+    }
+
+    @include tablet-bottom {
+      top: 40px;
+      max-height: 170px;
+
+      img {
+        max-height: 170px;
+      }
+    }
+
+    @include mobile {
+      position: static;
+      max-height: 230px;
+
+      img {
+        max-height: 230px;
+      }
+    }
+  }
+
+  // &__left {
+  //   height: fit-content;
+  // }
 
   &__right {
   }
@@ -134,6 +193,10 @@ export default {
     align-items: center;
     cursor: pointer;
     transition: 0.3s;
+
+    @include tablet {
+      padding: 10px 14px;
+    }
 
     .popular-categories__item-info {
       svg {
@@ -173,9 +236,13 @@ export default {
 
   &__item-title {
     font-weight: 500;
-    font-size: 28px;
+    @include fluid-text(28, 14);
     line-height: 110%;
     letter-spacing: -0.04em;
+
+    @include mobile {
+      font-size: 16px;
+    }
   }
 
   &__item-info {
@@ -187,6 +254,11 @@ export default {
       font-weight: 600;
       font-size: 12px;
       color: var(--grey-200);
+
+      @include tablet-bottom {
+        font-size: 10px;
+        font-weight: 500;
+      }
     }
 
     div {
@@ -197,6 +269,21 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+
+      @include laptop-bottom {
+        width: 50px;
+        height: 50px;
+      }
+
+      @include tablet-bottom {
+        width: 36px;
+        height: 36px;
+
+        svg {
+          width: 12px;
+          height: 12px;
+        }
+      }
     }
   }
 }

@@ -1,14 +1,30 @@
 <template>
-  <button class="base-button-call" type="button">Заказать звонок</button>
+  <button class="base-button-call" type="button" @click="openCallbackPopup">Заказать звонок</button>
 </template>
 
 <script>
+import { usePopupStore } from '@/shared/stores/popup.js'
+
 export default {
   name: 'BaseButtonCall',
+  data() {
+    return {
+      popupStore: usePopupStore(),
+    }
+  },
+  methods: {
+    openCallbackPopup() {
+      this.popupStore.showPopup('CallbackPopup', {
+        isVisible: true,
+      })
+    },
+  },
 }
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .base-button-call {
   width: fit-content;
   padding: 0;
@@ -16,7 +32,7 @@ export default {
   background-color: transparent;
   border: none;
   border-bottom: 1px solid var(--blue);
-  font-size: 14px;
+  @include fluid-text(14, 10);
   color: var(--blue);
   text-decoration: none;
 }

@@ -53,6 +53,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .slider-arrow {
   display: flex;
   &__item {
@@ -66,6 +68,11 @@ export default {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+
+    @include tablet {
+      width: 36px;
+      height: 36px;
+    }
 
     svg {
       width: 8px;

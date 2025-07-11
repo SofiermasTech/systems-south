@@ -27,27 +27,39 @@
   --br-block: 16px;
 
   // margin, padding, width
-  --container-padding-y: 16px;
-  --section-offset: 160px;
-  --container-width: 1520px;
+  --container-padding-y: 40px;
+  --section-offset: clamp(80px, 8.5vw, 160px);
+  --container-width: 1720px;
 
   @include desktop {
+    --container-width: 1520px;
+    --font-size-body: 14px;
   }
 
   @include laptop {
-    --section-offset: 100px;
-    --container-width: 1280px;
+    --container-width: 1320px;
+    --br-block: 14px;
   }
 
   @include laptop-bottom {
+    --container-padding-y: 16px;
+    --container-width: 1160px;
+    --font-size-body: 12px;
   }
 
   @include tablet {
+    --container-width: 944px;
+    --br-block: 12px;
+    --br-btn: 8px;
   }
 
   @include tablet-bottom {
+    --container-width: 708px;
   }
 
   @include mobile {
+    --font-size-body: 12px;
+    --container-width: 100%;
+    --br-btn: 6px;
   }
 }

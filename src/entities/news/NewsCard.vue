@@ -31,7 +31,7 @@ export default {
     formatDate(date) {
       return new Date(date).toLocaleDateString('ru-RU', {
         day: 'numeric',
-        month: 'long',
+        month: 'numeric',
         year: 'numeric',
       })
     },
@@ -40,8 +40,10 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .news-card {
-  padding: 32px;
+  padding: clamp(20px, 1.5vw, 32px);
   background-color: var(--blue-0);
   border-radius: 14px;
   display: flex;
@@ -61,20 +63,37 @@ export default {
 
     .news-card__bottom {
       grid-column: span 2;
+
+      @include mobile {
+        grid-column: span 1;
+      }
+    }
+
+    @include mobile {
+      grid-column: span 1;
+      grid-row: span 2;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto clamp(210px, 55vw, 250px) auto;
+      grid-template-areas:
+        'title'
+        'subtitle'
+        'img'
+        'bottom';
+        gap: 20px;
     }
   }
 
   &__title {
     grid-area: title;
     font-weight: 500;
-    font-size: 28px;
+    @include fluid-text(36, 16);
     line-height: 110%;
     letter-spacing: -0.04em;
   }
 
   &__text {
     grid-area: subtitle;
-    font-size: 14px;
+    @include fluid-text(16, 10);
   }
 
   &__bottom {
@@ -86,12 +105,12 @@ export default {
   }
 
   &__bottom-date {
-    font-size: 14px;
+    @include fluid-text(16, 10);
     color: var(--grey-200);
   }
 
   &__bottom-link {
-    font-size: 14px;
+    @include fluid-text(16, 10);
     text-decoration: underline;
     text-underline-offset: 4px;
     text-align: right;
@@ -103,9 +122,20 @@ export default {
     grid-row: span 2;
     width: 100%;
 
+    @include mobile {
+      grid-row: span 1;
+      // max-height: 210px;
+    }
+
     img {
+      width: 100%;
+      border-radius: 14px;
       object-fit: cover;
       object-position: center;
+
+      @include mobile {
+        max-height: clamp(210px, 55vw, 250px);
+      }
     }
   }
 }

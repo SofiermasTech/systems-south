@@ -54,19 +54,39 @@ export default {
 .personal {
   margin-bottom: var(--section-offset);
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: clamp(230px, 17vw, 330px) 1fr;
   grid-template-areas:
     'intro intro'
     'sidebar content';
-  row-gap: 60px;
-  column-gap: 80px;
+  row-gap: clamp(12px, 2.5vw, 70px);
+  column-gap: clamp(32px, 5vw, 100px);
+
+  @include mobile {
+    //   grid-template-columns: 1fr;
+    //   grid-template-areas:
+    //     'intro'
+    //     'sidebar'
+    //     'content';
+
+    display: flex;
+    flex-direction: column;
+  }
 
   &__intro {
     grid-area: intro;
+
+    &.container {
+      padding-inline: 0;
+    }
   }
 
   &__content {
     grid-area: content;
+
+    @include mobile {
+      margin-top: 16px;
+      padding-bottom: 150px;
+    }
   }
 }
 </style>

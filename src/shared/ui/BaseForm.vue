@@ -164,10 +164,16 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .popup-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
+
+  @include tablet {
+      gap: 12px;
+    }
 
   &__btn-submit {
     margin-top: 12px;

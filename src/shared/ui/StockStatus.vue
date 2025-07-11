@@ -29,6 +29,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .stock-status {
   display: flex;
   align-items: center;
@@ -59,7 +61,7 @@ export default {
   p {
     margin: 0;
     font-weight: 600;
-    font-size: 12px;
+    @include fluid-text(14, 10);
   }
 }
 </style>
