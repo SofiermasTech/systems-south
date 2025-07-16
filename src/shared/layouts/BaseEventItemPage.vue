@@ -133,10 +133,15 @@ export default {
 
     img {
       max-height: clamp(200px, 25vw, 475px);
+      max-width: clamp(315px, 33vw, 660px);
       width: 100%;
       object-fit: cover;
       object-position: center;
       border-radius: var(--br-block);
+
+      @include mobile {
+        max-width: clamp(315px, 92vw, 560px);
+      }
     }
   }
 
@@ -150,6 +155,7 @@ export default {
     @include mobile {
       font-size: 12px;
       grid-area: text;
+      max-width: clamp(315px, 92vw, 560px);
     }
   }
 
@@ -159,6 +165,7 @@ export default {
 
   .subscribe {
     @include mobile {
+      max-width: clamp(315px, 92vw, 560px);
       grid-area: email;
     }
   }

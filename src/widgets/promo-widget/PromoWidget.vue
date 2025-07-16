@@ -224,6 +224,7 @@ export default {
   &__link {
     &.base-button {
       width: clamp(96px, 6.5vw, 130px);
+      padding-inline: 0;
       background-color: var(--white);
       font-weight: 500;
       font-size: 12px;

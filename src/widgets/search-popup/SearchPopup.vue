@@ -69,6 +69,18 @@ export default {
     margin-top: 28px;
     width: clamp(330px, 40vw, 400px);
     margin-left: var(--container-padding-y);
+    position: absolute;
+    left: 0;
+    top: 80px;
+    z-index: 155;
+
+    @include mobile {
+      width: calc(100vw - 40px);
+      max-width: 520px;
+      max-height: 65vh;
+      padding: 12px;
+      margin-top: 8px;
+    }
   }
 
   &__top {
@@ -102,6 +114,10 @@ export default {
 
   .popup-card {
     max-width: clamp(310px, 35vw, 530px);
+
+    @include mobile {
+      max-width: 100%;
+    }
   }
 
   .popup-card__img {

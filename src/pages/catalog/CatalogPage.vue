@@ -108,6 +108,7 @@ export default {
   },
 }
 </script>
+
 <style lang="scss">
 // .catalog {
 //   margin-bottom: var(--section-offset);

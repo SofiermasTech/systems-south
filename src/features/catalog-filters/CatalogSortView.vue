@@ -47,6 +47,10 @@ export default {
   align-items: center;
   gap: 8px;
 
+  @media screen and (max-width: 1200px) {
+    margin-left: auto;
+  }
+
   &__btn {
     border: 1px solid var(--blue-100);
     border-radius: var(--br-btn);

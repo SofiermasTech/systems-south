@@ -175,7 +175,7 @@ export default {
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      // align-content: stretch;
+      z-index: 3;
     }
 
     .hero__block-title {
@@ -263,13 +263,18 @@ export default {
       left: 0;
 
       @include mobile {
-        left: 50%;
+        left: 55%;
+        width: 70%;
       }
 
       img {
         object-fit: contain;
         transform: translateY(100%);
         transition: 0.5s;
+
+        @include tablet {
+          max-width: 75%;
+        }
       }
     }
 

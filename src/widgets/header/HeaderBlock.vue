@@ -1,5 +1,8 @@
 <template>
-  <header class="header" :class="{ 'header-hidden': isHidden }">
+  <header
+    class="header"
+    :class="{ 'header-hidden': isHidden, 'transparent-header': isHeaderTransparent && this.popupStore.currentPopupName === 'menu' }"
+  >
     <div class="header__wrapper">
       <div class="container">
         <div class="header__body">
@@ -25,8 +28,8 @@
               class="header__btn-catalog"
               :active="this.popupStore.currentPopupName === 'menu'"
             />
-            <HeaderSearch v-if="windowWidth >= 720" />
-            <!-- <BaseButtonSearch /> -->
+            <HeaderSearch />
+            <!-- <BaseButtonSearch v-if="windowWidth < 720" /> -->
             <HeaderContacts />
             <UserActions
               class="header__user-actions"
@@ -88,6 +91,7 @@ export default {
       lastScrollPosition: 0,
       activeCategory: null,
       windowWidth: window.innerWidth,
+      isHeaderTransparent: false,
     }
   },
   computed: {
@@ -97,21 +101,51 @@ export default {
     favoritesCount() {
       return this.favoritesStore ? this.favoritesStore.favoritesCount : 0
     },
+    // isModalOpen() {
+    //   const namePopup = this.popupStore.currentPopupName
+    //   const namePopupSec = this.popupStore.secondaryPopupName
+    //   return (
+    //     namePopup === 'menu' ||
+    //     namePopup === 'CartPopup' ||
+    //     namePopup === 'search' ||
+    //     namePopup === 'ContactEmail' ||
+    //     namePopup === 'ContactForm' ||
+    //     namePopup === 'MenuNavMobile' ||
+    //     namePopup === 'searchMob' ||
+    //     (namePopup === 'searchMob' && namePopupSec === 'search')
+    //   )
+    // },
     isModalOpen() {
       const namePopup = this.popupStore.currentPopupName
-      return (
-        namePopup === 'menu' ||
-        namePopup === 'CartPopup' ||
-        namePopup === 'search' ||
-        namePopup === 'ContactEmail' ||
-        namePopup === 'ContactForm' ||
-        namePopup === 'MenuNavMobile' ||
-        namePopup === 'searchMob'
-      )
+      const namePopupSec = this.popupStore.secondaryPopupName
+
+      const basePopups = [
+        'menu',
+        'CartPopup',
+        'search',
+        'ContactEmail',
+        'ContactForm',
+        'MenuNavMobile',
+        'searchMob',
+      ]
+
+      // Особое условие: вложенный попап с результатами поиска открыт вместе с searchMob
+      if (namePopup === 'searchMob' && namePopupSec === 'search') return true
+
+      // Основной попап открыт
+      if (basePopups.includes(namePopup)) return true
+
+      return false
     },
   },
   watch: {
     isModalOpen(newValue) {
+      if (newValue && this.popupStore.currentPopupName !== null) {
+        this.isHidden = false
+        this.isHeaderTransparent = true
+      } else {
+        this.isHeaderTransparent = false
+      }
       if (newValue) {
         lockScroll()
       } else {
@@ -141,6 +175,10 @@ export default {
       }
       // Обновляем последнюю позицию скролла
       this.lastScrollPosition = currentScrollPosition
+
+      if (this.isModalOpen) {
+        this.isHidden = false
+      }
     },
     closePopup() {
       this.popupStore.hidePopup()
@@ -198,6 +236,12 @@ export default {
     transform: translateY(-100%);
   }
 
+  &.transparent-header {
+    .header__wrapper {
+      opacity: 0;
+    }
+  }
+
   &__wrapper {
     margin-bottom: 12px;
     width: 100%;
@@ -205,11 +249,12 @@ export default {
     z-index: 101;
     background-color: #fff;
     padding-bottom: 8px;
+    opacity: 1;
 
     @media screen and (max-width: 720px) {
       padding-bottom: 8px;
       margin-bottom: 0;
-      background-color: transparent;
+      // background-color: transparent;
     }
   }
 
@@ -321,11 +366,11 @@ export default {
     }
   }
 
-  // .header-search {
-  //   @media screen and (max-width: 720px) {
-  //     display: none;
-  //   }
-  // }
+  .header-search {
+    @media screen and (max-width: 720px) {
+      display: none;
+    }
+  }
 
   &__user-actions {
     @media screen and (max-width: 720px) {
@@ -345,7 +390,7 @@ export default {
     transition: opacity 0.5s;
 
     // @media screen and (max-width: 720px) {
-    //   display: none;
+    //  background-color: #fff;
     // }
   }
 }
@@ -376,5 +421,15 @@ export default {
 .overlay-enter-to,
 .overlay-leave-from {
   opacity: 1;
+}
+</style>
+
+<style lang="scss">
+.header {
+  .header-search {
+    @media screen and (max-width: 720px) {
+      border: none;
+    }
+  }
 }
 </style>

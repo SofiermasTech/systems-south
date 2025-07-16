@@ -3,6 +3,7 @@
     <!-- Кнопка избранного -->
     <button
       class="user-actions__btn user-actions__btn--favorites"
+      :class="{ active: isFavouritesPage && windowWidth < 720 }"
       type="button"
       @click="clickFavoritesBtn"
     >
@@ -14,7 +15,11 @@
     </button>
     <!-- Кнопки корзины -->
     <template v-if="cartItemsCount === 0 || isCartPage">
-      <RouterLink to="/cart" class="user-actions__btn user-actions__btn--cart">
+      <RouterLink
+        to="/cart"
+        class="user-actions__btn user-actions__btn--cart"
+        :class="{ 'active-page': isActive }"
+      >
         <span class="user-actions__icon">
           <BaseIcon name="CartIcon" />
           <span v-if="isCartPage && cartItemsCount !== 0" class="user-actions__counter">{{
@@ -29,7 +34,7 @@
       <button
         class="user-actions__btn user-actions__btn--cart"
         @click="toggleCartPopup"
-        :class="{ 'popup-open': isOpen }"
+        :class="{ 'active-open': isOpen }"
       >
         <span class="user-actions__icon">
           <BaseIcon name="CartIcon" />
@@ -40,7 +45,11 @@
     </template>
     <!-- Кнопки личного кабинета -->
     <template v-if="authStore.isLoggedIn">
-      <RouterLink to="/personal" class="user-actions__btn user-actions__btn--personal">
+      <RouterLink
+        to="/personal"
+        class="user-actions__btn user-actions__btn--personal"
+        :class="{ active: isPersonalPage && windowWidth < 720 }"
+      >
         <span class="user-actions__icon">
           <BaseIcon name="UserIcon" />
         </span>
@@ -74,11 +83,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       authStore: useAuthStore(),
       popupStore: usePopupStore(),
+      windowWidth: window.innerWidth,
     }
   },
   computed: {
@@ -89,6 +103,12 @@ export default {
     isCartPage() {
       return this.$route.path.startsWith('/cart')
     },
+    isPersonalPage() {
+      return this.$route.path.endsWith('/profile') || this.$route.path.endsWith('/orders')
+    },
+    isFavouritesPage() {
+      return this.$route.path.endsWith('/favorites')
+    },
   },
   methods: {
     toggleCartPopup() {
@@ -98,7 +118,9 @@ export default {
         this.popupStore.showPopup('CartPopup', {})
       }
     },
-
+    updateWindowWidth() {
+      this.windowWidth = window.innerWidth
+    },
     openLoginPopup() {
       this.popupStore.showPopup('LoginPopup', {
         isVisible: true,
@@ -113,6 +135,13 @@ export default {
         })
       }
     },
+  },
+  mounted() {
+    window.addEventListener('resize', this.updateWindowWidth)
+    this.updateWindowWidth()
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateWindowWidth)
   },
 }
 </script>
@@ -147,13 +176,10 @@ export default {
       padding: 8px 20px;
     }
 
-      @include tablet-bottom {
+    @include tablet-bottom {
       padding: 0 clamp(6px, 0.5vw, 10px);
       gap: 3px;
     }
-  }
-
-  &__btn--favorites {
   }
 
   &__icon {
@@ -167,7 +193,7 @@ export default {
       height: 20px;
     }
 
-      @include tablet-bottom {
+    @include tablet-bottom {
       width: 18px;
       height: 18px;
     }
@@ -217,12 +243,42 @@ export default {
   }
 
   &__btn--cart {
-    &.popup-open {
+    &.active-page {
       background-color: var(--blue-0);
 
       @media screen and (max-width: 720px) {
         background-color: var(--blue);
 
+        .user-actions__icon {
+          color: var(--white);
+        }
+
+        .user-actions__counter {
+          background-color: var(--white);
+          color: var(--blue);
+        }
+      }
+    }
+    &.active-open {
+      @media screen and (max-width: 720px) {
+        background-color: transparent;
+        border: 1px solid var(--blue);
+
+        svg {
+          color: var(--blue);
+        }
+      }
+    }
+  }
+  &__btn--personal,
+  &__btn--favorites {
+    &.active {
+      background-color: var(--blue-0);
+
+      @media screen and (max-width: 720px) {
+        background-color: var(--blue);
+        border: 1px solid var(--blue);
+        
         .user-actions__icon {
           color: var(--white);
         }

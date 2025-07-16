@@ -1,36 +1,11 @@
 <template>
   <div class="header-search">
     <BaseSearchField v-if="this.windowWidth > 1030" v-model="searchQuery" @search="handleSearch" />
-    <!-- <label class="header-search__input">
-      <input
-        type="text"
-        placeholder="Поиск"
-        v-model="searchQuery"
-        @keyup.enter="handleSearch"
-        aria-label="Поиск товаров"
-      />
-      <button
-        class="header-search__input-btn"
-        :class="{ active: this.searchQuery.length > 0 }"
-        :disabled="this.searchQuery.length === 0"
-        @click="handleSearch"
-        aria-label="Искать по запросу"
-      >
-        <BaseIcon name="SearchIcon" />
-      </button>
-    </label> -->
-    <BaseButtonSearch v-else />
-    <!-- <button
-      v-else
-      class="header-search__btn-mob"
-      type="button"
-      aria-label="Открыть окно для ввода запроса"
-      @click="openSearchField"
-    >
-      <BaseIcon name="SearchIcon" />
-    </button> -->
+
+    <BaseButtonSearch @click="openSearchField" v-if="this.windowWidth > 720" />
+
     <SearchPopup
-      v-if="popupStore.currentPopupName === 'search' && this.windowWidth > 1030"
+      v-if="popupStore.currentPopupName === 'search' || popupStore.secondaryPopupName === 'search'"
       :filteredProducts="filteredProducts"
       :searchQuery="searchQuery"
       @close="closeSearchPopup"
@@ -38,18 +13,12 @@
   </div>
   <div
     class="header-search-mobile"
-    v-if="isOpen && this.windowWidth > 600 && this.windowWidth < 1030"
+    v-if="popupStore.currentPopupName === 'searchMob' || popupStore.secondaryPopupName === 'search'"
   >
     <div class="container header-search-mobile__body">
       <BaseSearchField v-model="searchQuery" @search="handleSearch" />
       <BaseButtonClosePopup @click="closeSearchField" />
     </div>
-    <SearchPopup
-      v-if="popupStore.currentPopupName === 'search'"
-      :filteredProducts="filteredProducts"
-      :searchQuery="searchQuery"
-      @close="closeSearchPopup"
-    />
   </div>
 </template>
 
@@ -69,19 +38,14 @@ export default {
     BaseSearchField,
     BaseButtonSearch,
   },
-  props: {
-    // isMobOpen: {
-    //   type: Boolean,
-    //   default: false,
-    // },
-  },
+  props: {},
   data() {
     return {
       searchQuery: '',
       catalogStore: null,
       popupStore: null,
       windowWidth: window.innerWidth,
-      isOpen: false,
+      // isOpen: false,
     }
   },
   computed: {
@@ -96,21 +60,24 @@ export default {
   watch: {
     searchQuery(newQuery) {
       if (newQuery.trim().length > 0) {
-        // Открываем попап поиска через стор и передаём данные
-        this.popupStore.showPopup('search', {
+        if (this.popupStore.currentPopupName !== 'search') {
+          this.popupStore.showPopup('search')
+        }
+        this.popupStore.showSecondaryPopup('search', {
           searchQuery: newQuery,
           filteredProducts: this.filteredProducts,
         })
-      } else if (this.popupStore.currentPopupName === 'search') {
-        // Закрываем попап если строка поиска пустая
-        this.popupStore.hidePopup()
+      } else {
+        this.popupStore.hideSecondaryPopup()
       }
     },
   },
+
   methods: {
     closeSearchPopup() {
       this.searchQuery = ''
       this.popupStore.hidePopup()
+      this.popupStore.hideSecondaryPopup()
     },
     handleSearch() {
       if (this.searchQuery.trim().length === 0) return
@@ -124,12 +91,12 @@ export default {
       this.windowWidth = window.innerWidth
     },
     openSearchField() {
-      this.popupStore.showPopup('searchMob', {})
-      this.isOpen = true
+      this.popupStore.showPopup('searchMob', { isOpen: true })
+      // this.isOpen = true
     },
     closeSearchField() {
-      this.isOpen = false
-      this.popupStore.hidePopup('searchMob', {})
+      // this.isOpen = false
+      this.popupStore.hidePopup('searchMob', { isOpen: false })
       this.searchQuery = ''
     },
   },
@@ -167,10 +134,16 @@ export default {
     flex-shrink: 0;
     width: 60px;
     border: 1px solid var(--grey-100);
+    position: static;
   }
 
   @include tablet-bottom {
     width: 50px;
+  }
+
+  @media screen and (max-width: 720px) {
+    background-color: none;
+    width: 0;
   }
 
   &__input {
@@ -261,6 +234,16 @@ export default {
 
   @media screen and (max-width: 720px) {
     padding-block: 16px;
+
+    &::before {
+      content: '';
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: #fff;
+    }
   }
 
   &__body {

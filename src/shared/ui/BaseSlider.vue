@@ -113,7 +113,7 @@ export default {
   }
 
   .swiper-slide {
-    width: 100% !important;
+    // width: 100% !important;
     height: auto;
   }
 }

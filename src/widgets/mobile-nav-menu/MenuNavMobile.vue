@@ -71,7 +71,7 @@ export default {
 
 .menu-nav {
   width: 100vw;
-  height: calc(100vh - 70px);
+  height: 100vh;
   position: fixed;
   top: 0;
   left: 0;

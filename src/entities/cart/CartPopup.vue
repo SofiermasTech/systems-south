@@ -123,12 +123,16 @@ export default {
   justify-content: flex-end;
   align-items: flex-end;
 
+  @include tablet {
+    height: 60vh;
+  }
+
   @media screen and (max-width: 720px) {
-    height: calc(100vh - 70px);
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 86px;
+    left: 50%;
     z-index: 200;
+    transform: translateX(-50%);
   }
 
   &__body {
@@ -143,15 +147,17 @@ export default {
 
     @include laptop-bottom {
       width: 45vw;
+      padding: 20px 24px 14px 14px;
     }
 
     @include tablet-bottom {
-      width: 60vw;
+      width: 50vw;
     }
 
     @media screen and (max-width: 720px) {
-      width: 100vw;
-      border-radius: 0;
+      width: calc(100vw - 40px);
+      max-width: 520px;
+      border-radius: 10px;
     }
   }
 
@@ -164,12 +170,12 @@ export default {
 
   &__title {
     font-weight: 600;
-    font-size: 20px;
+    @include fluid-text(24, 12);
     line-height: 110%;
   }
 
   &__btn-clear {
-    font-size: 14px;
+    @include fluid-text(16, 10);
     text-decoration: underline;
     text-decoration-skip-ink: none;
     text-align: right;
@@ -186,7 +192,19 @@ export default {
     gap: 8px;
   }
 
-  &__card {
+  .popup-card__text {
+    @include fluid-text(16, 10);
+  }
+
+  .popup-card__price {
+    @include fluid-text(14, 12);
+  }
+
+  .popup-card__img {
+    @include tablet {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   &__bottom {
@@ -205,13 +223,13 @@ export default {
 
   &__total-title {
     font-weight: 600;
-    font-size: 16px;
+    @include fluid-text(16, 10);
     color: var(--grey-200);
   }
 
   &__total-sum {
     font-weight: 600;
-    font-size: 16px;
+    @include fluid-text(16, 10);
   }
 
   &__link {

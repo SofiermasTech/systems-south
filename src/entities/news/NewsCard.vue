@@ -79,7 +79,7 @@ export default {
         'subtitle'
         'img'
         'bottom';
-        gap: 20px;
+      gap: 20px;
     }
   }
 
@@ -124,7 +124,6 @@ export default {
 
     @include mobile {
       grid-row: span 1;
-      // max-height: 210px;
     }
 
     img {
@@ -135,6 +134,7 @@ export default {
 
       @include mobile {
         max-height: clamp(210px, 55vw, 250px);
+        max-width: clamp(315px, 88vw, 560px);
       }
     }
   }

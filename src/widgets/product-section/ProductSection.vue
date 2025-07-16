@@ -119,24 +119,24 @@ export default {
   padding-block: 70px 80px;
   background-color: var(--blue-0);
 
-  .container {
-    @include mobile {
-      padding-right: 0;
-    }
-  }
-
   &__body {
     display: flex;
     flex-direction: column;
     gap: 32px;
+
+    .swiper-wrapper {
+      @include tablet-bottom {
+        padding-inline: 20px;
+      }
+    }
   }
 
   &__body-top {
     display: flex;
     justify-content: space-between;
 
-    @include mobile {
-      padding-right: 16px;
+    @include tablet-bottom {
+      padding-inline: var(--container-padding-y);
     }
   }
 
@@ -158,6 +158,14 @@ export default {
   &__cards {
     display: flex;
     gap: 8px;
+  }
+
+  .container {
+    @include tablet-bottom {
+      max-width: 100%;
+      padding-inline: 0;
+      margin: 0;
+    }
   }
 }
 </style>

@@ -94,6 +94,20 @@
         <h3>{{ product.brand }}</h3>
         <p>{{ product.name }}</p>
       </div>
+      <ul class="product-card__list">
+        <li class="product-card__list-item">
+          <p>Тип товара: <span>Пульт</span></p>
+        </li>
+        <li class="product-card__list-item">
+          <p>Цвет покрытия: <span>Чёрный</span></p>
+        </li>
+        <li class="product-card__list-item">
+          <p>Материал корпуса: <span>Пластик</span></p>
+        </li>
+        <li class="product-card__list-item">
+          <p>Способ монтажа: <span>Накладной</span></p>
+        </li>
+      </ul>
     </div>
     <div class="product-card__right">
       <p class="product-card__price">{{ formattedPrice }} ₽</p>
@@ -392,6 +406,7 @@ export default {
         font-size: 14px;
       }
     }
+
     p {
       margin: 0;
       max-width: 95%;
@@ -449,39 +464,80 @@ export default {
   &.card-horizontal {
     max-width: 100%;
     flex-direction: row;
-    height: 235px;
+    align-items: center;
+    height: clamp(160px, 18vw, 290px);
     gap: 16px;
     padding: 0;
 
     .product-card__images {
+      margin: auto 0;
       border-radius: 16px;
-      width: 280px;
-      height: 234px;
+      width: clamp(190px, 15vw, 280px);
+      height: clamp(130px, 13vw, 240px);
     }
 
     .product-card__img img {
-      max-height: 235px;
+      max-height: 240px;
+    }
+
+    .product-card__pagination-list {
+      bottom: 20px;
     }
 
     .product-card__info {
       max-width: 52%;
-      padding-block: 16px;
+      // height: 100%;
+      padding-block: 0;
       display: flex;
       flex-direction: column;
       gap: 16px;
+
+      @include tablet {
+        gap: 12px;
+      }
     }
 
     .product-card__top-info {
       flex-direction: row;
       gap: 40px;
+
+      @include tablet {
+        gap: 20px;
+      }
     }
 
     .product-card__text {
       margin-top: 0;
+      padding: 0;
+
+      @include tablet {
+        gap: 6px;
+      }
+    }
+
+    .product-card__list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      @include tablet-bottom {
+        gap: 3px;
+      }
+    }
+
+    .product-card__list-item {
+      @include fluid-text(14, 10);
+      color: var(--grey-200);
+
+      span {
+        font-weight: 600;
+        color: var(--black);
+      }
     }
 
     .product-card__right {
       margin-left: auto;
+      height: 100%;
       padding-block: 16px;
       padding-right: 20px;
       display: flex;
@@ -494,6 +550,10 @@ export default {
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .product-quantity {
+      width: 136px;
     }
   }
 }

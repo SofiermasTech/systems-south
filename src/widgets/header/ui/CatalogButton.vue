@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="btn-catalog" @click="toggleMenu" :class="{ active: active }">
+  <button type="button" class="btn-catalog" @click="toggleMenu" :class="{ 'active-open': isOpen, 'active-page': isActive }">
     <span class="btn-catalog__icon">
       <BaseIcon name="CatalogButtonIcon" />
     </span>
@@ -12,7 +12,11 @@ import { usePopupStore } from '@/shared/stores/popup.js'
 export default {
   name: 'CatalogButton',
   props: {
-    active: {
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
+    isActive: {
       type: Boolean,
       default: false,
     },
@@ -85,7 +89,7 @@ export default {
     border-color: var(--blue);
     color: var(--blue);
 
-     @media screen and (max-width: 720px) {
+    @media screen and (max-width: 720px) {
       background-color: var(--blue);
       color: var(--white);
     }

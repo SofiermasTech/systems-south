@@ -69,6 +69,27 @@ export default {
         spaceBetween: 8,
         autoplay: false,
         pagination: false,
+        breakpoints: {
+          320: {
+            slidesPerView: 1.4,
+          },
+          400: {
+            slidesPerView: 1.6,
+          },
+
+          490: {
+            slidesPerView: 2.2,
+          },
+          700: {
+            slidesPerView: 3.2,
+          },
+          800: {
+            slidesPerView: 3.5,
+          },
+          821: {
+            slidesPerView: 4,
+          },
+        },
       },
     }
   },
@@ -87,42 +108,79 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .reviews {
   padding-top: clamp(40px, 7.5vh, 70px);
   padding-bottom: clamp(50px, 9vh, 80px);
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: clamp(30px, 2.5vw, 50px);
 
   &__top {
     display: flex;
     justify-content: space-between;
+
+    @include tablet-bottom {
+      padding-inline: var(--container-padding-y);
+    }
   }
 
   &__title {
   }
 
   &__slide {
-    border-radius: 16px;
+    border-radius: var(--br-block);
     padding: 24px;
     background-color: var(--white);
     height: fit-content;
+
+    @include tablet-bottom {
+      padding: 20px;
+    }
   }
 
   &__slide-name {
     font-weight: 500;
-    font-size: 16px;
+    @include fluid-text(16, 12);
   }
 
   &__slide-date {
     margin-block: 8px 16px;
     display: block;
-    font-size: 14px;
+    @include fluid-text(16, 10);
     color: var(--grey-200);
+
+    @include tablet {
+      margin-block: 8px 12px;
+    }
   }
 
   &__slide-text {
-    font-size: 14px;
+    @include fluid-text(16, 10);
+  }
+
+  .slider-arrow {
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &.container {
+    @include tablet-bottom {
+      max-width: 100%;
+      padding-inline: 0;
+      margin: 0;
+    }
+  }
+
+  .base-slider {
+    width: 100%;
+    .swiper-wrapper {
+      @include tablet-bottom {
+        padding-inline: 20px;
+      }
+    }
   }
 }
 </style>

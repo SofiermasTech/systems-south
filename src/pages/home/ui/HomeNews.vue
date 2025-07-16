@@ -84,6 +84,10 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    @include tablet-bottom {
+      padding-inline: var(--container-padding-y);
+    }
   }
 
   &__top-title {
@@ -107,6 +111,8 @@ export default {
     }
     @include tablet-bottom {
       grid-template-columns: repeat(3, 1fr);
+
+      padding-inline: 20px;
     }
 
     @include mobile {
@@ -130,6 +136,18 @@ export default {
           order: 1;
         }
       }
+
+      .news-card:first-child {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  &.container {
+    @include tablet-bottom {
+      max-width: 100%;
+      padding-inline: 0;
     }
   }
 }

@@ -25,6 +25,7 @@ import WarmFloorIcon from '@/shared/ui/icons/WarmFloorIcon.vue'
 import LocationIcon from '@/shared/ui/icons/LocationIcon.vue'
 import SearchIcon from '@/shared/ui/icons/SearchIcon.vue'
 import BurgerIcon from '@/shared/ui/icons/BurgerIcon.vue'
+import FilterIcon from '@/shared/ui/icons/FilterIcon.vue'
 
 export default {
   name: 'BaseIcon',
@@ -51,6 +52,7 @@ export default {
     LocationIcon,
     SearchIcon,
     BurgerIcon,
+    FilterIcon,
   },
   props: {
     name: {
@@ -83,6 +85,7 @@ export default {
         LocationIcon,
         SearchIcon,
         BurgerIcon,
+        FilterIcon,
       }
     },
   },

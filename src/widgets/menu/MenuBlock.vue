@@ -10,19 +10,36 @@
               v-for="category in categories"
               :key="category.slug"
               :class="{ active: activeCategory === category.slug }"
-              @mouseenter="setActiveCategory(category.slug)"
+              @mouseenter="!isTablet && setActiveCategory(category.slug)"
+              @click.prevent="isTablet && setActiveCategory(category.slug)"
             >
-              <RouterLink :to="`/catalog/${category.slug}`" @click="closePopup">
+              <RouterLink
+                v-if="!isTablet"
+                :to="`/catalog/${category.slug}`"
+                @click="closePopup"
+              >
                 <p>{{ category.name }}</p>
                 <span>
                   <BaseIcon name="SelectArrowIcon" />
                 </span>
               </RouterLink>
+              <div v-if="isTablet">
+                <p>{{ category.name }}</p>
+                <span>
+                  <BaseIcon name="SelectArrowIcon" />
+                </span>
+              </div>
             </li>
           </ul>
         </div>
         <Transition name="submenu">
-          <div class="menu__right" v-if="activeCategory">
+          <div class="menu__right" v-if="currentLevel === 'subcategories' || activeCategory">
+            <button class="menu__btn-back" type="button" @click="goBack">
+              <span>
+                <BaseIcon name="SelectArrowIcon" />
+              </span>
+              <span>Раздел</span>
+            </button>
             <ul class="menu__right-list">
               <li
                 class="menu__right-item"
@@ -68,7 +85,8 @@ export default {
     return {
       catalogStore: useCatalogStore(),
       popupStore: usePopupStore(),
-      // activeCategory: null,
+      currentLevel: 'categories', // 'categories' или 'subcategories'
+      isTablet: false,
     }
   },
   computed: {
@@ -79,7 +97,7 @@ export default {
       }))
     },
     subcategories() {
-      return this.activeCategory
+      return this.activeCategory && this.currentLevel === 'subcategories'
         ? this.catalogStore.getSubcategoriesByCategory(this.activeCategory).map((subcategory) => ({
             slug: subcategory,
             name: categoryNames[subcategory] || subcategory,
@@ -91,15 +109,35 @@ export default {
     closePopup() {
       this.popupStore.hidePopup()
       this.$emit('update:activeCategory', null)
+      this.currentLevel = 'categories'
     },
     setActiveCategory(category) {
+      if (this.isTablet) {
+        this.currentLevel = 'subcategories' // Переключаем на подкатегории для тач-устройств
+      }
       this.$emit('update:activeCategory', category)
     },
+    goBack() {
+      this.currentLevel = 'categories' // Возвращаемся к категориям
+      this.$emit('update:activeCategory', null) // Сбрасываем активную категорию
+    },
+    updateDeviceType() {
+    this.isTablet = window.innerWidth < 1024
+  },
+  },
+  mounted() {
+    this.updateDeviceType()
+    window.addEventListener('resize', this.updateDeviceType)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateDeviceType)
   },
 }
 </script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .menu {
   width: fit-content;
   height: 100vh;
@@ -111,7 +149,8 @@ export default {
   align-items: flex-end;
 
   @media screen and (max-width: 720px) {
-    height: calc(100vh - 70px);
+    // height: calc(100vh - 70px);
+    width: 100vw;
     position: fixed;
     top: 0;
     left: 0;
@@ -121,7 +160,7 @@ export default {
   &__body {
     width: auto;
     height: 100%;
-    padding: 32px 24px 28px 40px;
+    padding: 32px 24px 28px clamp(20px, 2vw, 40px);
     background-color: var(--white);
     border-radius: 0 10px 10px 0;
     display: flex;
@@ -137,6 +176,10 @@ export default {
   &__left {
     width: 23vw;
 
+    @include tablet {
+      width: 30vw;
+    }
+
     @media screen and (max-width: 720px) {
       width: 100%;
     }
@@ -145,7 +188,7 @@ export default {
   &__left-title {
     margin-bottom: 20px;
     font-weight: 600;
-    font-size: 20px;
+    @include fluid-text(24, 16);
     line-height: 110%;
   }
 
@@ -161,7 +204,16 @@ export default {
     border-radius: 10px;
     cursor: pointer;
 
-    a {
+    &:not(:last-child) {
+      border-bottom: none;
+    }
+
+    @include tablet {
+      padding: 12px;
+    }
+
+    a,
+    div {
       text-decoration: none;
       color: var(--black);
       display: flex;
@@ -172,13 +224,21 @@ export default {
     p {
       margin: 0;
       font-weight: 500;
-      font-size: 14px;
+      @include fluid-text(14, 10);
     }
 
     span {
-      width: 10px;
-      height: 8px;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transform: rotate(-90deg);
+
+      svg {
+        width: 8px;
+        height: 10px;
+      }
     }
 
     &.active {
@@ -191,12 +251,61 @@ export default {
     padding-top: 42px;
     transition: 0.3s;
 
+    @include tablet {
+      width: 30vw;
+    }
+
+    @media screen and (max-width: 720px) {
+      width: calc(100vw - (var(--container-padding-y) * 2));
+      position: absolute;
+      left: var(--container-padding-y);
+      padding-inline: var(--container-padding-y);
+      background-color: var(--white);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
     a {
       text-decoration: none;
       color: var(--black);
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+  }
+
+  &__btn-back {
+    width: fit-content;
+    margin-left: 8px;
+    background-color: transparent;
+    border: none;
+    display: none;
+    align-items: center;
+    gap: 12px;
+
+    @media screen and (max-width: 720px) {
+      display: flex;
+    }
+
+    span {
+      font-weight: 600;
+      font-size: 16px;
+
+      &:first-of-type {
+        width: 16px;
+        height: 16px;
+        transform: rotate(90deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    svg {
+      width: 8px;
+      height: 8px;
     }
   }
 
@@ -207,7 +316,7 @@ export default {
 
     p {
       margin: 0;
-      font-size: 14px;
+      @include fluid-text(14, 10);
     }
 
     span {
@@ -245,14 +354,27 @@ export default {
 .submenu-enter-from,
 .submenu-leave-to {
   opacity: 0;
+
+  @media screen and (max-width: 720px) {
+    opacity: 1;
+    transform: translateX(100%);
+  }
 }
 .submenu-enter-active,
 .submenu-leave-active {
   transition: opacity 0.3s ease;
+
+  @media screen and (max-width: 720px) {
+    transition: 0.5s;
+  }
 }
 
 .submenu-enter-to,
 .submenu-leave-from {
   opacity: 1;
+
+  @media screen and (max-width: 720px) {
+    transform: translateX(0);
+  }
 }
 </style>

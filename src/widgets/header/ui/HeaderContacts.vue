@@ -150,6 +150,8 @@ export default {
   @media screen and (max-width: 720px) {
     max-width: 100%;
     width: 165px;
+    align-items: center;
+    justify-content: center;
   }
 
   &__tel {
@@ -162,7 +164,7 @@ export default {
     }
 
     @include tablet-bottom {
-      gap: 2px;
+      gap: 3px;
     }
   }
 
@@ -232,6 +234,10 @@ export default {
       padding-top: 14px;
       gap: 4px;
     }
+
+     @media screen and (max-width: 720px) {
+      margin-right: auto;
+     }
   }
 
   &__email-title {

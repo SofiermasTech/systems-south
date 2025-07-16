@@ -18,19 +18,39 @@
 <script></script>
 
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .delivery {
-  padding-block: clamp(40px, 12vh, 120px);
+  padding-block: clamp(40px, 6vw, 120px);
   background-color: var(--white);
 
   &__body {
     display: flex;
     flex-direction: column;
     gap: 40px;
+
+    @include tablet-bottom {
+      gap: 24px;
+    }
   }
 
   &__title {
     &.h2 {
-      max-width: 45%;
+      max-width: 40%;
+      @include fluid-text(56, 24);
+
+      @include tablet {
+        max-width: 50%;
+      }
+
+      @include mobile {
+        font-size: 32px;
+        max-width: 80%;
+      }
+
+      @include mobile-bottom {
+        max-width: 100%;
+      }
     }
   }
 
@@ -38,6 +58,14 @@
     max-width: 70%;
     width: 100%;
     margin-inline: auto;
+
+    @include tablet {
+      max-width: 85%;
+    }
+
+    @include mobile {
+      max-width: 100%;
+    }
 
     img {
       width: 100%;

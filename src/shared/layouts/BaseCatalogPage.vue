@@ -25,7 +25,7 @@
 
     <div class="catalog__content container">
       <CatalogFilters
-        v-if="filteredProducts.length > 0"
+        v-if="filteredProducts.length > 0 && this.windowWidth > 1200"
         class="catalog__filters"
         @apply-filters="handleApplyFilters"
         :products="products"
@@ -33,12 +33,17 @@
         :subcategory="subcategory"
       />
       <div class="catalog__sort" v-if="filteredProducts.length > 0">
+        <BaseButtonFilters v-if="this.windowWidth <= 1200" @click="openFilters" />
         <CatalogSortPanel @sort-change="handleSortChange" />
-        <CatalogSortView :view-mode="viewMode" @view-change="handleViewChange" />
+        <CatalogSortView
+          :view-mode="viewMode"
+          @view-change="handleViewChange"
+          v-if="this.windowWidth > 600"
+        />
       </div>
       <div
         class="catalog__cards"
-        :class="{ horizontal: viewMode === 'horizontal' }"
+        :class="{ horizontal: viewMode === 'horizontal', vertical: viewMode === 'vertical' }"
         v-if="filteredProducts.length > 0"
       >
         <ProductCard
@@ -52,6 +57,14 @@
       </div>
     </div>
   </div>
+  <FiltersPopup
+    v-if="isPopupVisible"
+    @apply-filters="handleApplyFilters"
+    :products="products"
+    :category="category"
+    :subcategory="subcategory"
+    @close="closePopup"
+  />
 </template>
 
 <script>
@@ -60,6 +73,9 @@ import CatalogSortPanel from '@/features/catalog-filters/CatalogSortPanel.vue'
 import CatalogSortView from '@/features/catalog-filters/CatalogSortView.vue'
 import ProductCard from '@/entities/product/ProductCard.vue'
 import IntroPages from '@widgets/intro-pages/IntroPages.vue'
+import BaseButtonFilters from '@/shared/ui/BaseButtonFilters.vue'
+import FiltersPopup from '@/widgets/filters-popup/FiltersPopup.vue'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'BaseCatalogPage',
@@ -69,6 +85,8 @@ export default {
     CatalogSortPanel,
     CatalogSortView,
     ProductCard,
+    BaseButtonFilters,
+    FiltersPopup,
   },
   props: {
     title: {
@@ -104,15 +122,19 @@ export default {
       default: null,
     },
   },
+  emits: ['toggleFavorite'],
   data() {
     return {
+      popupStore: usePopupStore(),
       sortType: 'cheap-first',
       appliedFilters: {
         brands: [],
         subcategories: [],
         priceRange: [null, null],
       },
-      viewMode: localStorage.getItem('viewMode') || 'vertical',
+      viewMode: this.getInitialViewMode(),
+      windowWidth: window.innerWidth,
+      isPopupVisible: false,
     }
   },
   computed: {
@@ -166,6 +188,11 @@ export default {
     },
   },
   watch: {
+    windowWidth(newWidth) {
+      if (newWidth <= 600 && this.viewMode === 'horizontal') {
+        this.viewMode = 'vertical'
+      }
+    },
     viewMode(newValue) {
       localStorage.setItem('viewMode', newValue)
     },
@@ -193,10 +220,34 @@ export default {
     handleToggleFavorite(product) {
       this.$emit('toggle-favorite', product)
     },
-    handleViewChange(mode) {
-      this.viewMode = mode
-      localStorage.setItem('viewMode', mode)
+    getInitialViewMode() {
+      const isMobile = window.innerWidth <= 600
+      const savedMode = localStorage.getItem('viewMode')
+      return isMobile ? 'vertical' : savedMode || 'vertical'
     },
+    handleViewChange(mode) {
+      if (this.windowWidth > 600) {
+        this.viewMode = mode
+        localStorage.setItem('viewMode', mode)
+      }
+    },
+    updateWindowWidth() {
+      this.windowWidth = window.innerWidth
+    },
+    openFilters() {
+      this.isPopupVisible = true
+      console.log('Products at popup open:', this.products)
+    },
+    closePopup() {
+      this.isPopupVisible = false
+    },
+  },
+  mounted() {
+    window.addEventListener('resize', this.updateWindowWidth)
+    this.updateWindowWidth()
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateWindowWidth)
   },
 }
 </script>
@@ -207,35 +258,38 @@ export default {
 .catalog {
   min-height: 60vh;
   margin-bottom: var(--section-offset);
-  // display: grid;
-  // grid-template-columns: clamp(266px, 21vw, 395px) 1fr;
-  // row-gap: 20px;
-  // column-gap: 32px;
-  // grid-template-areas:
-  //   'intro intro'
-  //   'cat cat'
-  //   'filters sort'
-  //   'filters cards';
-
   display: flex;
   flex-direction: column;
-  gap: clamp(28px, 2.5vw, 50px);
+  gap: clamp(16px, 2.5vw, 50px);
 
-  &__intro {
-    grid-area: intro;
-    margin-bottom: 40px;
-  }
+  // &__intro {
+  //   grid-area: intro;
+  // }
 
   &__categories {
+    margin-top: 20px;
     grid-area: cat;
     display: flex;
     align-items: center;
     gap: 32px;
+
+    @include tablet-bottom {
+      gap: 16px;
+      flex-shrink: 0;
+      -ms-scroll-chaining: auto;
+      overscroll-behavior: auto;
+      -webkit-scroll-snap-type: x mandatory;
+      -ms-scroll-snap-type: x mandatory;
+      scroll-snap-type: x mandatory;
+      overflow-x: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   }
 
   &__categories-title {
     font-weight: 500;
-    @include fluid-text(16, 12);
+    @include fluid-text(16, 10);
     color: var(--grey-200);
   }
 
@@ -243,9 +297,15 @@ export default {
     display: flex;
     gap: clamp(8px, 0.6vw, 16px);
     align-items: center;
+
+    @include tablet-bottom {
+      flex-shrink: 0;
+    }
   }
 
   &__categories-item {
+    user-select: none;
+
     .base-button {
       background-color: var(--blue-100);
       color: var(--black);
@@ -295,13 +355,30 @@ export default {
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+
+    @media screen and (max-width: 1200px) {
+      justify-content: flex-start;
+      padding-block: 6px;
+    }
+
+    @include mobile {
+      justify-content: space-between;
+      position: relative;
+      padding-block: 4px;
+      padding-inline: 8px 12px;
+    }
   }
 
   &__cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: clamp(350px, 25vw, 460px);
+    grid-template-rows: clamp(160px, 18vw, 290px);
+    grid-auto-rows: clamp(160px, 18vw, 290px);
     gap: 8px;
+
+    &.vertical {
+      grid-template-rows: clamp(350px, 25vw, 460px);
+    }
 
     @media screen and (max-width: 1200px) {
       grid-template-columns: repeat(4, 1fr);

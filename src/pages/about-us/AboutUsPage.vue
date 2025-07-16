@@ -30,6 +30,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 .main-about-us {
   background-color: var(--blue-0);
 

@@ -6,8 +6,13 @@ export const useCatalogStore = defineStore('catalog', {
     products: [],
   }),
   actions: {
-    loadProducts() {
-      this.products = productsData
+    async loadProducts() {
+      this.isLoading = true
+      try {
+        this.products = productsData
+      } finally {
+        this.isLoading = false
+      }
     },
   },
   getters: {

@@ -77,12 +77,16 @@ export default {
   width: 100%;
   padding: 16px;
   border: 1px solid var(--blue-100);
-  border-radius: 12px;
+  border-radius: var(--br-btn);
   display: flex;
   gap: 12px;
 
   @include tablet {
     padding: 12px;
+  }
+
+  @include mobile {
+    padding: 8px;
   }
 
   &__img {
@@ -122,7 +126,7 @@ export default {
   &__price {
     font-weight: 600;
     // @include fluid-text(48, 14);
-     @include fluid-text(20, 12);
+    @include fluid-text(20, 12);
     color: var(--blue);
   }
 
@@ -131,6 +135,10 @@ export default {
     display: flex;
     align-items: center;
     gap: 16px;
+
+    @include tablet-bottom {
+      gap: 8px;
+    }
   }
 
   &__quantity {
@@ -140,11 +148,20 @@ export default {
       width: 24px;
       height: 24px;
       font-weight: 600;
+
+      @include tablet-bottom {
+        width: 20px;
+        height: 20px;
+      }
     }
 
     .product-quantity__value {
       font-weight: 600;
       font-size: 12px;
+
+      @include tablet-bottom {
+        font-size: 10px;
+      }
     }
   }
 

@@ -14,7 +14,7 @@
         </p>
       </div>
       <div v-if="isCatalogPage" class="intro-pages__img">
-        <img src="../../assets/images/hero-1.png" alt="" />
+        <img src="@/assets/images/hero-1.png" alt="" />
       </div>
     </div>
   </div>
@@ -61,7 +61,7 @@ export default {
       return this.$route.path.startsWith('/catalog')
     },
     isPromoItemPage() {
-      return this.$route.path.startsWith('/promo')
+      return this.$route.path.startsWith('/promo') && !this.$route.path.endsWith('/promo')
     },
   },
 }
@@ -99,10 +99,16 @@ export default {
     align-items: flex-start;
     justify-content: space-between;
     gap: 20px;
+    padding-bottom: 20px;
   }
 
   &.catalog-intro {
     height: clamp(160px, 19vw, 320px);
+
+    @include mobile {
+      height: 300px;
+      padding: 0;
+    }
   }
 
   .breadcrumb {
@@ -117,6 +123,10 @@ export default {
     flex-direction: column;
     justify-content: flex-end;
     gap: 16px;
+
+    @include mobile {
+      padding-block: 0;
+    }
   }
 
   &__title {
@@ -135,14 +145,22 @@ export default {
   &__subtitle {
     max-width: 60%;
     @include fluid-text(16, 12);
+
+    @include mobile {
+      max-width: 80%;
+    }
   }
 
   &__img {
     position: relative;
-    // right: 0;
-    // top: 0;
     grid-area: img;
     overflow: hidden;
+
+    @include mobile {
+      width: 100%;
+      height: 150px;
+      align-self: flex-end;
+    }
 
     img {
       transform: rotate(-25deg);
@@ -154,6 +172,12 @@ export default {
 
       @include desktop {
         top: 15%;
+      }
+
+      @include mobile {
+        max-width: 250px;
+        height: 105%;
+        right: -12%;
       }
     }
   }

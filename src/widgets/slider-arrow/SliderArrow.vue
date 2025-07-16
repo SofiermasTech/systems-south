@@ -69,9 +69,14 @@ export default {
     justify-content: center;
     cursor: pointer;
 
-    @include tablet {
+    @include laptop-bottom {
       width: 36px;
       height: 36px;
+    }
+
+    @include tablet-bottom {
+      width: 32px;
+      height: 32px;
     }
 
     svg {

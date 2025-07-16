@@ -83,7 +83,12 @@ export default {
 @import '@/assets/styles/utils.scss';
 
 .other-items {
-  max-width: 100%;
+  max-width: clamp(320px, 50vw, 860px);
+  width: 100%;
+
+  @include mobile {
+      max-width: clamp(315px, 92vw, 560px);
+  }
 
   &__top {
     margin-bottom: clamp(28px, 2vw, 40px);
@@ -128,6 +133,10 @@ export default {
         'img';
     }
 
+    @include mobile {
+      max-width: clamp(315px, 96vw, calc(600px - (var(--container-padding-y) * 2)));
+    }
+
     &__date {
       align-self: flex-end;
     }
@@ -145,6 +154,7 @@ export default {
 
       @include tablet-bottom {
         max-height: 100px;
+        max-width: clamp(315px, 92vw, calc(600px - (var(--container-padding-y) * 2)));
       }
     }
   }

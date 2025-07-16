@@ -123,8 +123,9 @@
 </template>
 
 <script>
-import { useCatalogStore } from '@/shared/stores/catalog'
-import { categoryNames } from '@/shared/config/categoryNames'
+import { useCatalogStore } from '@/shared/stores/catalog.js'
+import { categoryNames } from '@/shared/config/categoryNames.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'CatalogFilters',
@@ -133,10 +134,11 @@ export default {
     subcategory: { type: String, default: null },
     products: { type: Array, default: () => [] },
   },
-  emits: ['apply-filters'],
+  emits: ['apply-filters', 'close'],
   data() {
     return {
       catalogStore: useCatalogStore(),
+      popupStore: usePopupStore(),
       filterStates: {
         brand: true,
         subcategory: true,
@@ -150,11 +152,6 @@ export default {
   },
   computed: {
     availableBrands() {
-      if (this.products && this.products.length > 0) {
-        const brands = [...new Set(this.products.map((product) => product.brand))]
-        return brands.filter((brand) => brand && brand.trim() !== '')
-      }
-      // Для страницы каталога, если products не переданы
       let products = this.catalogStore.getProducts
       if (this.subcategory) {
         products = this.catalogStore.getProductsByCategoryAndSubcategory(
@@ -168,32 +165,22 @@ export default {
       return brands.filter((brand) => brand && brand.trim() !== '')
     },
     availableSubcategories() {
-      if (this.products && this.products.length > 0) {
-        const subcats = [...new Set(this.products.map((product) => product.subcategory))]
-        return subcats
-          .filter((subcat) => subcat && subcat.trim() !== '')
-          .map((subcat) => ({
-            slug: subcat,
-            name: categoryNames[subcat] || subcat,
-          }))
+      let products = this.catalogStore.getProducts
+      if (this.subcategory) {
+        products = this.catalogStore.getProductsByCategoryAndSubcategory(
+          this.category,
+          this.subcategory,
+        )
+      } else if (this.category) {
+        products = this.catalogStore.getProductsByCategory(this.category)
       }
-
-      if (!this.category) {
-        const subcats = [
-          ...new Set(this.catalogStore.getProducts.map((product) => product.subcategory)),
-        ]
-        return subcats
-          .filter((subcat) => subcat && subcat.trim() !== '')
-          .map((subcat) => ({
-            slug: subcat,
-            name: categoryNames[subcat] || subcat,
-          }))
-      }
-      const subcats = this.catalogStore.getSubcategoriesByCategory(this.category)
-      return subcats.map((subcat) => ({
-        slug: subcat,
-        name: categoryNames[subcat] || subcat,
-      }))
+      const subcats = [...new Set(products.map((product) => product.subcategory))]
+      return subcats
+        .filter((subcat) => subcat && subcat.trim() !== '')
+        .map((subcat) => ({
+          slug: subcat,
+          name: categoryNames[subcat] || subcat,
+        }))
     },
     maxPrice() {
       const products =
@@ -222,6 +209,8 @@ export default {
         subcategories: [...this.selectedSubcategories],
         priceRange: [priceFrom, priceTo],
       })
+
+      this.closePopup()
     },
     resetFilters() {
       this.selectedBrands = []
@@ -234,9 +223,9 @@ export default {
         priceRange: [null, null],
       })
     },
-  },
-  async created() {
-    await this.catalogStore.loadProducts()
+    closePopup() {
+      this.$emit('close')
+    },
   },
 }
 </script>
@@ -362,10 +351,18 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+
+    @include tablet {
+      display: flex;
+    }
   }
 
   &__label-price {
     width: clamp(112px, 8.5vw, 162px);
+
+     @include tablet {
+      width: 100%;
+    }
   }
 
   &__price {
@@ -382,7 +379,7 @@ export default {
     }
 
     span {
-        font-weight: 500;
+      font-weight: 500;
       font-size: 16px;
       color: var(--blue-200);
     }

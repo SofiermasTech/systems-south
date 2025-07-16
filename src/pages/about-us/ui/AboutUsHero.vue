@@ -24,22 +24,19 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/styles/utils.scss';
+
 .about-us {
-  height: 100vh;
+  height: 85vh;
   max-height: 1080px;
-  padding: 50px 40px;
+  padding-top: 50px;
   padding-bottom: clamp(40px, 12vh, 120px);
   background-image: url('@/assets/images/about-us-back.jpg');
   background-position: top;
   background-size: cover;
 
-  & .breadcrumb__item {
-    color: var(--white);
-  }
-
-  & .breadcrumb__item:not(:last-child) a,
-  & .breadcrumb__item:not(:last-child) a::after {
-    color: var(--blue-100) !important;
+  @include tablet {
+    height: 60vh;
   }
 
   &__body {
@@ -53,11 +50,15 @@ export default {
     height: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
+
+    @include mobile {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__title {
     font-weight: 500;
-    font-size: 60px;
+    @include fluid-text(64, 24);
     line-height: 110%;
     letter-spacing: -0.04em;
     color: var(--white);
@@ -66,9 +67,26 @@ export default {
   &__text {
     max-width: 55%;
     font-weight: 500;
-    font-size: 16px;
+    @include fluid-text(16, 10);
     color: var(--white);
     align-self: flex-end;
+
+    @include tablet-bottom {
+      max-width: 80%;
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.about-us {
+  .breadcrumb__item {
+    color: var(--white);
+  }
+
+  .breadcrumb__item:not(:last-child) a,
+  .breadcrumb__item:not(:last-child) a::after {
+    color: var(--blue-100) !important;
   }
 }
 </style>

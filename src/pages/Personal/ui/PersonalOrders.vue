@@ -116,6 +116,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/styles/utils.scss';
+
 .orders {
   &__content {
     display: flex;
@@ -131,12 +133,22 @@ export default {
     grid-template-columns: 2.7fr 1.8fr 1fr 1fr 1fr 0.3fr;
     align-items: center;
     gap: 16px;
+
+    @include tablet-bottom {
+      display: none;
+    }
   }
 
   &__head-title {
     font-weight: 500;
-    font-size: 14px;
+    @include fluid-text(14, 10);
     color: var(--blue);
+
+    &:last-child {
+      @include tablet {
+        grid-column: span 2;
+      }
+    }
   }
 
   &__content-orders {
@@ -149,11 +161,17 @@ export default {
     padding: 0;
 
     .accordion__heading {
-      padding: 20px 32px;
+      padding: clamp(16px, 1vw, 20px) clamp(12px, 2vw, 32px);
       display: grid;
       grid-template-columns: 2.7fr 1.8fr 1fr 1fr 1fr 0.3fr;
       gap: 16px;
-      border-radius: 16px;
+      border-radius: var(--br-block);
+
+      @include tablet-bottom {
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+      }
     }
 
     .base-button-heading {
@@ -163,15 +181,16 @@ export default {
       border: none;
       border-radius: 0;
       background-color: transparent;
+
+      @include tablet-bottom {
+        display: none;
+      }
     }
 
     .accordion__content {
       margin-right: 0;
-      padding: 12px 32px;
+      padding: clamp(16px, 1vw, 20px) clamp(12px, 2vw, 32px);
       padding-top: 0;
-      // display: grid;
-      // grid-template-columns: 2.7fr 1.8fr 1fr 1fr 1fr 0.3fr;
-      // gap: 12px;
       display: flex;
       flex-direction: column;
       gap: 32px;
@@ -199,12 +218,24 @@ export default {
     display: grid;
     grid-template-columns: 2.7fr 1.8fr 1fr 1fr 1fr 0.3fr;
     gap: 16px;
+
+    @include tablet-bottom {
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   &__accordion-title {
     font-weight: 600;
-    font-size: 14px;
+    @include fluid-text(14, 10);
     color: #333;
+
+    @include tablet-bottom {
+      &:not(:first-of-type):not(:last-of-type) {
+        display: none;
+      }
+    }
   }
 
   &__accordion-item-wrapper {
@@ -213,18 +244,25 @@ export default {
 
   &__accordion-item {
     font-weight: 600;
-    font-size: 14px;
+    @include fluid-text(14, 10);
     color: var(--black);
+
+     @include tablet-bottom {
+      &:last-of-type {
+        display: none;
+      }
+    }
 
     &--article {
       font-weight: 400;
+      @include fluid-text(14, 12);
     }
   }
 
   &__accordion-text {
     margin-top: 8px;
     font-weight: 400;
-    font-size: 14px;
+    @include fluid-text(14, 10);
     color: var(--grey-200);
   }
 }
