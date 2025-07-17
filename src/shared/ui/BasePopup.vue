@@ -58,15 +58,6 @@ export default {
     }
   },
   computed: {
-    // isVisible: {
-    //   get() {
-    //     return this.popupStore.isVisible || this.modelValue
-    //   },
-    //   set(value) {
-    //     this.$emit('update:modelValue', value)
-    //     if (!value) this.popupStore.hidePopup()
-    //   },
-    // },
   },
   methods: {
     closePopup() {
@@ -118,9 +109,9 @@ export default {
   }
 
   &__body {
-    max-width: clamp(335px, 27vw, 520px);
+    max-width: clamp(335px, 30vw, 520px);
     width: 100%;
-    max-height: 470px;
+
     height: auto;
     padding: clamp(20px, 2vw, 40px);
     background-color: var(--white);
@@ -133,6 +124,7 @@ export default {
 
     &.reg-popup {
       max-width: clamp(470px, 45vw, 820px);
+      max-height: 560px;
 
       @include mobile {
         max-width: 85%;

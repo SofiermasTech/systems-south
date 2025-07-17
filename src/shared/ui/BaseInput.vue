@@ -19,7 +19,6 @@
       :type="type"
       :required="required"
       :placeholder="placeholder"
-      autocomplete
       ref="inputRef"
       :value="type === 'radio' ? value : modelValue"
       :checked="type === 'radio' && modelValue === value"

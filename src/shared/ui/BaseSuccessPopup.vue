@@ -14,7 +14,7 @@
         <h2 class="success-popup__title">{{ title }}</h2>
         <p class="success-popup__subtitle">{{ subtitle }}</p>
       </div>
-      <base-button  class="success-popup__btn" type="button">
+      <base-button  class="success-popup__btn" type="button" @click="closePopup">
         {{ buttonText }}
       </base-button>
     </template>
@@ -64,15 +64,15 @@ export default {
     //     this.cartStore.clearCart()
     //   }
     // },
-    // closePopup() {
-    //   console.log('BaseSuccessPopup: Closing popup')
-    //   this.popupStore.hidePopup()
-    //   if (this.isOrderPage) {
-    //     console.log('BaseSuccessPopup: Redirecting to /')
-    //     this.$router.push('/')
-    //     this.cartStore.clearCart()
-    //   }
-    // },
+    closePopup() {
+      console.log('BaseSuccessPopup: Closing popup')
+      this.popupStore.hidePopup()
+      if (this.isOrderPage) {
+        console.log('BaseSuccessPopup: Redirecting to /')
+        this.$router.push('/')
+        this.cartStore.clearCart()
+      }
+    },
   },
   mounted() {
     console.log('BaseSuccessPopup: Mounted with props', this.$props)

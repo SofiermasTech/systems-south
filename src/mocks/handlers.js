@@ -22,11 +22,11 @@ if (users.length === 0) {
   users = [
     {
       id: 1,
-      name: 'User',
-      surname: 'Test',
+      firstName: 'User',
+      lastName: 'Test',
       email: 'test@example.com',
       phone: '+1234567890',
-      password: 'password123',
+      password: 'Password123',
     },
   ]
   localStorage.setItem('users', JSON.stringify(users))
@@ -38,25 +38,39 @@ export const handlers = [
     return HttpResponse.json({}, { status: 200 })
   }),
 
-  http.post('/api/login', async ({ request }) => {
-    console.log('[MSW] POST /api/login received')
+  http.post('/api/token', async ({ request }) => {
+    console.log('[MSW] POST /api/token received')
     const { email, password } = await request.json()
+    console.log('[MSW] Request body:', { email, password })
     const user = users.find((u) => u.email === email && u.password === password)
     if (!user) {
+      console.error('[MSW] Invalid credentials:', { email, password })
       return HttpResponse.json({ message: 'Неверный email или пароль' }, { status: 401 })
     }
     const token = 'mock-jwt-token-' + Math.random().toString(36).substr(2)
+    const refreshToken = 'mock-refresh-token-' + Math.random().toString(36).substr(2)
     localStorage.setItem('authToken', token)
-    return HttpResponse.json({
+    localStorage.setItem('refreshToken', refreshToken)
+    const response = {
       token,
-      user: { id: user.id, name: user.name, email: user.email },
-    })
+      refresh_token: refreshToken,
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+      },
+    }
+    console.log('[MSW] Returning response:', response)
+    return HttpResponse.json(response)
   }),
 
   http.post('/api/register', async ({ request }) => {
     console.log('[MSW] POST /api/register received')
-    const { name, email, phone, password, checkbox } = await request.json()
-    if (!name || !email || !phone || !password || !checkbox) {
+    const { firstName, lastName, email, phone, password } = await request.json()
+    console.log('[MSW] Request body:', { firstName, lastName, email, phone, password })
+    if (!firstName || !lastName || !email || !phone || !password) {
       return HttpResponse.json({ message: 'Все поля обязательны' }, { status: 400 })
     }
     if (!/^\+?\d{10,}$/.test(phone)) {
@@ -71,43 +85,58 @@ export const handlers = [
         { status: 400 },
       )
     }
-    const newUser = { id: users.length + 1, name, email, phone, password }
+    const newUser = { id: users.length + 1, firstName, lastName, email, phone, password }
     users.push(newUser)
     try {
       localStorage.setItem('users', JSON.stringify(users))
+      console.log('[MSW] Users saved to localStorage:', users)
     } catch (error) {
       console.error('[MSW] Failed to save users to localStorage:', error)
       return HttpResponse.json({ message: 'Ошибка сохранения данных' }, { status: 500 })
     }
     const token = 'mock-jwt-token-' + Math.random().toString(36).substr(2)
+    const refreshToken = 'mock-refresh-token-' + Math.random().toString(36).substr(2)
     localStorage.setItem('authToken', token)
-    return HttpResponse.json({
+    localStorage.setItem('refreshToken', refreshToken)
+    const response = {
       token,
-      user: { id: newUser.id, name, email },
-    })
+      refresh_token: refreshToken,
+      user: { id: newUser.id, firstName, lastName, email, phone },
+    }
+    console.log('[MSW] Returning response:', response)
+    return HttpResponse.json(response)
   }),
 
-  http.get('/api/user', ({ request }) => {
-    console.log('[MSW] GET /api/user received')
+  http.get('/api/client', ({ request }) => {
+    console.log('[MSW] GET /api/client received')
+    console.log('[MSW] Authorization header:', request.headers.get('Authorization'))
     const authHeader = request.headers.get('Authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('[MSW] Missing or invalid Authorization header')
       return HttpResponse.json({ message: 'Неверный или отсутствует токен' }, { status: 401 })
     }
     const token = authHeader.replace('Bearer ', '')
     const storedToken = localStorage.getItem('authToken')
-    console.log('[MSW] Comparing tokens:', { requestToken: token, storedToken })
     if (token !== storedToken) {
+      console.error('[MSW] Invalid token:', token)
       return HttpResponse.json({ message: 'Недействительный токен' }, { status: 401 })
     }
-    const user = users.find((u) => u.id === 1) || users[users.length - 1]
+    const user = users[users.length - 1]
     if (!user) {
+      console.error('[MSW] No users found')
       return HttpResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
     }
-    return HttpResponse.json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    })
+    console.log('[MSW] Returning user:', user)
+    return HttpResponse.json(
+      {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+      },
+      { status: 200 },
+    )
   }),
 
   http.get('/api/cart/:userId', ({ params }) => {
@@ -208,95 +237,164 @@ export const handlers = [
     return HttpResponse.json(users, { status: 200 })
   }),
 
-  http.put('/api/users/:id', async ({ params, request }) => {
-    console.log('Получен PUT запрос для пользователя ID:', params.id)
-    console.log('Заголовки запроса:', request.headers)
+  http.patch('/api/client', async ({ request }) => {
+    console.log('[MSW] PATCH /api/client received')
     const authHeader = request.headers.get('Authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('Ошибка: Отсутствует заголовок Authorization')
       return HttpResponse.json({ message: 'Неверный или отсутствует токен' }, { status: 401 })
     }
     const token = authHeader.replace('Bearer ', '')
     const storedToken = localStorage.getItem('authToken')
-    console.log('Сравнение токенов:', { requestToken: token, storedToken })
     if (token !== storedToken) {
-      console.log('Ошибка: Токены не совпадают')
       return HttpResponse.json({ message: 'Недействительный токен' }, { status: 401 })
     }
-
     const data = await request.json()
-    console.log('Полученные данные для обновления:', data)
-    const userIndex = users.findIndex((u) => String(u.id) === String(params.id))
+    const userIndex = users.findIndex((u) => u.id === 1 || users[users.length - 1].id)
     if (userIndex === -1) {
-      console.log('Ошибка: Пользователь не найден, ID: ', params.id)
       return HttpResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
     }
-
     users[userIndex] = {
       ...users[userIndex],
-      ...data,
+      firstName: data.firstName !== undefined ? data.firstName : users[userIndex].firstName,
+      lastName: data.lastName !== undefined ? data.lastName : users[userIndex].lastName,
+      email: data.email !== undefined ? data.email : users[userIndex].email,
+      phone: data.phone !== undefined ? data.phone : users[userIndex].phone,
     }
-    console.log('Обновленный пользователь:', users[userIndex])
-
     try {
       localStorage.setItem('users', JSON.stringify(users))
-      console.log('Данные успешно сохранены в localStorage:', users)
     } catch (error) {
       console.error('[MSW] Ошибка при сохранении в localStorage:', error)
       return HttpResponse.json({ message: 'Ошибка сохранения данных' }, { status: 500 })
     }
-
-    return HttpResponse.json(users[userIndex], { status: 200 })
+    return HttpResponse.json({
+      id: users[userIndex].id,
+      firstName: users[userIndex].firstName,
+      lastName: users[userIndex].lastName,
+      email: users[userIndex].email,
+      phone: users[userIndex].phone,
+    })
   }),
 
-  http.put('/api/users/:id/password', async ({ params, request }) => {
-    console.log('[MSW] PUT /api/users/:id/password received, ID:', params.id)
-
-    // Проверка авторизации
+  http.patch('/api/client/change-password', async ({ request }) => {
+    console.log('[MSW] PATCH /api/client/change-password received')
     const authHeader = request.headers.get('Authorization')
+    console.log('[MSW] Authorization header:', authHeader)
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('[MSW] Ошибка: Отсутствует заголовок Authorization')
+      console.error('[MSW] Missing or invalid Authorization header')
       return HttpResponse.json({ message: 'Неверный или отсутствует токен' }, { status: 401 })
     }
     const token = authHeader.replace('Bearer ', '')
     const storedToken = localStorage.getItem('authToken')
-    console.log('[MSW] Сравнение токенов:', { requestToken: token, storedToken })
     if (token !== storedToken) {
-      console.log('[MSW] Ошибка: Токены не совпадают')
+      console.error('[MSW] Invalid token:', token)
       return HttpResponse.json({ message: 'Недействительный токен' }, { status: 401 })
     }
-
-    // Получаем данные из тела запроса
-    const { currentPassword, newPassword } = await request.json()
-    console.log('[MSW] Данные запроса:', { currentPassword, newPassword })
-
-    // Находим пользователя
-    const userIndex = users.findIndex((u) => String(u.id) === String(params.id))
-    if (userIndex === -1) {
-      console.log('[MSW] Ошибка: Пользователь не найден, ID:', params.id)
+    const { oldPassword, newPassword } = await request.json()
+    console.log('[MSW] Password change data:', { oldPassword, newPassword })
+    const user = users[users.length - 1] // Предполагаем, что обновляем последнего пользователя
+    if (!user) {
+      console.error('[MSW] No users found')
       return HttpResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
     }
-
-    // Проверяем текущий пароль
-    if (users[userIndex].password !== currentPassword) {
-      console.log('[MSW] Ошибка: Неверный текущий пароль')
+    if (user.password !== oldPassword) {
+      console.error('[MSW] Incorrect old password:', oldPassword)
       return HttpResponse.json({ message: 'Неверный текущий пароль' }, { status: 401 })
     }
-
-    // Обновляем пароль
-    users[userIndex].password = newPassword
-    console.log('[MSW] Пароль обновлён для пользователя:', users[userIndex])
-
-    // Сохраняем в localStorage
+    if (newPassword.length < 8) {
+      console.error('[MSW] New password too short:', newPassword)
+      return HttpResponse.json(
+        { message: 'Новый пароль должен содержать минимум 8 символов' },
+        { status: 400 },
+      )
+    }
+    user.password = newPassword
+    users[users.length - 1] = user
     try {
       localStorage.setItem('users', JSON.stringify(users))
-      console.log('[MSW] Данные успешно сохранены в localStorage:', users)
+      console.log('[MSW] Users updated in localStorage:', users)
+    } catch (error) {
+      console.error('[MSW] Failed to save users to localStorage:', error)
+      return HttpResponse.json({ message: 'Ошибка сохранения данных' }, { status: 500 })
+    }
+    console.log('[MSW] Password updated successfully for user:', user)
+    return HttpResponse.json({ message: 'Пароль успешно изменен' }, { status: 200 })
+  }),
+
+  http.post('/api/client/send-confirmation-link', async ({ request }) => {
+    console.log('[MSW] POST /api/client/send-confirmation-link received')
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return HttpResponse.json({ message: 'Неверный или отсутствует токен' }, { status: 401 })
+    }
+    const token = authHeader.replace('Bearer ', '')
+    const storedToken = localStorage.getItem('authToken')
+    if (token !== storedToken) {
+      return HttpResponse.json({ message: 'Недействительный токен' }, { status: 401 })
+    }
+    const { newEmail } = await request.json()
+    // Эмулируем отправку ссылки
+    const uuid = `mock-uuid-${Math.random().toString(36).substr(2)}`
+    return HttpResponse.json({ uuid }, { status: 200 })
+  }),
+  http.post('/api/client/email-confirmation', async ({ request }) => {
+    console.log('[MSW] POST /api/client/email-confirmation received')
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return HttpResponse.json({ message: 'Неверный или отсутствует токен' }, { status: 401 })
+    }
+    const token = authHeader.replace('Bearer ', '')
+    const storedToken = localStorage.getItem('authToken')
+    if (token !== storedToken) {
+      return HttpResponse.json({ message: 'Недействительный токен' }, { status: 401 })
+    }
+    const { uuid } = await request.json()
+    const userIndex = users.findIndex((u) => u.id === 1 || users[users.length - 1].id)
+    if (userIndex === -1) {
+      return HttpResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
+    }
+    // Эмулируем подтверждение email
+    return HttpResponse.json({}, { status: 200 })
+  }),
+  http.post('/api/client/restore-password', async ({ request }) => {
+    console.log('[MSW] POST /api/client/restore-password received')
+    const { email } = await request.json()
+    const user = users.find((u) => u.email === email)
+    if (!user) {
+      return HttpResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
+    }
+    const uuid = `mock-uuid-${Math.random().toString(36).substr(2)}`
+    return HttpResponse.json({ uuid }, { status: 200 })
+  }),
+  http.patch('/api/client/set-new-password', async ({ request }) => {
+    console.log('[MSW] PATCH /api/client/set-new-password received')
+    const { uuid, password } = await request.json()
+    const userIndex = users.findIndex((u) => u.id === 1 || users[users.length - 1].id)
+    if (userIndex === -1) {
+      return HttpResponse.json({ message: 'Пользователь не найден' }, { status: 404 })
+    }
+    users[userIndex].password = password
+    try {
+      localStorage.setItem('users', JSON.stringify(users))
     } catch (error) {
       console.error('[MSW] Ошибка при сохранении в localStorage:', error)
       return HttpResponse.json({ message: 'Ошибка сохранения данных' }, { status: 500 })
     }
-
-    // Возвращаем обновлённые данные
-    return HttpResponse.json({ id: users[userIndex].id, password: newPassword }, { status: 200 })
+    return HttpResponse.json({}, { status: 200 })
+  }),
+  http.post('/token/refresh', async ({ request }) => {
+    console.log('[MSW] POST /token/refresh received')
+    const { refresh_token } = await request.json()
+    const storedToken = localStorage.getItem('refreshToken')
+    if (refresh_token !== storedToken) {
+      return HttpResponse.json({ message: 'Недействительный refresh_token' }, { status: 401 })
+    }
+    const newToken = 'mock-jwt-token-' + Math.random().toString(36).substr(2)
+    const newRefreshToken = 'mock-refresh-token-' + Math.random().toString(36).substr(2)
+    localStorage.setItem('authToken', newToken)
+    localStorage.setItem('refreshToken', newRefreshToken)
+    return HttpResponse.json({
+      token: newToken,
+      refresh_token: newRefreshToken,
+    })
   }),
 ]

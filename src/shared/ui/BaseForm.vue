@@ -75,6 +75,7 @@ export default {
     },
     validateField(field) {
       const value = this.form[field.name]
+      const formData = this.form
 
       // Специальная обработка для чекбоксов
       if (field.type === 'checkbox' && field.required) {
@@ -91,15 +92,12 @@ export default {
 
       if (field.rules) {
         for (const rule of field.rules) {
-          if (rule.validator && !rule.validator(value)) {
+          const isValid = rule.validator(value, formData)
+          if (!isValid) {
             return { isValid: false, message: rule.message }
           }
         }
       }
-
-      // if (field.name === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      //   return { isValid: false, message: 'Некорректный email' }
-      // }
 
       return { isValid: true, message: '' }
     },
@@ -172,8 +170,8 @@ export default {
   gap: 16px;
 
   @include tablet {
-      gap: 12px;
-    }
+    gap: 12px;
+  }
 
   &__btn-submit {
     margin-top: 12px;

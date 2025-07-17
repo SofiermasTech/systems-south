@@ -15,6 +15,7 @@ import LogoutPopup from '@/widgets/logout-popup/LogoutPopup.vue'
 import CallbackPopup from '@/widgets/callback-popup/CallbackPopup.vue'
 import BaseSuccessPopup from '@/shared/ui/BaseSuccessPopup.vue'
 import FiltersPopup from '@/widgets/filters-popup/FiltersPopup.vue'
+import EmailChangePopup from '@/widgets/email-change-popup/EmailChangePopup.vue'
 
 export default {
   name: 'PopupManager',
@@ -24,6 +25,7 @@ export default {
     CallbackPopup,
     BaseSuccessPopup,
     FiltersPopup,
+    EmailChangePopup,
   },
   data() {
     return {
@@ -47,6 +49,7 @@ export default {
         CallbackPopup: this.$options.components.CallbackPopup,
         BaseSuccessPopup: this.$options.components.BaseSuccessPopup,
         FiltersPopup: this.$options.components.FiltersPopup,
+        EmailChangePopup: this.$options.components.EmailChangePopup,
       }
     },
   },

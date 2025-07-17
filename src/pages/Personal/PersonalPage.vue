@@ -61,7 +61,7 @@ export default {
   row-gap: clamp(12px, 2.5vw, 70px);
   column-gap: clamp(32px, 5vw, 100px);
 
-  @include mobile {
+  @media screen and (max-width: 720px) {
     //   grid-template-columns: 1fr;
     //   grid-template-areas:
     //     'intro'

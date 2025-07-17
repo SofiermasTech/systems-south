@@ -8,19 +8,19 @@
             type="text"
             placeholder="Имя"
             required
-            v-model="form.name"
-            :error="errors.name"
-            @input="validateField('name')"
-            @save="saveField('name', $event)"
+            v-model="form.firstName"
+            :error="errors.firstName"
+            @input="validateField('firstName')"
+            @save="saveField('firstName', $event)"
           />
           <BaseInput
             type="text"
             placeholder="Фамилия"
             required
-            v-model="form.surname"
-            :error="errors.surname"
-            @input="validateField('surname')"
-            @save="saveField('surname', $event)"
+            v-model="form.lastName"
+            :error="errors.lastName"
+            @input="validateField('lastName')"
+            @save="saveField('lastName', $event)"
           />
           <BaseInput
             type="email"
@@ -29,7 +29,7 @@
             v-model="form.email"
             :error="errors.email"
             @input="validateField('email')"
-            @save="saveField('email', $event)"
+            @click="openEmailChangePopup"
           />
           <BaseInput
             type="tel"
@@ -49,9 +49,9 @@
             <BaseInput
               type="password"
               placeholder="Введите текущий пароль"
-              v-model="form.currentPassword"
-              :error="errors.currentPassword"
-              @input="validateField('currentPassword')"
+              v-model="form.oldPassword"
+              :error="errors.oldPassword"
+              @input="validateField('oldPassword')"
             />
             <BaseInput
               type="password"
@@ -67,6 +67,7 @@
               :error="errors.confirmNewPassword"
               @input="validateField('confirmNewPassword')"
             />
+            <button class="order-form__pass-reset" type="button">Забыли пароль?</button>
           </div>
         </div>
       </fieldset>
@@ -83,40 +84,45 @@
 <script>
 import { useAuthStore } from '@/shared/stores/auth.js'
 import { usePopupStore } from '@/shared/stores/popup.js'
+// import EmailChangePopup from '@/widgets/email-change-popup/EmailChangePopup.vue'
 import api from '@/api'
 
 export default {
   name: 'PersonalProfile',
+  components: {
+    // EmailChangePopup,
+  },
   data() {
     return {
       form: {
-        name: '',
-        surname: '',
+        firstName: '',
+        lastName: '',
         email: '',
         tel: '',
-        currentPassword: '',
+        oldPassword: '',
         newPassword: '',
         confirmNewPassword: '',
       },
       initialForm: {
-        name: '',
-        surname: '',
+        firstName: '',
+        lastName: '',
         email: '',
         tel: '',
-        currentPassword: '',
+        oldPassword: '',
         newPassword: '',
         confirmNewPassword: '',
       },
       errors: {
-        name: '',
-        surname: '',
+        firstName: '',
+        lastName: '',
         email: '',
         tel: '',
-        currentPassword: '',
+        oldPassword: '',
         newPassword: '',
         confirmNewPassword: '',
       },
       authStore: useAuthStore(),
+      popupStore: usePopupStore(),
       isSubmitting: false,
     }
   },
@@ -124,11 +130,11 @@ export default {
   computed: {
     hasChanges() {
       return (
-        this.form.name !== this.initialForm.name ||
-        this.form.surname !== this.initialForm.surname ||
+        this.form.firstName !== this.initialForm.firstName ||
+        this.form.lastName !== this.initialForm.lastName ||
         this.form.email !== this.initialForm.email ||
         this.form.tel !== this.initialForm.tel ||
-        this.form.currentPassword !== this.initialForm.currentPassword ||
+        this.form.oldPassword !== this.initialForm.oldPassword ||
         this.form.newPassword !== this.initialForm.newPassword ||
         this.form.confirmNewPassword !== this.initialForm.confirmNewPassword
       )
@@ -150,8 +156,8 @@ export default {
       }
 
       switch (field) {
-        case 'name':
-        case 'surname':
+        case 'firstName':
+        case 'lastName':
           if (value.length < 2) {
             this.errors[field] = 'Должно быть минимум 2 символа'
           }
@@ -166,7 +172,7 @@ export default {
             this.errors[field] = 'Номер должен содержать минимум 10 цифр'
           }
           break
-        case 'currentPassword':
+        case 'oldPassword':
           if (this.form.newPassword && !value) {
             this.errors[field] = 'Введите текущий пароль'
           } else if (value && value.length < 6) {
@@ -176,7 +182,7 @@ export default {
         case 'newPassword':
           if (value && value.length < 6) {
             this.errors[field] = 'Пароль должен содержать минимум 6 символов'
-          } else if (value && value === this.form.currentPassword) {
+          } else if (value && value === this.form.oldPassword) {
             this.errors[field] = 'Новый пароль не должен совпадать с текущим'
           }
           break
@@ -188,6 +194,11 @@ export default {
       }
     },
     async saveField(field, value) {
+      if (field === 'email') {
+        // Email обновляется через попап
+        return
+      }
+
       this.validateField(field)
       if (this.errors[field]) {
         return
@@ -196,8 +207,8 @@ export default {
       try {
         const apiField = field === 'tel' ? 'phone' : field
         const updateData = { [apiField]: value }
-        console.log('Отправляем данные в PUT /api/users/:id:', updateData)
-        const response = await api.put(`/users/${this.authStore.getUser.id}`, updateData)
+        console.log('Отправляем данные в PATCH /api/client:', updateData)
+        const response = await api.patch('/client', updateData)
         console.log('Ответ от сервера:', response.data, response.status)
 
         this.authStore.user = {
@@ -221,7 +232,7 @@ export default {
       let hasPasswordChanges = false
 
       // Проверяем изменения в данных пользователя
-      const userFields = ['name', 'surname', 'email', 'tel']
+      const userFields = ['firstName', 'lastName', 'tel']
       const changedUserData = {}
       userFields.forEach((field) => {
         if (this.form[field] !== this.initialForm[field]) {
@@ -235,12 +246,12 @@ export default {
       })
 
       // Проверяем изменения в паролях
-      if (this.form.newPassword || this.form.confirmNewPassword || this.form.currentPassword) {
-        this.validateField('currentPassword')
+      if (this.form.newPassword || this.form.confirmNewPassword || this.form.oldPassword) {
+        this.validateField('oldPassword')
         this.validateField('newPassword')
         this.validateField('confirmNewPassword')
         if (
-          !this.errors.currentPassword &&
+          !this.errors.oldPassword &&
           !this.errors.newPassword &&
           !this.errors.confirmNewPassword
         ) {
@@ -249,11 +260,11 @@ export default {
       }
 
       if (
-        this.errors.name ||
-        this.errors.surname ||
+        this.errors.firstName ||
+        this.errors.lastName ||
         this.errors.email ||
         this.errors.tel ||
-        this.errors.currentPassword ||
+        this.errors.oldPassword ||
         this.errors.newPassword ||
         this.errors.confirmNewPassword
       ) {
@@ -261,13 +272,12 @@ export default {
         return
       }
 
-      const popupStore = usePopupStore()
-
       try {
         // Сохраняем данные пользователя, если они изменились
         if (hasUserDataChanges) {
           console.log('[submitForm] Отправляем данные пользователя:', changedUserData)
-          const response = await api.put(`/users/${this.authStore.getUser.id}`, changedUserData)
+
+          const response = await api.patch('/client', changedUserData)
           console.log('[submitForm] Ответ сервера (пользователь):', response.data)
 
           this.authStore.user = {
@@ -275,65 +285,59 @@ export default {
             ...response.data,
           }
           localStorage.setItem('authUser', JSON.stringify(this.authStore.user))
-
-          popupStore.showPopup({
-            component: 'BaseSuccessPopup',
-            props: {
-              isVisible: true,
-              title: 'Данные успешно обновлены!',
-              subtitle: 'Ваши личные данные сохранены',
-            },
-          })
         }
 
         // Сохраняем пароль, если заполнены поля
         if (hasPasswordChanges) {
           console.log('[submitForm] Отправляем данные пароля:', {
-            currentPassword: this.form.currentPassword,
+            oldPassword: this.form.oldPassword,
             newPassword: this.form.newPassword,
           })
           await this.authStore.updatePassword({
-            currentPassword: this.form.currentPassword,
+            oldPassword: this.form.oldPassword,
             newPassword: this.form.newPassword,
           })
 
           // Очищаем поля паролей
-          this.form.currentPassword = ''
+          this.form.oldPassword = ''
           this.form.newPassword = ''
           this.form.confirmNewPassword = ''
-          this.errors.currentPassword = ''
+          this.errors.oldPassword = ''
           this.errors.newPassword = ''
           this.errors.confirmNewPassword = ''
+        }
 
-          popupStore.showPopup({
-            component: 'BaseSuccessPopup',
-            props: {
-              isVisible: true,
-              title: 'Пароль успешно изменён!',
-              subtitle: 'Ваши данные обновлены',
-            },
+        // Показываем попап в зависимости от типа изменений
+        if (hasUserDataChanges) {
+          this.popupStore.showPopup('BaseSuccessPopup', {
+            isVisible: true,
+            title: 'Данные успешно обновлены!',
+            subtitle: 'Ваши личные данные сохранены',
+          })
+        } else if (hasPasswordChanges) {
+          this.popupStore.showPopup('BaseSuccessPopup', {
+            isVisible: true,
+            title: 'Пароль успешно изменён!',
+            subtitle: 'Ваши данные обновлены',
           })
         }
 
         // Если ничего не изменилось, показываем уведомление
-        if (!hasUserDataChanges && !hasPasswordChanges) {
-          popupStore.showPopup({
-            component: 'BaseSuccessPopup',
-            props: {
-              isVisible: true,
-              title: 'Нет изменений',
-              subtitle: 'Данные не были изменены',
-            },
-          })
-          this.isSubmitting = false
-          return
-        }
+        // if (!hasUserDataChanges && !hasPasswordChanges) {
+        //   popupStore.showPopup('BaseSuccessPopup', {
+        //     isVisible: true,
+        //     title: 'Нет изменений',
+        //     subtitle: 'Данные не были изменены',
+        //   })
+        //   this.isSubmitting = false
+        //   return
+        // }
 
         this.initialForm = { ...this.form }
       } catch (error) {
         console.error('[submitForm] Ошибка:', error)
         if (hasPasswordChanges && error.response?.status === 401) {
-          this.errors.currentPassword = 'Неверный текущий пароль'
+          this.errors.oldPassword = 'Неверный текущий пароль'
         } else {
           const errorMessage = hasPasswordChanges
             ? 'Ошибка при изменении пароля'
@@ -344,35 +348,44 @@ export default {
         this.isSubmitting = false
       }
     },
+    openEmailChangePopup() {
+      console.log('[PersonalProfile] Opening EmailChangePopup')
+      this.popupStore.showPopup('EmailChangePopup', {
+        isVisible: true,
+      })
+    },
   },
   async mounted() {
     if (!this.authStore.isLoggedIn) {
+      console.log('[PersonalProfile] User not logged in, redirecting to HomePage')
       this.$router.push({ name: 'HomePage' })
       return
     }
 
     try {
-      const users = await this.authStore.fetchUsers()
-      const currentUserId = this.authStore.getUser.id
-      const user = users.find((u) => u.id === currentUserId)
+      console.log('[PersonalProfile] Accessing user data from authStore...')
+      const user = this.authStore.getUser
+      console.log('[PersonalProfile] User data from authStore:', user)
 
-      if (user) {
+      if (user && user.id && user.email) {
         this.form = {
-          name: user.name || '',
-          surname: user.surname || '',
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
           email: user.email || '',
           tel: user.phone || '',
-          currentPassword: '',
+          oldPassword: '',
           newPassword: '',
           confirmNewPassword: '',
         }
-        // Сохраняем исходные значения
         this.initialForm = { ...this.form }
+        console.log('[PersonalProfile] Form data:', this.form)
       } else {
-        console.error('Пользователь не найден в списке users[]')
+        console.error('[PersonalProfile] Invalid user data:', user)
+        this.errors.email = 'Ошибка загрузки данных пользователя'
       }
     } catch (error) {
-      console.error('Ошибка при загрузке данных пользователя:', error)
+      console.error('[PersonalProfile] Error accessing user data:', error)
+      this.errors.email = error.response?.data?.message || 'Ошибка загрузки данных пользователя'
     }
   },
 }
@@ -398,6 +411,16 @@ export default {
     @include laptop-bottom {
       gap: 8px;
     }
+  }
+
+  .order-form__pass-reset {
+    padding: 12px;
+    background-color: transparent;
+    border: none;
+    font-weight: 600;
+    @include fluid-text(14, 10);
+    text-align: center;
+    color: var(--blue);
   }
 
   .base-input-label::after {

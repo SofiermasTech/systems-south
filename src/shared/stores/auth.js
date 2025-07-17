@@ -40,8 +40,17 @@ export const useAuthStore = defineStore('authStore', {
 
     async fetchUser() {
       try {
-        const response = await api.get('/user')
-        this.user = response.data
+        console.log('[authStore] Fetching user with token:', localStorage.getItem('authToken'))
+        const response = await api.get('/api/client')
+        console.log('[authStore] Fetch user response:', response.data)
+        this.user = {
+          id: response.data.id,
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          email: response.data.email,
+          phone: response.data.phone,
+        }
+        console.log('[authStore] User updated:', this.user)
         localStorage.setItem('authUser', JSON.stringify(this.user))
         const orderStore = useOrderStore()
         const cartStore = useCartStore()
@@ -60,17 +69,34 @@ export const useAuthStore = defineStore('authStore', {
       try {
         this.error = null
         const response = await api.post('/register', {
-          name: formData.name,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          checkbox: formData.checkbox,
+          // checkbox: formData.checkbox,
         })
+        console.log('[authStore] Registration response:', response.data)
         this.token = response.data.token
-        this.user = response.data.user
+        localStorage.setItem('refreshToken', response.data.refresh_token)
+
+        this.user = {
+          id: response.data.user.id,
+          firstName: response.data.user.firstName,
+          lastName: response.data.user.lastName,
+          email: response.data.user.email,
+          phone: response.data.user.phone,
+        }
+        // localStorage.setItem('authUser', JSON.stringify(this.user))
+        console.log('[authStore] User set:', this.user)
+
         this.isAuthenticated = true
         localStorage.setItem('authToken', this.token)
+        // this.user = response.data.user
+
+        // await this.fetchUser()
         localStorage.setItem('authUser', JSON.stringify(this.user))
+
         const orderStore = useOrderStore()
         const cartStore = useCartStore()
         const favoritesStore = useFavoritesStore()
@@ -80,6 +106,7 @@ export const useAuthStore = defineStore('authStore', {
         await Promise.all([orderStore.fetchOrders(), favoritesStore.fetchFavorites()])
       } catch (error) {
         this.error = error.response?.data?.message || 'Ошибка при регистрации'
+        console.error('Registration error:', error)
         throw error
       }
     },
@@ -87,12 +114,24 @@ export const useAuthStore = defineStore('authStore', {
     async login(formData) {
       try {
         this.error = null
-        const response = await api.post('/login', {
+        console.log('[authStore] Sending login data:', formData)
+        const response = await api.post('/token', {
           email: formData.email,
           password: formData.password,
         })
+        console.log('[authStore] Login response:', response.data)
         this.token = response.data.token
-        this.user = response.data.user
+        localStorage.setItem('refreshToken', response.data.refresh_token)
+
+        // this.user = response.data.user
+        this.user = {
+          id: response.data.user.id,
+          firstName: response.data.user.firstName,
+          lastName: response.data.user.lastName,
+          email: response.data.user.email,
+          phone: response.data.user.phone,
+        }
+        console.log('[authStore] User set:', this.user)
         this.isAuthenticated = true
         localStorage.setItem('authToken', this.token)
         localStorage.setItem('authUser', JSON.stringify(this.user))
@@ -105,6 +144,7 @@ export const useAuthStore = defineStore('authStore', {
         await Promise.all([orderStore.fetchOrders(), favoritesStore.fetchFavorites()])
       } catch (error) {
         this.error = error.response?.data?.message || 'Ошибка при входе'
+        console.error('Login error:', error)
         throw error
       }
     },
@@ -128,29 +168,118 @@ export const useAuthStore = defineStore('authStore', {
       this.error = null
     },
 
-    async fetchUsers() {
-      try {
-        const response = await api.get('/users')
-        return response.data
-      } catch (error) {
-        console.error('Ошибка загрузки списка пользователей:', error)
-        throw error
-      }
-    },
+    // async fetchUsers() {
+    //   try {
+    //     const response = await api.get('/api/client')
+    //     return response.data
+    //   } catch (error) {
+    //     console.error('Ошибка загрузки списка пользователей:', error)
+    //     throw error
+    //   }
+    // },
 
-    async updatePassword({ currentPassword, newPassword }) {
+    async updatePassword({ oldPassword, newPassword }) {
       try {
-        const response = await api.put(`/users/${this.user.id}/password`, {
-          currentPassword,
+        console.log('[authStore] Sending password update:', { oldPassword, newPassword })
+        const response = await api.patch('/client/change-password', {
+          oldPassword,
           newPassword,
         })
-        this.user = { ...this.user, password: newPassword }
-        localStorage.setItem('authUser', JSON.stringify(this.user))
+        console.log('[authStore] Password update response:', response.data)
+        // this.user = { ...this.user, password: newPassword }
+        // localStorage.setItem('authUser', JSON.stringify(this.user))
         return response.data
       } catch (error) {
         console.error('Ошибка при изменении пароля:', error)
         throw error
       }
     },
+  },
+
+  // Отправка ссылки для подтверждения email
+  async sendConfirmationLink(newEmail = null) {
+    try {
+      const response = await api.post('/api/client/send-confirmation-link', {
+        newEmail,
+      })
+      return response.data
+    } catch (error) {
+      this.error = error.response?.data?.message || 'Ошибка при отправке ссылки'
+      throw error
+    }
+  },
+
+  // Подтверждение email
+  async confirmEmail(uuid) {
+    try {
+      const response = await api.post('/api/client/email-confirmation', {
+        uuid,
+      })
+      await this.fetchUser() // Обновляем данные пользователя после подтверждения
+      return response.data
+    } catch (error) {
+      this.error = error.response?.data?.message || 'Ошибка при подтверждении email'
+      throw error
+    }
+  },
+
+  // Запрос на восстановление пароля
+  async restorePassword(email) {
+    try {
+      const response = await api.post('/api/client/restore-password', {
+        email,
+      })
+      return response.data
+    } catch (error) {
+      this.error = error.response?.data?.message || 'Ошибка при запросе восстановления пароля'
+      throw error
+    }
+  },
+
+  // Установка нового пароля
+  async setNewPassword({ uuid, password }) {
+    try {
+      const response = await api.patch('/api/client/set-new-password', {
+        uuid,
+        password,
+      })
+      return response.data
+    } catch (error) {
+      this.error = error.response?.data?.message || 'Ошибка при установке нового пароля'
+      throw error
+    }
+  },
+
+  // Обновление данных пользователя
+  async updateUser(data) {
+    try {
+      const response = await api.patch('/api/client', data)
+      this.user = { ...this.user, ...response.data }
+      localStorage.setItem('authUser', JSON.stringify(this.user))
+      return response.data
+    } catch (error) {
+      this.error = error.response?.data?.message || 'Ошибка при обновлении данных'
+      throw error
+    }
+  },
+
+  // Обновление токена
+  async refreshToken() {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken')
+      if (!refreshToken) {
+        throw new Error('Отсутствует refresh_token')
+      }
+      const response = await api.post('/token/refresh', {
+        refresh_token: refreshToken,
+      })
+      this.token = response.data.token
+      localStorage.setItem('authToken', this.token)
+      localStorage.setItem('refreshToken', response.data.refresh_token)
+      return response.data
+    } catch (error) {
+      this.error = error.response?.data?.message || 'Ошибка при обновлении токена'
+      throw error
+    }
   },
 })

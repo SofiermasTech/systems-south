@@ -58,7 +58,7 @@ export default {
       ],
       registrationFields: [
         {
-          name: 'name',
+          name: 'firstName',
           type: 'text',
           placeholder: 'Имя',
           required: true,
@@ -70,6 +70,22 @@ export default {
             {
               validator: (value) => /^[a-zA-Zа-яА-Я]+$/.test(value),
               message: 'Имя может содержать только буквы',
+            },
+          ],
+        },
+        {
+          name: 'lastName',
+          type: 'text',
+          placeholder: 'Фамилия',
+          required: true,
+          rules: [
+            {
+              validator: (value) => value.length >= 2,
+              message: 'Поле должно содержать минимум 2 символа',
+            },
+            {
+              validator: (value) => /^[a-zA-Zа-яА-Я]+$/.test(value),
+              message: 'Поле может содержать только буквы',
             },
           ],
         },
@@ -114,6 +130,18 @@ export default {
           ],
         },
         {
+          name: 'confirmPassword',
+          type: 'password',
+          placeholder: 'Повторите пароль',
+          required: true,
+          rules: [
+            {
+              validator: (value, formData) => value === formData.password,
+              message: 'Пароли не совпадают',
+            },
+          ],
+        },
+        {
           name: 'checkbox',
           type: 'checkbox',
           required: true,
@@ -143,13 +171,16 @@ export default {
           this.closePopup()
         } else {
           await this.authStore.register(formData)
-          // this.$emit('show-success-popup')
+          console.log('Registration successful')
 
           this.popupStore.showPopup('BaseSuccessPopup', {
             isVisible: true,
             title: 'Вы успешно зарегистрированы!',
           })
         }
+      } catch (error) {
+        console.error('Registration failed:', error)
+        alert(this.authStore.getError)
       } finally {
         this.isLoading = false
       }

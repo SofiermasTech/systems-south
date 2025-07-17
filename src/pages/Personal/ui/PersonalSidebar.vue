@@ -63,7 +63,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
 
-  @include mobile {
+     @media screen and (max-width: 720px) {
     height: fit-content;
   }
 
@@ -72,7 +72,7 @@ export default {
     flex-direction: column;
     gap: 2px;
 
-    @include mobile {
+       @media screen and (max-width: 720px) {
       flex-direction: row;
     }
   }
@@ -89,7 +89,7 @@ export default {
       padding: 20px 12px 20px 24px;
     }
 
-     @include mobile {
+        @media screen and (max-width: 720px) {
       flex-grow: 1;
       padding: 12px 20px;
       justify-content: center;
@@ -112,7 +112,7 @@ export default {
     margin-inline: 8px;
     margin-bottom: 16px;
 
-    @include mobile {
+       @media screen and (max-width: 720px) {
       width: calc(100% - (var(--container-padding-y) * 2));
       margin: 0;
       position: absolute;
