@@ -124,7 +124,7 @@ export default {
     flex-direction: column;
     gap: 32px;
 
-    .swiper-wrapper {
+   .base-slider>.swiper {
       @include tablet-bottom {
         padding-inline: 20px;
       }

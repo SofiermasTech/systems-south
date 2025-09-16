@@ -65,6 +65,7 @@ export const useAuthStore = defineStore('authStore', {
       }
     },
 
+    // Регистрация (создание нового клиента) /api/register POST
     async register(formData) {
       try {
         this.error = null
@@ -111,6 +112,7 @@ export const useAuthStore = defineStore('authStore', {
       }
     },
 
+    // Авторизация: /token POST
     async login(formData) {
       try {
         this.error = null

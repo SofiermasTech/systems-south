@@ -26,7 +26,8 @@ import HomeWorkWithUs from '@/pages/home/ui/HomeWorkWithUs.vue'
 import HomeAboutUs from '@/pages/home/ui/HomeAboutUs.vue'
 import CallbackSection from '@/widgets/callback-section/CallbackSection.vue'
 import HomeNews from '@/pages/home/ui/HomeNews.vue'
-import { useFavoritesStore } from '@/shared/stores/favorites'
+import { useFavoritesStore } from '@/shared/stores/favorites.js'
+import { usePopupStore } from '@/shared/stores/popup.js'
 
 export default {
   name: 'HomePage',
@@ -44,7 +45,8 @@ export default {
       newProductsTitle: 'Новые товары',
       bestOffersTitle: 'Лучшие предложения',
       catalogStore: null,
-      favoritesStore: null,
+      favoritesStore: useFavoritesStore(),
+      popupStore: usePopupStore(),
     }
   },
   methods: {
@@ -55,8 +57,14 @@ export default {
       console.log(`Товар ${product.name} ${message}`)
     },
   },
-  created() {
-    this.favoritesStore = useFavoritesStore()
+  mounted() {
+    if (this.$route.query.emailConfirmed === 'true') {
+      console.log('[HomePage] Showing BaseSuccessPopup in success mode')
+      this.popupStore.showPopup('BaseSuccessPopup', {
+        isVisible: true,
+        title: 'Данные успешно изменены',
+      })
+    }
   },
 }
 </script>

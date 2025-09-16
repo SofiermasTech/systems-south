@@ -140,7 +140,7 @@ export default {
   },
   watch: {
     isModalOpen(newValue) {
-      if (newValue && this.popupStore.currentPopupName !== null) {
+      if (newValue && this.popupStore.currentPopupName !== null && this.windowWidth < 720) {
         this.isHidden = false
         this.isHeaderTransparent = true
       } else {

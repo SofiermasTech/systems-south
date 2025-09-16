@@ -254,14 +254,14 @@ export default {
 }
 
 .loading {
-  font-size: 14px;
+  @include fluid-text(14, 10);
   color: var(--blue);
   margin-top: -20px;
   margin-bottom: 12px;
 }
 
 .form-error-message {
-  font-size: 14px;
+  @include fluid-text(14, 10);
   color: var(--red);
   margin-top: -20px;
   margin-bottom: 12px;

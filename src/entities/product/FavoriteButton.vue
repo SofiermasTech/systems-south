@@ -50,10 +50,7 @@ export default {
       const authStore = useAuthStore()
       if (!authStore.isLoggedIn) {
         const popupStore = usePopupStore()
-        popupStore.showPopup({
-          component: 'LoginPopup',
-          props: { isVisible: true },
-        })
+        popupStore.showPopup('LoginPopup', { isVisible: true })
         return
       }
       const favoritesStore = useFavoritesStore()

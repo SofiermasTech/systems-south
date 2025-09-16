@@ -16,7 +16,7 @@
         type === 'password'
       "
       :class="['base-input', { 'base-input--radio': type === 'radio' }, { error: error }]"
-      :type="type"
+      :type="inputType"
       :required="required"
       :placeholder="placeholder"
       ref="inputRef"
@@ -71,6 +71,14 @@
         alt=""
       />
     </button>
+    <button
+      v-if="type === 'password'"
+      class="base-input__btn-pass"
+      type="button"
+      @click="showPassword"
+    >
+      <BaseIcon :name="passwordIcon" />
+    </button>
   </label>
 </template>
 <script>
@@ -103,6 +111,7 @@ export default {
       isFocused: false,
       isEdited: false,
       isEditing: false,
+      isPasswordVisible: false,
       initialValue: String(this.modelValue ?? ''),
       popupStore: usePopupStore(),
     }
@@ -113,6 +122,12 @@ export default {
     },
     isCallbackPopup() {
       return this.popupStore.currentPopupName === 'ContactForm'
+    },
+    passwordIcon() {
+      return this.isPasswordVisible ? 'HidePasswordIcon' : 'ShowPasswordIcon'
+    },
+    inputType() {
+      return this.type === 'password' && this.isPasswordVisible ? 'text' : this.type
     },
   },
   watch: {
@@ -150,6 +165,9 @@ export default {
     handleBlur() {
       this.isFocused = false
     },
+    showPassword() {
+      this.isPasswordVisible = !this.isPasswordVisible
+    },
   },
 }
 </script>
@@ -177,12 +195,12 @@ export default {
     font-size: 14px;
     color: var(--blue);
     position: absolute;
-    top: 8px;
-    right: 20px;
+    top: 6px;
+    right: 16px;
 
     @include tablet {
       font-size: 12px;
-      right: 16px;
+      right: 12px;
     }
   }
 
@@ -270,7 +288,7 @@ export default {
     font-size: 9px;
 
     @include tablet {
-      font-size: 8px;
+      font-size: 7px;
       bottom: -10px;
     }
   }
@@ -294,7 +312,7 @@ export default {
       height: 32px;
     }
 
-    @include mobile {
+    @include tablet-bottom {
       width: 24px;
       height: 24px;
     }
@@ -309,9 +327,35 @@ export default {
         height: 12px;
       }
 
-      @include mobile {
+      @include tablet-bottom {
         width: 10px;
         height: 10px;
+      }
+    }
+  }
+
+  &__btn-pass {
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    @include desktop {
+      right: 24px;
+    }
+
+    svg {
+      color: var(--blue);
+
+      @include desktop {
+        width: 16px;
+        height: 16px;
       }
     }
   }

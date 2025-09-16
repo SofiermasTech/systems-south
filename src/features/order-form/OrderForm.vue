@@ -338,7 +338,7 @@ export default {
     gap: 16px;
 
     @include laptop-bottom {
-      gap: 8px;
+      gap: 12px;
     }
 
     @include mobile {

@@ -7,35 +7,61 @@
       </div>
       <FavoriteButton :product="product" @click.stop />
     </div>
-    <div class="product-card__images" :class="{ 'is-mobile': isMobile }">
-      <!-- <div class="product-card__images-wrapper"> -->
-      <!-- <div class="product-card__image-item"> -->
+    <div class="product-card__images" :class="{ 'is-mobile': isMobile }" ref="imageContainer">
       <swiper
+        v-if="isMobile"
         ref="imageSwiper"
         v-bind="swiperOptions"
         @swiper="onSwiper"
         @slide-change="updatePagination"
+        role="slider"
+        :aria-label="`Product image slider with ${product.images?.length} images`"
+        :aria-valuenow="activeSlide + 1"
+        :aria-valuemax="product.images?.length"
       >
         <swiper-slide
           v-for="(image, index) in product.images"
           :key="index"
-          class="product-card__image-item"
-          @mouseenter="handleHover(index)"
+          class="product-card__img"
         >
-          <div class="product-card__img">
-            <img :src="image" :alt="product.name" width="376" height="234" loading="lazy" />
-          </div>
+          <img :src="image" :alt="product.name" width="376" height="234" loading="lazy" />
         </swiper-slide>
       </swiper>
-      <!-- </div> -->
-      <!-- </div> -->
-      <ul class="product-card__pagination-list" v-if="product.images?.length > 1">
-        <li
-          class="product-card__pagination-item"
+      <div v-else-if="product.images?.length > 1" class="product-card__image-wrapper">
+        <div
+          class="product-card__image-item"
           v-for="(image, index) in product.images"
           :key="index"
-          :class="{ 'active-item': activeSlide === index }"
-          @mouseenter="handleHover(index)"
+          @mouseenter="updateCurrentImage(index)"
+          @mouseleave="resetImage"
+        >
+          <div class="product-card__img" :class="{ active: currentImage === index }">
+            <img :src="image" :alt="product.name" width="376" height="234" loading="lazy" />
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="product-card__image-item">
+        <div class="product-card__img">
+          <img
+            v-if="product.images?.length"
+            :src="product.images[0]"
+            :alt="product.name"
+            width="376"
+            height="234"
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <ul class="product-card__pagination-list" v-if="product.images?.length > 1">
+        <li
+          v-for="(image, index) in product.images"
+          :key="index"
+          class="product-card__pagination-item"
+          :class="{ 'active-item': isMobile ? activeSlide === index : currentImage === index }"
+          @click="selectSlide(index)"
+          role="button"
+          :aria-label="`Go to image ${index + 1}`"
         ></li>
       </ul>
     </div>
@@ -53,35 +79,58 @@
   </article>
 
   <article v-else class="product-card card-horizontal" @click="goToProduct">
-    <div class="product-card__images" :class="{ 'is-mobile': isMobile }">
-      <!-- <div class="product-card__images-wrapper"> -->
-      <!-- <div class="product-card__image-item"> -->
+    <div class="product-card__images" :class="{ 'is-mobile': isMobile }" ref="imageContainer">
       <swiper
+        v-if="isMobile && product.images?.length > 1"
         ref="imageSwiper"
         v-bind="swiperOptions"
         @swiper="onSwiper"
         @slide-change="updatePagination"
+        role="slider"
+        :aria-label="`Product image slider with ${product.images?.length} images`"
+        :aria-valuenow="activeSlide + 1"
+        :aria-valuemax="product.images?.length"
       >
         <swiper-slide
           v-for="(image, index) in product.images"
           :key="index"
-          class="product-card__image-item"
-          @mouseenter="handleHover(index)"
+          class="product-card__img"
         >
-          <div class="product-card__img">
-            <img :src="image" :alt="product.name" width="376" height="234" loading="lazy" />
-          </div>
+          <img :src="image" :alt="product.name" width="376" height="234" loading="lazy" />
         </swiper-slide>
       </swiper>
-      <!-- </div> -->
-      <!-- </div> -->
-      <ul class="product-card__pagination-list" v-if="product.images?.length > 1">
-        <li
-          class="product-card__pagination-item"
+      <div v-else-if="product.images?.length > 1" class="product-card__image-wrapper">
+        <div
+          class="product-card__image-item"
           v-for="(image, index) in product.images"
           :key="index"
-          :class="{ 'active-item': activeSlide === index }"
-          @mouseenter="handleHover(index)"
+          @mouseenter="updateCurrentImage(index)"
+          @mouseleave="resetImage"
+        >
+          <div class="product-card__img" :class="{ active: currentImage === index }">
+            <img :src="image" :alt="product.name" width="376" height="234" loading="lazy" />
+          </div>
+        </div>
+      </div>
+      <div v-else class="product-card__img">
+        <img
+          v-if="product.images?.length"
+          :src="product.images[0]"
+          :alt="product.name"
+          width="376"
+          height="234"
+          loading="lazy"
+        />
+      </div>
+      <ul class="product-card__pagination-list" v-if="product.images?.length > 1">
+        <li
+          v-for="(image, index) in product.images"
+          :key="index"
+          class="product-card__pagination-item"
+          :class="{ 'active-item': isMobile ? activeSlide === index : currentImage === index }"
+          @click="selectSlide(index)"
+          role="button"
+          :aria-label="`Go to image ${index + 1}`"
         ></li>
       </ul>
     </div>
@@ -124,8 +173,9 @@
 
 <script>
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Pagination } from 'swiper/modules'
+// import { Pagination } from 'swiper/modules'
 import 'swiper/css'
+// import 'swiper/css/pagination'
 import { useCatalogStore } from '@/shared/stores/catalog.js'
 import { useCartStore } from '@/shared/stores/cart.js'
 import FavoriteButton from '@/entities/product/FavoriteButton.vue'
@@ -151,16 +201,19 @@ export default {
   },
   data() {
     return {
+      isMobile: window.innerWidth <= 1024,
       swiper: null,
       activeSlide: 0,
-      isMobile: window.innerWidth <= 768,
+      currentImage: 0,
       swiperOptions: {
-        modules: [Pagination],
+        // modules: [Pagination],
         slidesPerView: 1,
         spaceBetween: 0,
-        loop: false,
-        pagination: false,
-        allowTouchMove: window.innerWidth <= 768,
+        loop: true,
+        // pagination: {
+        //   clickable: true,
+        // },
+        allowTouchMove: true,
       },
     }
   },
@@ -183,50 +236,61 @@ export default {
     },
   },
   watch: {
-    shouldLoop(newValue) {
-      if (this.swiper) {
-        this.swiper.params.loop = newValue
-        this.swiper.loopDestroy()
-        if (newValue) {
-          this.swiper.loopCreate()
-        }
-        this.swiper.update()
-      }
-    },
     isMobile(newValue) {
       if (this.swiper) {
-        this.swiper.params.allowTouchMove = newValue
-        this.swiper.update()
+        this.swiper.destroy(true, true)
+        this.swiper = null
       }
+      this.activeSlide = 0
+      this.currentImage = 0
+      this.$nextTick(() => {
+        if (newValue && this.$refs.imageSwiper) {
+          this.onSwiper(this.$refs.imageSwiper.swiper)
+        }
+      })
+    },
+    product() {
+      this.$nextTick(() => {
+        if (this.swiper) {
+          this.swiper.update()
+        }
+        this.currentImage = 0
+        this.activeSlide = 0
+      })
     },
   },
   methods: {
     onSwiper(swiper) {
-      this.swiper = swiper
-      this.swiper.params.loop = this.shouldLoop
-      this.swiper.params.allowTouchMove = this.isMobile
-      if (this.shouldLoop) {
-        this.swiper.loopCreate()
+      if (this.isMobile) {
+        this.swiper = swiper
+        this.updatePagination()
       }
-      this.updatePagination()
     },
     updatePagination() {
       if (this.swiper) {
         this.activeSlide = this.swiper.realIndex
+        this.currentImage = this.activeSlide // Синхронизация с hover
       }
     },
-    handleHover(index) {
-      console.log('handleHover triggered', index, 'isMobile:', this.isMobile)
-      if (!this.isMobile && this.swiper) {
-        if (this.shouldLoop) {
-          this.swiper.slideToLoop(index)
-        } else {
-          this.swiper.slideTo(index)
-        }
+    updateCurrentImage(index) {
+      if (!this.isMobile) {
+        this.currentImage = index
+      }
+    },
+    resetImage() {
+      if (!this.isMobile) {
+        this.currentImage = 0
+      }
+    },
+    selectSlide(index) {
+      if (this.isMobile && this.swiper) {
+        this.swiper.slideToLoop(index)
+      } else {
+        this.updateCurrentImage(index)
       }
     },
     handleResize() {
-      this.isMobile = window.innerWidth <= 768
+      this.isMobile = window.innerWidth <= 1024
     },
     addToCart() {
       if (!this.product) {
@@ -245,6 +309,9 @@ export default {
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.handleResize)
+    if (this.swiper) {
+      this.swiper.destroy(true, true)
+    }
   },
 }
 </script>
@@ -253,9 +320,7 @@ export default {
 @import '@/assets/styles/utils.scss';
 
 .product-card {
-  //  max-width: 374px;
   max-width: clamp(214px, 22.5vw, 423px);
-  // height: 405px;
   height: 100%;
   width: 100%;
   padding-bottom: clamp(14px, 1vw, 20px);
@@ -273,7 +338,6 @@ export default {
   }
 
   &__top {
-    // max-width: 344px;
     width: 100%;
     padding: clamp(14px, 1vw, 20px);
     display: flex;
@@ -292,66 +356,73 @@ export default {
     gap: 8px;
   }
 
-  &__top-info-article {
-  }
-
-  .swiper-wrapper {
-    display: flex;
-    align-items: stretch;
-    box-sizing: border-box;
-  }
-
-  .swiper-slide {
-    width: auto;
-    height: auto;
-  }
-
   &__images {
     margin-top: auto;
     margin-bottom: 12px;
-    // position: absolute;
-    // top: 0;
-    // left: 0;
     width: 100%;
     position: relative;
-    // z-index: 20;
-    &:not(.is-mobile) {
-      cursor: pointer;
-
-      .swiper {
-        touch-action: none;
-      }
-
-      .product-card__image-item,
-      .product-card__pagination-item {
-        pointer-events: auto;
-      }
-    }
+    height: clamp(144px, 14vw, 280px);
 
     &.is-mobile {
       cursor: grab;
+    }
 
-      .product-card__image-item,
-      .product-card__pagination-item {
-        pointer-events: none;
-      }
+    @include mobile {
+      height: 200px;
     }
   }
 
-  &__images-wrapper {
+  &__image-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+
+    @media (max-width: 1024px) {
+      display: none;
+    }
   }
 
   &__image-item {
+    flex-grow: 1;
+    cursor: pointer;
+
+    &:first-child .product-card__img {
+      opacity: 1;
+    }
+
+    &:hover .product-card__img {
+      opacity: 1;
+    }
+
+    @media (max-width: 1024px) {
+      display: none;
+    }
   }
 
   &__img {
-    max-height: clamp(144px, 14vw, 280px);
+    max-height: clamp(194px, 14vw, 280px);
     height: 100%;
     display: flex;
     align-items: center;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 
-    @include mobile {
-      max-height: 200px;
+    &.active {
+      opacity: 1;
+    }
+
+    @media (max-width: 1024px) {
+      position: static;
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     img {
@@ -364,23 +435,34 @@ export default {
     }
   }
 
+  .swiper {
+    width: 100%;
+    height: 100%;
+  }
+
+  .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   &__pagination-list {
     display: flex;
     gap: 4px;
     align-items: center;
     position: absolute;
-    // bottom: 20px;
     bottom: -20px;
     left: 50%;
+    transform: translateX(-50%);
     z-index: 11;
   }
 
   &__pagination-item {
     width: 6px;
     height: 6px;
-    transform: translateX(-50%);
     background-color: var(--blue-100);
     border-radius: 50%;
+    cursor: pointer;
 
     &.active-item {
       background-color: var(--blue-200);
@@ -388,14 +470,11 @@ export default {
   }
 
   &__text {
-    // margin-top: auto;
     padding: 0 clamp(14px, 1vw, 20px);
     display: flex;
     flex-direction: column;
     gap: 8px;
     cursor: pointer;
-    // position: relative;
-    // z-index: 9;
 
     h3 {
       margin: 0;
@@ -421,7 +500,6 @@ export default {
   }
 
   &__bottom {
-    // margin-top: 10px;
     padding: 0 20px;
     display: flex;
     justify-content: space-between;
@@ -458,9 +536,6 @@ export default {
     }
   }
 
-  &__btn-card {
-  }
-
   &.card-horizontal {
     max-width: 100%;
     flex-direction: row;
@@ -476,8 +551,12 @@ export default {
       height: clamp(130px, 13vw, 240px);
     }
 
-    .product-card__img img {
+    .product-card__img {
       max-height: 240px;
+
+      img {
+        max-height: 240px;
+      }
     }
 
     .product-card__pagination-list {
@@ -486,7 +565,6 @@ export default {
 
     .product-card__info {
       max-width: 52%;
-      // height: 100%;
       padding-block: 0;
       display: flex;
       flex-direction: column;
@@ -554,6 +632,13 @@ export default {
 
     .product-quantity {
       width: 136px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .swiper-slide,
+    .product-card__img {
+      transition: none;
     }
   }
 }

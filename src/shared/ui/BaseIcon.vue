@@ -26,6 +26,8 @@ import LocationIcon from '@/shared/ui/icons/LocationIcon.vue'
 import SearchIcon from '@/shared/ui/icons/SearchIcon.vue'
 import BurgerIcon from '@/shared/ui/icons/BurgerIcon.vue'
 import FilterIcon from '@/shared/ui/icons/FilterIcon.vue'
+import ShowPasswordIcon from '@/shared/ui/icons/ShowPasswordIcon.vue'
+import HidePasswordIcon from '@/shared/ui/icons/HidePasswordIcon.vue'
 
 export default {
   name: 'BaseIcon',
@@ -53,6 +55,8 @@ export default {
     SearchIcon,
     BurgerIcon,
     FilterIcon,
+    ShowPasswordIcon,
+    HidePasswordIcon,
   },
   props: {
     name: {
@@ -86,6 +90,8 @@ export default {
         SearchIcon,
         BurgerIcon,
         FilterIcon,
+        ShowPasswordIcon,
+        HidePasswordIcon,
       }
     },
   },

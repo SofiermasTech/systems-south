@@ -67,7 +67,7 @@
               :error="errors.confirmNewPassword"
               @input="validateField('confirmNewPassword')"
             />
-            <button class="order-form__pass-reset" type="button">Забыли пароль?</button>
+            <button class="order-form__pass-reset" type="button" @click="openChangePassPopup">Забыли пароль?</button>
           </div>
         </div>
       </fieldset>
@@ -352,6 +352,16 @@ export default {
       console.log('[PersonalProfile] Opening EmailChangePopup')
       this.popupStore.showPopup('EmailChangePopup', {
         isVisible: true,
+        title: 'Введите новую почту',
+        subtitle: 'Вам будет выслана ссылка для подтверждения вашей почты',
+      })
+    },
+    openChangePassPopup() {
+      console.log('[PersonalProfile] Opening EmailChangePopup')
+      this.popupStore.showPopup('EmailChangePopup', {
+        isVisible: true,
+        title: 'Восстановление пароля',
+        subtitle: 'На вашу почту будет выслана ссылка для восстановления пароля',
       })
     },
   },
@@ -397,7 +407,11 @@ export default {
   max-width: 75%;
   width: 100%;
 
-  @include mobile {
+   @include tablet {
+    max-width: 85%;
+  }
+
+  @include tablet-bottom {
     max-width: 100%;
   }
 
@@ -409,7 +423,7 @@ export default {
     align-items: center;
 
     @include laptop-bottom {
-      gap: 8px;
+      gap: 12px;
     }
   }
 

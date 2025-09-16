@@ -1,7 +1,7 @@
 <template>
   <section class="reviews container">
     <div class="reviews__top">
-      <h2 class="reviews__title h2">Отзывы наших клиентов</h2>
+      <h2 class="reviews__title h2">Отзывы наших&nbsp;клиентов</h2>
       <SliderArrow :swiper="reviewSwiper" :is-beginning="reviewIsBeginning" :is-end="reviewIsEnd" />
     </div>
     <BaseSlider
@@ -26,7 +26,7 @@ import SliderArrow from '@widgets/slider-arrow/SliderArrow.vue'
 import BaseSlider from '@/shared/ui/BaseSlider.vue'
 
 export default {
-  name: 'TeamBlock',
+  name: 'AboutUsReviews',
   components: {
     SliderArrow,
     BaseSlider,

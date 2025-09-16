@@ -32,10 +32,13 @@
 </template>
 
 <script>
+import { usePopupStore } from '@/shared/stores/popup.js'
+
 export default {
   name: 'SubscribeEmail',
   data() {
     return {
+      popupStore: usePopupStore(),
       formSubscribe: {
         email: '',
         checkbox: false,
@@ -94,6 +97,11 @@ export default {
       // Если валидация пройдена
       console.log('Отправка данных:', this.formSubscribe)
       this.isSubmitting = true
+
+      this.popupStore.showPopup('BaseSuccessPopup', {
+        isVisible: true,
+        title: 'Подписка успешно оформлена!',
+      })
 
       setTimeout(() => {
         this.resetForm()

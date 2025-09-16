@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useNewsStore } from '@/shared/stores/news.js'
 import { usePromoStore } from '@/shared/stores/promo.js'
-// import { useCatalogStore } from '@/shared/stores/catalog.js'
 import HomePage from '@/pages/home/HomePage.vue'
 import CatalogPage from '@/pages/catalog/CatalogPage.vue'
 import ProductPage from '@/pages/product/ProductPage.vue'
@@ -19,6 +18,8 @@ import NewsPage from '@/pages/news/NewsPage.vue'
 import NewsItemPage from '@/pages/news/NewsItemPage.vue'
 import PromoPage from '@/pages/promo/PromoPage.vue'
 import PromoItemPage from '@/pages/promo/PromoItemPage.vue'
+import ConfirmationPage from '@/pages/confirmation/ConfirmationPage.vue'
+import ErrorPage from '@/pages/error/ErrorPage.vue'
 import { categoryNames } from '@/shared/config/categoryNames.js'
 
 const routes = [
@@ -201,6 +202,12 @@ const routes = [
       },
     },
   },
+  {
+    path: '/:pathMatch(.*)*', // 404
+    name: 'ErrorPage',
+    component: ErrorPage,
+  },
+  { path: '/email-confirmation/:uuid', name: 'ConfirmationPage', component: ConfirmationPage },
 ]
 
 const router = createRouter({

@@ -17,7 +17,7 @@
 <script>
 import BreadcrumbsList from '@widgets/intro-pages/BreadcrumbsList.vue'
 export default {
-  name: 'TeamBlock',
+  name: 'AboutUsHero',
   components: {
     BreadcrumbsList,
   },

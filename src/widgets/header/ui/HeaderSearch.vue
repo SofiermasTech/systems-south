@@ -2,7 +2,7 @@
   <div class="header-search">
     <BaseSearchField v-if="this.windowWidth > 1030" v-model="searchQuery" @search="handleSearch" />
 
-    <BaseButtonSearch @click="openSearchField" v-if="this.windowWidth > 720" />
+    <BaseButtonSearch @click="openSearchField" v-if="this.windowWidth > 720 && this.windowWidth < 1030" />
 
     <SearchPopup
       v-if="popupStore.currentPopupName === 'search' || popupStore.secondaryPopupName === 'search'"
@@ -13,7 +13,7 @@
   </div>
   <div
     class="header-search-mobile"
-    v-if="popupStore.currentPopupName === 'searchMob' || popupStore.secondaryPopupName === 'search'"
+    v-if="(popupStore.currentPopupName === 'searchMob' || popupStore.secondaryPopupName === 'search') && this.windowWidth < 1030"
   >
     <div class="container header-search-mobile__body">
       <BaseSearchField v-model="searchQuery" @search="handleSearch" />

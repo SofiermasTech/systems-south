@@ -1,10 +1,10 @@
 <template>
   <BasePopup :is-visible="isVisible" class="email-change-popup">
     <template #title>
-      <h2 class="base-popup__title">Введите новую почту</h2>
+      <h2 class="base-popup__title">{{ title}}</h2>
     </template>
     <template #subtitle>
-      <p class="base-popup__subtitle">Вам будет выслана ссылка для подтверждения вашей почты</p>
+      <p class="base-popup__subtitle">{{ subtitle}}</p>
     </template>
     <template #popup-content>
       <BaseForm
@@ -38,6 +38,16 @@ import api from '@/api'
 
 export default {
   name: 'EmailChangePopup',
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    subtitle: {
+      type: String,
+      default: ''
+    },
+  },
   data() {
     return {
       isVisible: false,
@@ -67,17 +77,17 @@ export default {
           subtitle: 'Проверьте вашу почту',
         })
 
-        // Для теста эмулируем подтверждение email
-        // В реальном приложении пользователь переходит по ссылке, и uuid обрабатывается на отдельной странице
-        if (response.data.uuid) {
-          console.log(
-            '[EmailChangePopup] Simulating email confirmation with uuid:',
-            response.data.uuid,
-          )
-          await this.confirmEmail(response.data.uuid, formData.email)
-        }
+        // // Для теста эмулируем подтверждение email
+        // // В реальном приложении пользователь переходит по ссылке, и uuid обрабатывается на отдельной странице
+        // if (response.data.uuid) {
+        //   console.log(
+        //     '[EmailChangePopup] Simulating email confirmation with uuid:',
+        //     response.data.uuid,
+        //   )
+        //   await this.confirmEmail(response.data.uuid, formData.email)
+        // }
 
-        this.closePopup()
+        // this.closePopup()
       } catch (error) {
         console.error(
           '[EmailChangePopup] Error sending email change request:',

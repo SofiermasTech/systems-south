@@ -1,39 +1,21 @@
 <template>
   <footer class="footer">
     <div class="footer__top-line">
-      <ul class="footer__benf-list">
-        <li class="footer__benf-list-item">
-          <p>7 лет на рынке</p>
+      <Vue3Marquee
+        v-if="isMobile"
+        :clone="true"
+        :duration="30"
+        :pauseOnHover="true"
+        class="footer__benf-list"
+      >
+        <div v-for="(item, index) in items" :key="index" class="footer__benf-list-item">
+          <p>{{ item.text }}</p>
           <span></span>
-        </li>
-        <li class="footer__benf-list-item">
-          <p>Дистрибьютор проф. оборудования</p>
-          <span></span>
-        </li>
-        <li class="footer__benf-list-item">
-          <p>Удобная оплата и доставка по РФ</p>
-          <span></span>
-        </li>
-        <li class="footer__benf-list-item">
-          <p>Гарантия и собственный сервисный центр</p>
-          <span></span>
-        </li>
-      </ul>
-      <ul v-if="is730px" class="footer__benf-list list-2">
-        <li class="footer__benf-list-item">
-          <p>7 лет на рынке</p>
-          <span></span>
-        </li>
-        <li class="footer__benf-list-item">
-          <p>Дистрибьютор проф. оборудования</p>
-          <span></span>
-        </li>
-        <li class="footer__benf-list-item">
-          <p>Удобная оплата и доставка по РФ</p>
-          <span></span>
-        </li>
-        <li class="footer__benf-list-item">
-          <p>Гарантия и собственный сервисный центр</p>
+        </div>
+      </Vue3Marquee>
+      <ul v-else class="footer__benf-list">
+        <li v-for="(item, index) in items" :key="index" class="footer__benf-list-item">
+          <p>{{ item.text }}</p>
           <span></span>
         </li>
       </ul>
@@ -121,28 +103,33 @@
   </footer>
 </template>
 <script>
+import { Vue3Marquee } from 'vue3-marquee'
+
 export default {
+  components: {
+    Vue3Marquee,
+  },
   data() {
     return {
-      is730px: window.matchMedia('(max-width: 730px)').matches,
-      media730: null,
+      isMobile: window.innerWidth <= 730,
+      items: [
+        { text: '7 лет на рынке' },
+        { text: 'Дистрибьютор проф. оборудования' },
+        { text: 'Удобная оплата и доставка по РФ' },
+        { text: 'Гарантия и собственный сервисный центр' },
+      ],
     }
   },
-
   methods: {
-    updateMediaQueries() {
-      this.is730px = this.media730.matches
+    handleResize() {
+      this.isMobile = window.innerWidth <= 730
     },
   },
-  created() {
-    this.media730 = window.matchMedia('(max-width: 730px)')
-    this.updateMediaQueries()
-  },
   mounted() {
-    this.media730.addEventListener('change', this.updateMediaQueries)
+    window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount() {
-    this.media730.removeEventListener('change', this.updateMediaQueries)
+    window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>
@@ -179,13 +166,7 @@ export default {
     @media screen and (max-width: 730px) {
       max-width: fit-content;
       flex-shrink: 0;
-      animation: line-1 40s infinite linear;
-      animation-delay: -40s;
-
-      &.list-2 {
-        animation: line-2 40s infinite linear;
-        animation-delay: -20s;
-      }
+      display: inline-flex;
     }
   }
 
@@ -203,6 +184,7 @@ export default {
     @media screen and (max-width: 730px) {
       max-width: fit-content;
       flex-shrink: 0;
+      margin-right: 10px;
     }
 
     p {
@@ -224,6 +206,10 @@ export default {
     &:last-child {
       span {
         display: none;
+
+        @media screen and (max-width: 730px) {
+          display: inline;
+        }
       }
     }
   }
@@ -257,7 +243,7 @@ export default {
     justify-content: space-between;
 
     @include mobile {
-      height: min(25vh, 250px);
+      height: min(32vh, 250px);
     }
   }
 
