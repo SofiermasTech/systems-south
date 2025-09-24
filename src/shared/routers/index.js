@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useNewsStore } from '@/shared/stores/news.js'
 import { usePromoStore } from '@/shared/stores/promo.js'
+import { useCatalogStore } from '@/shared/stores/catalog.js'
 import HomePage from '@/pages/home/HomePage.vue'
 import CatalogPage from '@/pages/catalog/CatalogPage.vue'
 import ProductPage from '@/pages/product/ProductPage.vue'
@@ -43,7 +44,8 @@ const routes = [
     props: true,
     meta: {
       breadcrumb: (route) => {
-        return categoryNames[route.params.category] || route.params.category || 'Категория'
+         const catalogStore = useCatalogStore()
+        return 'Категория'
       },
       parentRoute: {
         path: '/catalog',

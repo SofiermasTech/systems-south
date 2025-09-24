@@ -26,6 +26,7 @@
         @submit-success="handleSubmitSuccess"
         :button-text="currentForm === 'login' ? 'Войти' : 'Отправить'"
       />
+      <BaseButtonForgotPass @click="openChangePassPopup" />
       <button class="login-popup__btn-reg" type="button" @click="toggleForm">
         {{ currentForm === 'login' ? 'Нет аккаунта?' : 'Уже есть аккаунт?' }}
       </button>
@@ -36,9 +37,13 @@
 <script>
 import { useAuthStore } from '@/shared/stores/auth.js'
 import { usePopupStore } from '@/shared/stores/popup.js'
+import BaseButtonForgotPass from '@/shared/ui/BaseButtonForgotPass.vue'
 
 export default {
   name: 'LoginPopup',
+  components: {
+    BaseButtonForgotPass,
+  },
   props: {
     isVisible: {
       type: Boolean,
@@ -180,7 +185,7 @@ export default {
         }
       } catch (error) {
         console.error('Registration failed:', error)
-        alert(this.authStore.getError)
+        // alert(this.authStore.getError)
       } finally {
         this.isLoading = false
       }
@@ -193,6 +198,15 @@ export default {
         this.$refs.baseForm.resetForm()
       }
     },
+    openChangePassPopup() {
+      console.log('[PersonalProfile] Opening EmailChangePopup')
+      this.popupStore.showPopup('EmailChangePopup', {
+        isVisible: true,
+        title: 'Восстановление пароля',
+        subtitle: 'На вашу почту будет выслана ссылка для восстановления пароля',
+        mode: 'reset',
+      })
+    },
   },
 }
 </script>
@@ -203,7 +217,7 @@ export default {
 .login-popup {
   &__btn-reg {
     width: 100%;
-    padding-top: 20px;
+
     background-color: transparent;
     border: none;
     font-weight: 600;
@@ -214,6 +228,12 @@ export default {
     @include tablet {
       padding-top: 16px;
     }
+  }
+
+  .btn-forgot-pass {
+    width: 100%;
+    padding-block: 24px;
+    @include fluid-text(16, 12);
   }
 }
 

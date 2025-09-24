@@ -92,8 +92,8 @@ export default {
   computed: {
     categories() {
       return this.catalogStore.getCategories.map((category) => ({
-        slug: category,
-        name: categoryNames[category] || category,
+        slug: category.id,
+        name: category.name,
       }))
     },
     subcategories() {

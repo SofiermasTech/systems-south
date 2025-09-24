@@ -23,9 +23,8 @@ components.forEach((component) => {
 async function initializeApp() {
   try {
     console.log('Starting app initialization')
-    console.log('Environment mode:', import.meta.env.MODE, 'VITE_MODE:', import.meta.env.VITE_MODE)
-    let isMswEnabled =
-      import.meta.env.MODE === 'development' || import.meta.env.VITE_MODE === 'production-poc'
+    console.log('Environment mode:', 'VITE_MODE:', import.meta.env.VITE_MODE)
+    let isMswEnabled = import.meta.env.VITE_MODE === 'production-poc'
     console.log('Is MSW enabled:', isMswEnabled)
     if (isMswEnabled) {
       try {
@@ -50,6 +49,8 @@ async function initializeApp() {
     const catalogStore = useCatalogStore()
     console.log('Loading catalog')
     await catalogStore.loadProducts()
+    await catalogStore.loadCategories()
+    console.log('Loading categories')
 
     const favoritesStore = useFavoritesStore()
     console.log('Fetching favorites')

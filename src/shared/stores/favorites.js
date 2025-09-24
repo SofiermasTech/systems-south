@@ -25,46 +25,60 @@ export const useFavoritesStore = defineStore('favorites', {
         return
       }
       try {
-        const response = await api.get(`/favorites/${authStore.getUser.id}`)
-        console.log('Favorites response:', response.data) // Логирование
+        const response = await api.get('api/favourite-product')
+        console.log('Favorites response:', response.data)
         this.favorites = Array.isArray(response.data) ? response.data : []
       } catch (error) {
         console.error('Ошибка загрузки избранного:', error)
         this.favorites = []
       }
     },
-    async syncFavorites() {
+
+    // async syncFavorites() {
+    //   const authStore = useAuthStore()
+    //   if (!authStore.isLoggedIn) return
+    //   try {
+    //     await api.post(`/favorites/${authStore.getUser.id}`, this.favorites)
+    //   } catch (error) {
+    //     console.error('Ошибка синхронизации избранного:', error)
+    //   }
+    // },
+
+    async addToFavorites(productId) {
       const authStore = useAuthStore()
-      if (!authStore.isLoggedIn) return
+      if (!authStore.isLoggedIn) {
+        throw new Error('Авторизуйтесь для добавления в избранное')
+      }
+      if (!this.isFavorite(productId)) {
+        try {
+          await api.post('api/favourite-product', { productId })
+          await this.fetchFavorites()
+        } catch (error) {
+          console.error('Ошибка добавления в избранное:', error)
+          throw new Error('Не удалось добавить в избранное')
+        }
+      }
+    },
+
+    async removeFromFavorites(productId) {
       try {
-        await api.post(`/favorites/${authStore.getUser.id}`, this.favorites)
+        await api.delete('api/favourite-product', { data: { productId } })
+        await this.fetchFavorites()
       } catch (error) {
-        console.error('Ошибка синхронизации избранного:', error)
+        console.error('Ошибка удаления из избранного:', error)
+        throw new Error('Не удалось удалить из избранного')
       }
     },
-    addToFavorites(product) {
+
+    async toggleFavorite(productId) {
       const authStore = useAuthStore()
       if (!authStore.isLoggedIn) {
         throw new Error('Авторизуйтесь для добавления в избранное')
       }
-      if (!this.isFavorite(product.id)) {
-        this.favorites.push(product)
-        this.syncFavorites()
-      }
-    },
-    removeFromFavorites(productId) {
-      this.favorites = this.favorites.filter((product) => product.id !== productId)
-      this.syncFavorites()
-    },
-    toggleFavorite(product) {
-      const authStore = useAuthStore()
-      if (!authStore.isLoggedIn) {
-        throw new Error('Авторизуйтесь для добавления в избранное')
-      }
-      if (this.isFavorite(product.id)) {
-        this.removeFromFavorites(product.id)
+      if (this.isFavorite(productId)) {
+        await this.removeFromFavorites(productId)
       } else {
-        this.addToFavorites(product)
+        await this.addToFavorites(productId)
       }
     },
   },

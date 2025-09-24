@@ -6,7 +6,7 @@ export const useCartStore = defineStore('cart', {
   state: () => ({
     cartItems: [],
     anonymousCart: [],
-    isNewUser: false, // Флаг для нового пользователя
+    isNewUser: false,
   }),
   getters: {
     cartItemsCount(state) {
@@ -19,13 +19,13 @@ export const useCartStore = defineStore('cart', {
     setNewUser(isNew) {
       this.isNewUser = isNew
     },
-    loadCart() {
+
+    async loadCart() {
       const authStore = useAuthStore()
       if (authStore.isLoggedIn) {
         this.cartItems = []
         if (!this.isNewUser) {
-          // Не загружать корзину с сервера для новых пользователей
-          this.fetchCart()
+          await this.fetchCart()
         }
       } else {
         const savedCart = localStorage.getItem('anonymousCart')
@@ -51,56 +51,78 @@ export const useCartStore = defineStore('cart', {
         }
       }
     },
+
     saveAnonymousCart() {
       localStorage.setItem('anonymousCart', JSON.stringify(this.anonymousCart))
       console.log('Saved anonymousCart:', this.anonymousCart)
     },
+
     async fetchCart() {
       const authStore = useAuthStore()
       if (!authStore.isLoggedIn) return
       try {
-        const response = await api.get(`/cart/${authStore.getUser.id}`)
+        const response = await api.get('api/cart')
         console.log('Cart response:', response.data)
-        this.cartItems = Array.isArray(response.data) ? response.data : []
+        this.cartItems = Array.isArray(response.data)
+          ? response.data.map((item) => ({ id: item.id, quantity: item.quantity }))
+          : []
         console.log('cartItems after fetchCart:', this.cartItems)
       } catch (error) {
         console.error('Error fetching cart:', error)
         this.cartItems = []
       }
     },
-    async syncCart() {
-      const authStore = useAuthStore()
-      if (!authStore.isLoggedIn) return
-      try {
-        console.log('Syncing cart:', this.cartItems)
-        await api.post(`/cart/${authStore.getUser.id}`, this.cartItems)
-      } catch (error) {
-        console.error('Error syncing cart:', error)
-        throw error
-      }
-    },
-    addToCart(product, quantity = 1) {
+
+    // async syncCart() {
+    //   const authStore = useAuthStore()
+    //   if (!authStore.isLoggedIn) return
+    //   try {
+    //     console.log('Syncing cart:', this.cartItems)
+    //     await api.post(`/cart/${authStore.getUser.id}`, this.cartItems)
+    //   } catch (error) {
+    //     console.error('Error syncing cart:', error)
+    //     throw error
+    //   }
+    // },
+
+    async addToCart(productId, quantity = 1) {
       const authStore = useAuthStore()
       const targetCart = authStore.isLoggedIn ? this.cartItems : this.anonymousCart
-      const existingItem = targetCart.find((item) => item.id === product.id)
+      const existingItem = targetCart.find((item) => item.id === productId)
+      console.log({ productId, quantity })
       if (existingItem) {
         existingItem.quantity += quantity
       } else {
-        targetCart.push({ id: product.id, quantity })
+        targetCart.push({ productId, quantity })
       }
       if (authStore.isLoggedIn) {
         this.cartItems = targetCart
-        this.syncCart()
+
+        try {
+          await api.post('api/cart', { productId, quantity })
+          await this.fetchCart()
+        } catch (error) {
+          console.error('Error adding to cart:', error)
+          throw error
+        }
       } else {
         this.cartItems = targetCart
         this.saveAnonymousCart()
       }
     },
-    clearCart() {
+
+    async clearCart() {
       const authStore = useAuthStore()
       if (authStore.isLoggedIn) {
         this.cartItems = []
-        this.syncCart()
+
+        try {
+          await api.delete('api/cart')
+          await this.fetchCart()
+        } catch (error) {
+          console.error('Error clearing cart:', error)
+          throw error
+        }
       } else {
         this.anonymousCart = []
         this.cartItems = []
@@ -117,28 +139,22 @@ export const useCartStore = defineStore('cart', {
         return
       }
       console.log('Merging anonymousCart:', this.anonymousCart, 'with cartItems:', this.cartItems)
-      const mergedCart = [...this.cartItems]
       for (const anonItem of this.anonymousCart) {
-        const existingItem = mergedCart.find((item) => item.id === anonItem.id)
-        if (existingItem) {
-          existingItem.quantity += anonItem.quantity
-        } else {
-          mergedCart.push({ ...anonItem })
-        }
+        await this.addToCart(anonItem.id, anonItem.quantity)
       }
-      this.cartItems = mergedCart
       this.anonymousCart = []
       this.saveAnonymousCart()
-      await this.syncCart()
+      await this.fetchCart()
       console.log('mergeAnonymousCart completed:', this.cartItems)
     },
-    persistCart() {
-      const authStore = useAuthStore()
-      if (authStore.isLoggedIn) {
-        this.syncCart()
-      } else {
-        this.saveAnonymousCart()
-      }
-    },
+
+    // persistCart() {
+    //   const authStore = useAuthStore()
+    //   if (authStore.isLoggedIn) {
+    //     this.syncCart()
+    //   } else {
+    //     this.saveAnonymousCart()
+    //   }
+    // },
   },
 })

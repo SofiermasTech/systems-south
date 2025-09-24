@@ -88,7 +88,8 @@ export default {
     return {
       popularProduct: [
         {
-          productId: 11,
+          productId: '0199628b-525e-7a22-a824-f2aece4e3644',
+          productId2: 11,
         },
       ],
     }

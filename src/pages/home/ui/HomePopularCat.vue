@@ -46,41 +46,46 @@ export default {
   data() {
     return {
       catalogStore: useCatalogStore(),
-      activeCategory: 'Кабели',
+      activeCategory: 'Кабели и провода',
       popularCategory: [
         {
-          id: 1,
-          title: 'Кабели',
+          id: '0199615e-f7ba-7bd8-81d3-e5999478fc85',
+          title: 'Кабели и провода',
           icon: 'CabelIcon',
-          productId: 1,
+          productId: '0199628b-525e-7a22-a824-f2aece4e3644',
         },
         {
-          id: 2,
-          title: 'Электрощиты',
+          id: '01996170-63cf-7b21-a662-f50ea691033a',
+          title: 'Автоматические выключатели, УЗО, дифавтоматы',
           icon: 'ElectroIcon',
-          productId: 2,
+          productId: '0199628b-525e-7a22-a824-f2aece4e3644',
         },
         {
-          id: 3,
-          title: 'Автоматика',
+          id: '01996170-8b7a-7d15-9307-c6da83b7eddc',
+          title: 'Розетки, выключатели',
           icon: 'AutomaticaIcon',
-          productId: 3,
+          productId: '0199628b-525e-7a22-a824-f2aece4e3644',
         },
         {
-          id: 4,
-          title: 'Светотехника',
+          id: '01996170-a97e-76e8-b106-8172be772f86',
+          title: 'Светильники, лампы',
           icon: 'LightTechnicIcon',
-          productId: 6,
+          productId: '0199628b-525e-7a22-a824-f2aece4e3644',
         },
-        {
-          id: 5,
-          title: 'Теплый пол',
-          icon: 'WarmFloorIcon',
-          productId: 10,
-        },
+        // {
+        //   id: 5,
+        //   title: 'Теплый пол',
+        //   icon: 'WarmFloorIcon',
+        //   productId: 10,
+        // },
       ],
     }
   },
+
+  // computed: {
+  //   popularCategory
+  // }
+
   methods: {
     selectCategory(title) {
       this.activeCategory = title
@@ -191,6 +196,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 32px;
     cursor: pointer;
     transition: 0.3s;
 
@@ -246,6 +252,7 @@ export default {
   }
 
   &__item-info {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 16px;

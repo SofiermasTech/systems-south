@@ -67,7 +67,7 @@
               :error="errors.confirmNewPassword"
               @input="validateField('confirmNewPassword')"
             />
-            <button class="order-form__pass-reset" type="button" @click="openChangePassPopup">Забыли пароль?</button>
+            <BaseButtonForgotPass @click="openChangePassPopup" />
           </div>
         </div>
       </fieldset>
@@ -84,13 +84,13 @@
 <script>
 import { useAuthStore } from '@/shared/stores/auth.js'
 import { usePopupStore } from '@/shared/stores/popup.js'
-// import EmailChangePopup from '@/widgets/email-change-popup/EmailChangePopup.vue'
+import BaseButtonForgotPass from '@/shared/ui/BaseButtonForgotPass.vue'
 import api from '@/api'
 
 export default {
   name: 'PersonalProfile',
   components: {
-    // EmailChangePopup,
+    BaseButtonForgotPass,
   },
   data() {
     return {
@@ -208,7 +208,7 @@ export default {
         const apiField = field === 'tel' ? 'phone' : field
         const updateData = { [apiField]: value }
         console.log('Отправляем данные в PATCH /api/client:', updateData)
-        const response = await api.patch('/client', updateData)
+        const response = await api.patch('api/client', updateData)
         console.log('Ответ от сервера:', response.data, response.status)
 
         this.authStore.user = {
@@ -277,7 +277,7 @@ export default {
         if (hasUserDataChanges) {
           console.log('[submitForm] Отправляем данные пользователя:', changedUserData)
 
-          const response = await api.patch('/client', changedUserData)
+          const response = await api.patch('api/client', changedUserData)
           console.log('[submitForm] Ответ сервера (пользователь):', response.data)
 
           this.authStore.user = {
@@ -324,7 +324,7 @@ export default {
 
         // Если ничего не изменилось, показываем уведомление
         // if (!hasUserDataChanges && !hasPasswordChanges) {
-        //   popupStore.showPopup('BaseSuccessPopup', {
+        //   this.popupStore.showPopup('BaseSuccessPopup', {
         //     isVisible: true,
         //     title: 'Нет изменений',
         //     subtitle: 'Данные не были изменены',
@@ -354,6 +354,7 @@ export default {
         isVisible: true,
         title: 'Введите новую почту',
         subtitle: 'Вам будет выслана ссылка для подтверждения вашей почты',
+        mode: 'change',
       })
     },
     openChangePassPopup() {
@@ -377,7 +378,7 @@ export default {
       const user = this.authStore.getUser
       console.log('[PersonalProfile] User data from authStore:', user)
 
-      if (user && user.id && user.email) {
+      if (user && user.email) {
         this.form = {
           firstName: user.firstName || '',
           lastName: user.lastName || '',
@@ -407,7 +408,7 @@ export default {
   max-width: 75%;
   width: 100%;
 
-   @include tablet {
+  @include tablet {
     max-width: 85%;
   }
 
@@ -427,15 +428,15 @@ export default {
     }
   }
 
-  .order-form__pass-reset {
-    padding: 12px;
-    background-color: transparent;
-    border: none;
-    font-weight: 600;
-    @include fluid-text(14, 10);
-    text-align: center;
-    color: var(--blue);
-  }
+  // .order-form__pass-reset {
+  //   padding: 12px;
+  //   background-color: transparent;
+  //   border: none;
+  //   font-weight: 600;
+  //   @include fluid-text(14, 10);
+  //   text-align: center;
+  //   color: var(--blue);
+  // }
 
   .base-input-label::after {
     display: none;

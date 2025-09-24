@@ -1,10 +1,10 @@
 <template>
   <BasePopup :is-visible="isVisible" class="email-change-popup">
     <template #title>
-      <h2 class="base-popup__title">{{ title}}</h2>
+      <h2 class="base-popup__title">{{ title }}</h2>
     </template>
     <template #subtitle>
-      <p class="base-popup__subtitle">{{ subtitle}}</p>
+      <p class="base-popup__subtitle">{{ subtitle }}</p>
     </template>
     <template #popup-content>
       <BaseForm
@@ -27,6 +27,7 @@
         buttonText="Отправить ссылку"
         :form-data="formData"
       />
+      <div v-if="error" class="form-error-message">{{ error }}</div>
     </template>
   </BasePopup>
 </template>
@@ -34,18 +35,22 @@
 <script>
 import { usePopupStore } from '@/shared/stores/popup.js'
 import { useAuthStore } from '@/shared/stores/auth.js'
-import api from '@/api'
+// import api from '@/api'
 
 export default {
   name: 'EmailChangePopup',
   props: {
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     subtitle: {
       type: String,
-      default: ''
+      default: '',
+    },
+    mode: {
+      type: String,
+      default: 'reset',
     },
   },
   data() {
@@ -56,62 +61,50 @@ export default {
       formData: {
         email: '',
       },
+      error: null,
     }
   },
   methods: {
     closePopup() {
       this.popupStore.hidePopup()
       this.formData.email = ''
+      this.error = null
     },
     async handleSubmitSuccess(formData) {
       try {
-        console.log('[EmailChangePopup] Sending email change request:', formData)
-        const response = await api.post('/client/send-confirmation-link', {
-          newEmail: formData.email,
-        })
-        console.log('[EmailChangePopup] Response from server:', response.data)
+        console.log('[EmailChangePopup] Sending request:', formData)
+        if (this.mode === 'change' && !this.authStore.isLoggedIn) {
+          throw new Error('Для смены email необходимо авторизоваться')
+        }
+        console.log('[EmailChangePopup] authStore:', this.authStore)
+        let response
+        if (this.mode === 'change') {
+          response = await this.authStore.sendConfirmationLink(formData.email)
+        } else if (this.mode === 'reset') {
+          response = await this.authStore.restorePassword(formData.email)
+        }
 
+        console.log('[EmailChangePopup] Response from server:', response)
+        this.closePopup()
         this.popupStore.showPopup('BaseSuccessPopup', {
           isVisible: true,
           title: 'Заявка успешно оформлена!',
           subtitle: 'Проверьте вашу почту',
         })
 
-        // // Для теста эмулируем подтверждение email
-        // // В реальном приложении пользователь переходит по ссылке, и uuid обрабатывается на отдельной странице
-        // if (response.data.uuid) {
-        //   console.log(
-        //     '[EmailChangePopup] Simulating email confirmation with uuid:',
-        //     response.data.uuid,
-        //   )
-        //   await this.confirmEmail(response.data.uuid, formData.email)
-        // }
+        // Для смены email эмулируем подтверждение (в реальном случае это отдельная страница)
+        if (this.mode === 'change' && response.uuid) {
+          console.log('[EmailChangePopup] Simulating email confirmation with uuid:', response.uuid)
+          await this.authStore.confirmEmail(response.uuid, formData.email)
+        }
 
         // this.closePopup()
       } catch (error) {
-        console.error(
-          '[EmailChangePopup] Error sending email change request:',
-          error.response?.data || error,
-        )
-        this.error = error.response?.data?.message || 'Ошибка при отправке ссылки'
-      }
-    },
-    async confirmEmail(uuid, newEmail) {
-      try {
-        console.log('[EmailChangePopup] Sending email confirmation:', { uuid })
-        const response = await api.post('/client/email-confirmation', { uuid })
-        console.log('[EmailChangePopup] Confirmation response:', response.data)
-
-        // Обновляем email в authStore и localStorage
-        this.authStore.user = {
-          ...this.authStore.getUser,
-          email: newEmail,
+        console.error('[EmailChangePopup] Error sending request:', error.response?.data || error)
+         if (error.response?.status === 400) {
+          this.error = 'Введите новый email'
         }
-        localStorage.setItem('authUser', JSON.stringify(this.authStore.user))
-        console.log('[EmailChangePopup] Email updated in authStore:', this.authStore.user)
-      } catch (error) {
-        console.error('[EmailChangePopup] Error confirming email:', error.response?.data || error)
-        this.error = error.response?.data?.message || 'Ошибка при подтверждении email'
+        // this.error = error.response?.data?.message || error.message || 'Ошибка при отправке запроса'
       }
     },
   },
@@ -138,6 +131,11 @@ export default {
 
   .base-input__btn-edit {
     display: none;
+  }
+
+  .form-error-message {
+    margin-top: 8px;
+    margin-bottom: 0;
   }
 }
 </style>

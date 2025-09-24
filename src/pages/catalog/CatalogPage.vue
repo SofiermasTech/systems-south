@@ -43,7 +43,7 @@ export default {
       const catalogStore = useCatalogStore()
       return catalogStore.getCategories.map((category) => ({
         slug: category,
-        name: categoryNames[category] || category,
+        name: category.name || category,
         to: `/catalog/${category}`,
       }))
     },
@@ -56,6 +56,7 @@ export default {
         : []
     },
     activeCategory() {
+      console.log(this.category)
       return this.category || null
     },
     activeCategoryName() {

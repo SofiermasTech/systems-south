@@ -2,8 +2,8 @@
   <article v-if="!isHorizontal" class="product-card card-vertical" @click="goToProduct">
     <div class="product-card__top">
       <div class="product-card__top-info">
-        <StockStatus :stock="product.stock" />
-        <p class="product-card__top-info-article article-number">Арт: {{ product.article }}</p>
+        <StockStatus :stock="product.isBestseller" />
+        <p class="product-card__top-info-article article-number">Арт: {{ product.partNumber }}</p>
       </div>
       <FavoriteButton :product="product" @click.stop />
     </div>
@@ -136,8 +136,8 @@
     </div>
     <div class="product-card__info">
       <div class="product-card__top-info">
-        <StockStatus :stock="product.stock" />
-        <p class="product-card__top-info-article article-number">Арт: {{ product.article }}</p>
+        <StockStatus :stock="product.isBestseller" />
+        <p class="product-card__top-info-article article-number">Арт: {{ product.partNumber }}</p>
       </div>
       <div class="product-card__text">
         <h3>{{ product.brand }}</h3>
@@ -191,7 +191,7 @@ export default {
   },
   props: {
     productId: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
     isHorizontal: {
@@ -220,6 +220,7 @@ export default {
   computed: {
     product() {
       const catalogStore = useCatalogStore()
+      console.log(this.productId)
       return catalogStore.getProductById(this.productId)
     },
     formattedPrice() {

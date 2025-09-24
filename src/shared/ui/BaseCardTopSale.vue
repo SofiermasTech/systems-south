@@ -15,7 +15,7 @@
         </div>
         <div class="top-sale__info-item">
           <span>Материал</span>
-          <p>{{ currentProduct.subcategory }}</p>
+          <p>{{ currentProduct.series }}</p>
         </div>
         <div class="top-sale__info-item">
           <span>Цена</span>
@@ -27,7 +27,41 @@
       >
     </div>
     <div class="top-sale__block-img">
-      <img :src="currentProduct.images[0]" :alt="currentProduct.name" width="535" height="424" />
+      <img
+        v-if="currentProduct.images.length >= 1"
+        :src="currentProduct.images[0]"
+        :alt="currentProduct.name"
+        width="535"
+        height="424"
+      />
+      <svg
+        v-else
+        width="70"
+        height="68"
+        viewBox="0 0 70 68"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g>
+          <path
+            d="M63.9558 0.56665H6.54424C3.66174 0.56665 1.32501 2.86951 1.32501 5.71024V62.2897C1.32501 65.1305 3.66174 67.4333 6.54424 67.4333H63.9558C66.8383 67.4333 69.175 65.1305 69.175 62.2897V5.71024C69.175 2.86951 66.8383 0.56665 63.9558 0.56665Z"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <path
+            d="M22.202 26.2845C25.0845 26.2845 27.4212 23.9816 27.4212 21.1409C27.4212 18.3002 25.0845 15.9973 22.202 15.9973C19.3195 15.9973 16.9827 18.3002 16.9827 21.1409C16.9827 23.9816 19.3195 26.2845 22.202 26.2845Z"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+          <path
+            d="M14.3731 54.5744L22.202 41.7154L30.0308 54.5744L43.0789 34L56.127 54.5744"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </g>
+      </svg>
     </div>
   </div>
 </template>
@@ -60,15 +94,19 @@ export default {
     currentProduct() {
       if (this.activeCategory) {
         const category = this.data.find((item) => item.title === this.activeCategory)
+        console.log(this.data)
         return this.catalogStore.getProductById(category.productId)
       }
 
       const item = this.data.find((item) => item.productId !== undefined && item.productId !== null)
       if (item && item.productId) {
+        console.log(item)
         const product = this.catalogStore.getProductById(item.productId)
         return product || {}
       }
+
       return {}
+
     },
   },
 }
@@ -274,7 +312,7 @@ export default {
   &__block-info {
     margin-top: auto;
     display: flex;
-    gap: 24px;
+    gap: 16px;
 
     @media screen and (max-width: 720px) {
       order: 4;
@@ -283,6 +321,17 @@ export default {
   }
 
   &__info-item {
+    &:nth-of-type(1) {
+      flex-shrink: 2;
+    }
+
+    &:nth-of-type(2) {
+      flex-grow: 2;
+    }
+
+    &:last-child {
+      flex-shrink: 0;
+    }
     span {
       font-weight: 500;
       @include fluid-text(16, 10);
@@ -296,7 +345,6 @@ export default {
 
       @include mobile {
         font-weight: 700;
-        
       }
     }
   }

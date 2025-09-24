@@ -20,5 +20,12 @@ export default defineConfig({
     fs: {
       allow: ['.'],
     },
+    proxy: {
+      '/api': {
+        target: 'https://api.stage.provodok.shop',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''), // Убираем /api из пути
+      },
+    },
   },
 })
